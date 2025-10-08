@@ -1,0 +1,37 @@
+---
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+import '@styles/globals.css';
+const { title = 'Personal Site', description = 'Personal portfolio site', lang = 'en', ogImage = '/og/default.png' } = Astro.props;
+const domain = 'https://vladmesh.dev';
+---
+<!DOCTYPE html>
+<html lang={lang} class="scroll-smooth bg-slate-950 text-slate-100">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={`${domain}${ogImage}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="alternate" hreflang="ru" href={`${domain}/ru/`} />
+    <link rel="alternate" hreflang="en" href={`${domain}/en/`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <Header lang={lang} />
+    <main class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script defer data-domain="vladmesh.dev" src="https://plausible.io/js/script.js"></script>
+  </body>
+</html>
