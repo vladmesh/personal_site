@@ -1,0 +1,47 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+export async function getStaticPaths() {
+  const projects = await Astro.glob('../../../content/ru/projects/*.mdx');
+  return projects.map((project) => {
+    const slug = project.slug ?? project.file?.split('/').pop()?.replace(/\.mdx$/, '') ?? '';
+    if (!slug) {
+      throw new Error('Project slug is missing for ru project.');
+    }
+    return {
+      params: { slug }
+    };
+  });
+}
+
+const { slug } = Astro.params;
+const projectEntries = await Astro.glob('../../../content/ru/projects/*.mdx');
+const project = projectEntries.find((entry) => {
+  const entrySlug = entry.slug ?? entry.file?.split('/').pop()?.replace(/\.mdx$/, '');
+  return entrySlug === slug;
+});
+if (!project) {
+  throw new Error(`Project not found: ${slug}`);
+}
+const resolvedSlug = project.slug ?? project.file?.split('/').pop()?.replace(/\.mdx$/, '') ?? slug;
+const { Content, frontmatter } = project;
+---
+<BaseLayout
+  title={`${frontmatter.title} — кейс Влад Меш`}
+  description={frontmatter.summary}
+  lang="ru"
+  ogImage={`/og/projects/${resolvedSlug}.png`}
+>
+  <article class="prose prose-invert prose-headings:font-semibold prose-a:text-brand-light prose-a:no-underline">
+    <header class="mb-8 border-b border-white/10 pb-6">
+      <p class="text-sm uppercase tracking-wider text-slate-400">{frontmatter.role}</p>
+      <h1 class="mt-2 text-4xl font-semibold text-white">{frontmatter.title}</h1>
+      <p class="mt-3 text-slate-300">{frontmatter.summary}</p>
+      <div class="mt-4 flex flex-wrap gap-3 text-xs text-slate-300">
+        {frontmatter.stack.map((item) => (
+          <span class="rounded-full border border-white/10 px-3 py-1" key={item}>{item}</span>
+        ))}
+      </div>
+    </header>
+    <Content />
+  </article>
+</BaseLayout>

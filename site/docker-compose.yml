@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  proxy:
+    image: caddy:2
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./ops/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./dist:/srv/site:ro
+      - caddy_data:/data
+      - caddy_config:/config
+volumes:
+  caddy_data: {}
+  caddy_config: {}
