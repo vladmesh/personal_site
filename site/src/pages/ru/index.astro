@@ -1,0 +1,47 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Hero from '@components/Hero.astro';
+import ProjectCard from '@components/ProjectCard.astro';
+import Skills from '@components/Skills.astro';
+import Testimonials from '@components/Testimonials.astro';
+import { projects } from '@data/projects';
+import { skillGroups } from '@data/skills';
+import { testimonials } from '@data/testimonials';
+const pageProjects = projects.ru;
+---
+<BaseLayout
+  title="Влад Меш — Backend и AI-инженер"
+  description="Backend, AI-агенты и платформа проектов. Резюме, проекты и контакты."
+  lang="ru"
+  ogImage="/og/home_ru.png"
+>
+  <Hero lang="ru" />
+
+  <section id="projects" class="mt-16 space-y-8">
+    <div class="flex items-end justify-between">
+      <h2 class="text-3xl font-semibold text-white">Проекты</h2>
+      <a href="/ru/projects" class="text-sm text-slate-400 hover:text-white">Все проекты</a>
+    </div>
+    <div class="grid gap-6 md:grid-cols-2">
+      {pageProjects.map((project) => (
+        <ProjectCard project={project} lang="ru" />
+      ))}
+    </div>
+  </section>
+
+  <div class="mt-16">
+    <Skills lang="ru" groups={skillGroups} />
+  </div>
+
+  <div class="mt-16">
+    <Testimonials lang="ru" testimonials={testimonials} />
+  </div>
+
+  <section id="contact" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
+    <h2 class="text-3xl font-semibold text-white">Свяжемся?</h2>
+    <p class="mt-3 max-w-2xl text-slate-300">
+      Пишите в Telegram <a href="https://t.me/vladmesh" target="_blank" rel="noreferrer">@vladmesh</a> или на почту
+      <a href="mailto:hi@vladmesh.dev" class="ml-1">hi@vladmesh.dev</a>.
+    </p>
+  </section>
+</BaseLayout>

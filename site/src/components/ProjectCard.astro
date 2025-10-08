@@ -1,0 +1,38 @@
+---
+const { project, lang = 'en' } = Astro.props;
+const detailsLabel = lang === 'ru' ? 'Подробнее' : 'View case';
+const caseHref = project.slug ? `/${lang}/projects/${project.slug}/` : undefined;
+---
+<article class="group flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-brand/40 hover:bg-white/10">
+  <div class="flex items-center justify-between gap-4">
+    <h3 class="text-xl font-semibold text-white">{project.title}</h3>
+    <span class="rounded-full bg-brand/20 px-3 py-1 text-xs font-medium uppercase tracking-widest text-brand-light">
+      {project.year}
+    </span>
+  </div>
+  <p class="text-sm uppercase tracking-wider text-slate-300/80">{project.role}</p>
+  <p class="text-slate-200/90">{project.summary}</p>
+  <ul class="flex flex-wrap gap-2 text-xs text-slate-300">
+    {project.stack?.map((item) => (
+      <li class="rounded-full border border-white/10 px-3 py-1" key={item}>{item}</li>
+    ))}
+  </ul>
+  <div class="mt-4 flex flex-wrap gap-4 text-sm font-medium">
+    {project.links?.map((link) => (
+      <a
+        key={link.href}
+        href={link.href}
+        class="inline-flex items-center gap-2 text-brand-light transition hover:text-brand"
+        target="_blank"
+        rel="noreferrer"
+      >
+        {link.label[lang]}
+      </a>
+    ))}
+    {caseHref ? (
+      <a href={caseHref} class="inline-flex items-center gap-2 text-brand-light transition hover:text-brand">
+        {detailsLabel}
+      </a>
+    ) : null}
+  </div>
+</article>
