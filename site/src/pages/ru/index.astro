@@ -2,11 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Hero from '@components/Hero.astro';
 import ProjectCard from '@components/ProjectCard.astro';
-import Skills from '@components/Skills.astro';
-import Testimonials from '@components/Testimonials.astro';
 import { projects } from '@data/projects';
-import { skillGroups } from '@data/skills';
-import { testimonials } from '@data/testimonials';
 const pageProjects = projects.ru;
 ---
 <BaseLayout
@@ -16,6 +12,42 @@ const pageProjects = projects.ru;
   ogImage="/og/home_ru.png"
 >
   <Hero lang="ru" />
+
+  <section id="about" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
+    <h2 class="text-3xl font-semibold text-white">Обо мне</h2>
+    <div class="mt-4 space-y-4 text-slate-300">
+      <p>
+        Я backend-инженер и техлид, который помогает командам выводить на рынок устойчивые сервисы и продукты с
+        AI-агентами. Проектирую архитектуру, собираю команды и довожу решения до продакшена, держу в фокусе как
+        скорость поставки, так и качество кода.
+      </p>
+      <p>
+        В проектах люблю разбираться в бизнес-контексте, чтобы предлагать решения, которые влияют на метрики. Работаю с
+        Python, Go и облачной инфраструктурой, подключаю LLM и интеграции, помогаю командам выстраивать процессы доставки
+        и эксплуатации.
+      </p>
+    </div>
+  </section>
+
+  <section id="experience" class="mt-16">
+    <details class="rounded-3xl border border-white/10 bg-white/5 p-6" open>
+      <summary class="cursor-pointer text-3xl font-semibold text-white">Опыт работы</summary>
+      <ul class="mt-4 list-disc space-y-3 pl-5 text-slate-300">
+        <li>
+          Техлид в продуктовой команде поддержки: собрал платформу AI-агентов, организовал поток задач и интеграции с
+          Helpdesk/CRM.
+        </li>
+        <li>
+          Backend-инженер в ретейле: запустил сервис динамического ценообразования на Go, сократил вывод акций с 2 дней до
+          4 часов.
+        </li>
+        <li>
+          Консультант по AI-решениям: помогаю стартапам быстро проверять гипотезы, подключать LLM и строить процессы
+          эксплуатации.
+        </li>
+      </ul>
+    </details>
+  </section>
 
   <section id="projects" class="mt-16 space-y-8">
     <div class="flex items-end justify-between">
@@ -28,14 +60,6 @@ const pageProjects = projects.ru;
       ))}
     </div>
   </section>
-
-  <div class="mt-16">
-    <Skills lang="ru" groups={skillGroups} />
-  </div>
-
-  <div class="mt-16">
-    <Testimonials lang="ru" testimonials={testimonials} />
-  </div>
 
   <section id="contact" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
     <h2 class="text-3xl font-semibold text-white">Свяжемся?</h2>
