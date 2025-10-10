@@ -28,6 +28,10 @@ export type HomeCopy = {
   };
   testimonials: {
     title: string;
+    tabs?: {
+      dev: string;
+      teacher: string;
+    };
   };
   contact: {
     title: string;
@@ -75,7 +79,11 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       subtitle: 'Core stack and tooling.'
     },
     testimonials: {
-      title: 'Testimonials'
+      title: 'Testimonials',
+      tabs: {
+        dev: 'Developer',
+        teacher: 'Instructor'
+      }
     },
     contact: {
       title: "Let's talk",
@@ -124,7 +132,11 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       subtitle: 'Основные стек и инструменты.'
     },
     testimonials: {
-      title: 'Отзывы'
+      title: 'Отзывы',
+      tabs: {
+        dev: 'Разработчик',
+        teacher: 'Преподаватель'
+      }
     },
     contact: {
       title: 'Свяжемся?',

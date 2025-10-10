@@ -22,11 +22,12 @@ const { lang = 'en', content } = Astro.props as {
     <a href={content.cvHref} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark">
       <span>{content.ctaPrimary}</span>
     </a>
-    <a
-      href={content.contactHref}
+    <button
+      type="button"
       class="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/60"
+      data-open-contact
     >
       {content.ctaSecondary}
-    </a>
+    </button>
   </div>
 </section>

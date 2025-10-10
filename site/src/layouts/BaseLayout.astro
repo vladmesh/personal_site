@@ -2,6 +2,7 @@
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import { uiCopy } from '@data/ui';
+import ContactModal from '@components/ContactModal.astro';
 import '@styles/globals.css';
 const { title = 'Personal Site', description = 'Personal portfolio site', lang = 'en', ogImage = '/og/default.png' } = Astro.props;
 const domain = 'https://vladmesh.dev';
@@ -33,6 +34,41 @@ const domain = 'https://vladmesh.dev';
       <slot />
     </main>
     <Footer lang={lang} copy={uiCopy[lang].footer} />
+    <ContactModal />
+    <script>
+      window.openContactModal = function() {
+        const modal = document.getElementById('contact-modal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        if (typeof modal.showModal === 'function') {
+          modal.showModal();
+        } else {
+          modal.setAttribute('open', '');
+        }
+      };
+      window.closeContactModal = function() {
+        const modal = document.getElementById('contact-modal');
+        if (!modal) return;
+        if (typeof modal.close === 'function') {
+          try { modal.close(); } catch (_) {}
+        }
+        modal.classList.add('hidden');
+        modal.removeAttribute('open');
+      };
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') window.closeContactModal && window.closeContactModal();
+      });
+      // Delegate click to elements with [data-open-contact]
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+        const btn = target.closest('[data-open-contact]');
+        if (btn) {
+          e.preventDefault();
+          window.openContactModal();
+        }
+      });
+    </script>
     <script defer data-domain="vladmesh.dev" src="https://plausible.io/js/script.js"></script>
   </body>
 </html>
