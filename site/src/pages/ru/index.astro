@@ -1,15 +1,9 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Hero from '@components/Hero.astro';
-import HomeSections from '@components/HomeSections.astro';
+import ProjectCard from '@components/ProjectCard.astro';
 import { projects } from '@data/projects';
-import { skillGroups } from '@data/skills';
-import { testimonials } from '@data/testimonials';
-import { homeCopy } from '@data/home';
-
-const lang = 'ru';
-const pageProjects = projects[lang];
-const content = homeCopy[lang];
+const pageProjects = projects.ru;
 ---
 <BaseLayout
   title="Влад Меш — Backend и AI-инженер"
@@ -17,12 +11,61 @@ const content = homeCopy[lang];
   lang={lang}
   ogImage="/og/home_ru.png"
 >
-  <Hero lang={lang} />
-  <HomeSections
-    lang={lang}
-    content={content}
-    projects={pageProjects}
-    skills={skillGroups}
-    quotes={testimonials}
-  />
+  <Hero lang="ru" />
+
+  <section id="about" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
+    <h2 class="text-3xl font-semibold text-white">Обо мне</h2>
+    <div class="mt-4 space-y-4 text-slate-300">
+      <p>
+        Я backend-инженер и техлид, который помогает командам выводить на рынок устойчивые сервисы и продукты с
+        AI-агентами. Проектирую архитектуру, собираю команды и довожу решения до продакшена, держу в фокусе как
+        скорость поставки, так и качество кода.
+      </p>
+      <p>
+        В проектах люблю разбираться в бизнес-контексте, чтобы предлагать решения, которые влияют на метрики. Работаю с
+        Python, Go и облачной инфраструктурой, подключаю LLM и интеграции, помогаю командам выстраивать процессы доставки
+        и эксплуатации.
+      </p>
+    </div>
+  </section>
+
+  <section id="experience" class="mt-16">
+    <details class="rounded-3xl border border-white/10 bg-white/5 p-6" open>
+      <summary class="cursor-pointer text-3xl font-semibold text-white">Опыт работы</summary>
+      <ul class="mt-4 list-disc space-y-3 pl-5 text-slate-300">
+        <li>
+          Техлид в продуктовой команде поддержки: собрал платформу AI-агентов, организовал поток задач и интеграции с
+          Helpdesk/CRM.
+        </li>
+        <li>
+          Backend-инженер в ретейле: запустил сервис динамического ценообразования на Go, сократил вывод акций с 2 дней до
+          4 часов.
+        </li>
+        <li>
+          Консультант по AI-решениям: помогаю стартапам быстро проверять гипотезы, подключать LLM и строить процессы
+          эксплуатации.
+        </li>
+      </ul>
+    </details>
+  </section>
+
+  <section id="projects" class="mt-16 space-y-8">
+    <div class="flex items-end justify-between">
+      <h2 class="text-3xl font-semibold text-white">Проекты</h2>
+      <a href="/ru/projects" class="text-sm text-slate-400 hover:text-white">Все проекты</a>
+    </div>
+    <div class="grid gap-6 md:grid-cols-2">
+      {pageProjects.map((project) => (
+        <ProjectCard project={project} lang="ru" />
+      ))}
+    </div>
+  </section>
+
+  <section id="contact" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
+    <h2 class="text-3xl font-semibold text-white">Свяжемся?</h2>
+    <p class="mt-3 max-w-2xl text-slate-300">
+      Пишите в Telegram <a href="https://t.me/vladmesh" target="_blank" rel="noreferrer">@vladmesh</a> или на почту
+      <a href="mailto:hi@vladmesh.dev" class="ml-1">hi@vladmesh.dev</a>.
+    </p>
+  </section>
 </BaseLayout>
