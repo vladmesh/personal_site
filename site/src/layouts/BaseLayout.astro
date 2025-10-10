@@ -1,6 +1,7 @@
 ---
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
+import { uiCopy } from '@data/ui';
 import '@styles/globals.css';
 const { title = 'Personal Site', description = 'Personal portfolio site', lang = 'en', ogImage = '/og/default.png' } = Astro.props;
 const domain = 'https://vladmesh.dev';
@@ -27,11 +28,11 @@ const domain = 'https://vladmesh.dev';
     />
   </head>
   <body class="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-    <Header lang={lang} />
+    <Header lang={lang} copy={uiCopy[lang].header} />
     <main class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <slot />
     </main>
-    <Footer lang={lang} />
+    <Footer lang={lang} copy={uiCopy[lang].footer} />
     <script defer data-domain="vladmesh.dev" src="https://plausible.io/js/script.js"></script>
   </body>
 </html>

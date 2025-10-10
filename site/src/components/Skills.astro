@@ -1,11 +1,10 @@
 ---
-const { lang = 'en', groups = [] } = Astro.props;
-const title = lang === 'ru' ? 'Навыки' : 'Skills';
+const { lang = 'en', groups = [], title, subtitle } = Astro.props;
 ---
 <section id="skills" class="space-y-6">
   <div class="flex items-end justify-between">
-    <h2 class="text-3xl font-semibold text-white">{title}</h2>
-    <p class="text-sm text-slate-400">{lang === 'ru' ? 'Основные стек и инструменты.' : 'Core stack and tooling.'}</p>
+    <h2 class="text-3xl font-semibold text-white">{title ?? (lang === 'ru' ? 'Навыки' : 'Skills')}</h2>
+    <p class="text-sm text-slate-400">{subtitle ?? (lang === 'ru' ? 'Основные стек и инструменты.' : 'Core stack and tooling.')}</p>
   </div>
   <div class="grid gap-4 md:grid-cols-2">
     {groups.map((group) => (

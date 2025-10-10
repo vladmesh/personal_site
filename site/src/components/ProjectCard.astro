@@ -1,6 +1,7 @@
 ---
+import { uiCopy } from '@data/ui';
 const { project, lang = 'en' } = Astro.props;
-const detailsLabel = lang === 'ru' ? 'Подробнее' : 'View case';
+const detailsLabel = uiCopy[lang].projectCard.detailsLabel;
 const caseHref = project.slug ? `/${lang}/projects/${project.slug}/` : undefined;
 ---
 <article class="group flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-6 transition hover:border-brand/40 hover:bg-white/10">

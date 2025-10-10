@@ -48,11 +48,11 @@ const { lang = 'en', content, projects = [], skills = defaultSkills, quotes = de
 </section>
 
 <div class="mt-16">
-  <Skills lang={lang} groups={skills} />
+  <Skills lang={lang} groups={skills} title={content.skills.title} subtitle={content.skills.subtitle} />
 </div>
 
 <div class="mt-16">
-  <Testimonials lang={lang} testimonials={quotes} />
+  <Testimonials lang={lang} testimonials={quotes} title={content.testimonials.title} />
 </div>
 
 <section id="contact" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">

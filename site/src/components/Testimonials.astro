@@ -1,9 +1,8 @@
 ---
-const { testimonials = [], lang = 'en' } = Astro.props;
-const title = lang === 'ru' ? 'Отзывы' : 'Testimonials';
+const { testimonials = [], lang = 'en', title } = Astro.props;
 ---
 <section id="testimonials" class="space-y-6">
-  <h2 class="text-3xl font-semibold text-white">{title}</h2>
+  <h2 class="text-3xl font-semibold text-white">{title ?? (lang === 'ru' ? 'Отзывы' : 'Testimonials')}</h2>
   <div class="grid gap-4 md:grid-cols-2">
     {testimonials.map((item) => (
       <figure class="rounded-2xl border border-white/10 bg-white/5 p-5" key={item.quote[lang]}>

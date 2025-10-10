@@ -1,36 +1,32 @@
 ---
-const { lang = 'en' } = Astro.props;
-const copy = lang === 'ru'
-  ? {
-      greeting: 'Привет! Я Влад Меш — backend и AI-инженер.',
-      subtitle: 'Помогаю компаниям ускорять разработку и интегрировать AI-агентов.',
-      ctaPrimary: 'Скачать CV (RU)',
-      ctaSecondary: 'Написать мне'
-    }
-  : {
-      greeting: "Hi! I'm Vlad Mesh — backend & AI engineer.",
-      subtitle: 'I help teams ship backend features faster and add AI agents to products.',
-      ctaPrimary: 'Download CV (EN)',
-      ctaSecondary: 'Get in touch'
-    };
-const cvLink = lang === 'ru' ? '/cv/cv_ru.pdf' : '/cv/cv_en.pdf';
-const contactLink = lang === 'ru' ? 'https://t.me/vladmesh' : 'mailto:hi@vladmesh.dev';
+const { lang = 'en', content } = Astro.props as {
+  lang: 'en' | 'ru';
+  content: {
+    eyebrow: string;
+    greeting: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    cvHref: string;
+    contactHref: string;
+  };
+};
 ---
 <section class="space-y-8 pt-10" aria-labelledby="hero-title">
-  <p class="text-sm uppercase tracking-[0.3em] text-brand-light/80">{lang === 'ru' ? 'Backend / AI' : 'Backend / AI'}</p>
+  <p class="text-sm uppercase tracking-[0.3em] text-brand-light/80">{content.eyebrow}</p>
   <h1 id="hero-title" class="text-4xl font-semibold leading-tight sm:text-5xl">
-    {copy.greeting}
+    {content.greeting}
   </h1>
-  <p class="max-w-2xl text-lg text-slate-300">{copy.subtitle}</p>
+  <p class="max-w-2xl text-lg text-slate-300">{content.subtitle}</p>
   <div class="flex flex-wrap gap-4">
-    <a href={cvLink} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark">
-      <span>{copy.ctaPrimary}</span>
+    <a href={content.cvHref} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark">
+      <span>{content.ctaPrimary}</span>
     </a>
     <a
-      href={contactLink}
+      href={content.contactHref}
       class="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/60"
     >
-      {copy.ctaSecondary}
+      {content.ctaSecondary}
     </a>
   </div>
 </section>

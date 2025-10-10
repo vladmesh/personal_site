@@ -1,15 +1,22 @@
 ---
-const { lang = 'en' } = Astro.props;
+const { lang = 'en', copy } = Astro.props as {
+  lang: 'en' | 'ru';
+  copy: {
+    rights: string;
+    sourceLabel: string;
+    social: { github: string; linkedin: string; telegram: string };
+  };
+};
 ---
 <footer class="border-t border-white/10 bg-slate-950/80 py-8">
   <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-    <p>© {new Date().getFullYear()} Vlad Mesh. {lang === 'ru' ? 'Все права защищены.' : 'All rights reserved.'}</p>
+    <p>© {new Date().getFullYear()} Vlad Mesh. {copy.rights}</p>
     <nav class="flex flex-wrap gap-4">
-      <a href="https://github.com/vladmesh" target="_blank" rel="noreferrer">GitHub</a>
-      <a href="https://www.linkedin.com/in/vladmesh" target="_blank" rel="noreferrer">LinkedIn</a>
-      <a href="https://t.me/vladmesh" target="_blank" rel="noreferrer">Telegram</a>
+      <a href="https://github.com/vladmesh" target="_blank" rel="noreferrer">{copy.social.github}</a>
+      <a href="https://www.linkedin.com/in/vladmesh" target="_blank" rel="noreferrer">{copy.social.linkedin}</a>
+      <a href="https://t.me/vladmesh" target="_blank" rel="noreferrer">{copy.social.telegram}</a>
       <a href="https://github.com/vladmesh/personal-site" target="_blank" rel="noreferrer">
-        {lang === 'ru' ? 'Исходники сайта' : 'Source code'}
+        {copy.sourceLabel}
       </a>
     </nav>
   </div>

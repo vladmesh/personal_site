@@ -1,21 +1,20 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
+import { uiCopy } from '@data/ui';
 const entries = await Astro.glob('../../../content/ru/projects/*.mdx');
 ---
 <BaseLayout
-  title="Проекты — Влад Меш"
-  description="Портфолио backend и AI проектов Влада Меша."
+  title={uiCopy.ru.projectsPage.metaTitle}
+  description={uiCopy.ru.projectsPage.metaDescription}
   lang="ru"
   ogImage="/og/projects.png"
 >
   <section class="space-y-8">
     <header class="space-y-3">
-      <p class="text-sm uppercase tracking-[0.3em] text-brand-light/80">Портфолио</p>
-      <h1 class="text-4xl font-semibold text-white">Ключевые проекты</h1>
-      <p class="max-w-2xl text-slate-300">
-        Кейсы по backend-разработке, платформенным решениям и AI-агентам. Каждый проект — с цифрами и стеком.
-      </p>
+      <p class="text-sm uppercase tracking-[0.3em] text-brand-light/80">{uiCopy.ru.projectsPage.eyebrow}</p>
+      <h1 class="text-4xl font-semibold text-white">{uiCopy.ru.projectsPage.title}</h1>
+      <p class="max-w-2xl text-slate-300">{uiCopy.ru.projectsPage.intro}</p>
     </header>
     <div class="grid gap-6 md:grid-cols-2">
       {entries.map((project) => {

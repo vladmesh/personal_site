@@ -1,4 +1,13 @@
 export type HomeCopy = {
+  hero: {
+    eyebrow: string;
+    greeting: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    cvHref: string;
+    contactHref: string;
+  };
   about: {
     title: string;
     paragraphs: string[];
@@ -13,6 +22,13 @@ export type HomeCopy = {
     ctaLabel: string;
     ctaHref: string;
   };
+  skills: {
+    title: string;
+    subtitle: string;
+  };
+  testimonials: {
+    title: string;
+  };
   contact: {
     title: string;
     description: (
@@ -24,6 +40,15 @@ export type HomeCopy = {
 
 export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
   en: {
+    hero: {
+      eyebrow: 'Backend / AI',
+      greeting: "Hi! I'm Vlad Mesh — backend & AI engineer.",
+      subtitle: 'I help teams ship backend features faster and add AI agents to products.',
+      ctaPrimary: 'Download CV (EN)',
+      ctaSecondary: 'Get in touch',
+      cvHref: '/cv/cv_en.pdf',
+      contactHref: 'mailto:hi@vladmesh.dev'
+    },
     about: {
       title: 'About',
       paragraphs: [
@@ -45,6 +70,13 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       ctaLabel: 'All projects',
       ctaHref: '/en/projects'
     },
+    skills: {
+      title: 'Skills',
+      subtitle: 'Core stack and tooling.'
+    },
+    testimonials: {
+      title: 'Testimonials'
+    },
     contact: {
       title: "Let's talk",
       description: [
@@ -57,6 +89,15 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
     }
   },
   ru: {
+    hero: {
+      eyebrow: 'Backend / AI',
+      greeting: 'Привет! Я Влад Меш — backend и AI-инженер.',
+      subtitle: 'Помогаю компаниям ускорять разработку и интегрировать AI-агентов.',
+      ctaPrimary: 'Скачать CV (RU)',
+      ctaSecondary: 'Написать мне',
+      cvHref: '/cv/cv_ru.pdf',
+      contactHref: 'https://t.me/vladmesh'
+    },
     about: {
       title: 'Обо мне',
       paragraphs: [
@@ -77,6 +118,13 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       title: 'Проекты',
       ctaLabel: 'Все проекты',
       ctaHref: '/ru/projects'
+    },
+    skills: {
+      title: 'Навыки',
+      subtitle: 'Основные стек и инструменты.'
+    },
+    testimonials: {
+      title: 'Отзывы'
     },
     contact: {
       title: 'Свяжемся?',
