@@ -10,6 +10,11 @@ const detectLang = (headerValue: string | null) => {
 };
 
 export const onRequest: MiddlewareHandler = async ({ request, url, redirect }, next) => {
+  // Allow static CV files to bypass locale redirects
+  if (url.pathname.startsWith('/cv/')) {
+    return next();
+  }
+
   if (url.pathname === '/' || url.pathname === '') {
     const lang = detectLang(request.headers.get('accept-language'));
     return redirect(`/${lang}/`, 302);
