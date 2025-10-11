@@ -27,11 +27,21 @@ const { lang = 'en', content, projects = [], skills = defaultSkills, quotes = de
 <section id="experience" class="mt-16">
   <details class="rounded-3xl border border-white/10 bg-white/5 p-6" open>
     <summary class="cursor-pointer text-3xl font-semibold text-white">{content.experience.summary}</summary>
-    <ul class="mt-4 list-disc space-y-3 pl-5 text-slate-300">
+    <div class="mt-4 space-y-4">
       {content.experience.items.map((item) => (
-        <li>{item}</li>
+        <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <div class="font-medium text-white">{item.title}</div>
+            <div class="text-sm text-slate-400">{[item.from, item.to].filter(Boolean).join(' — ')}</div>
+          </div>
+          <div class="text-slate-400">
+            {item.company}
+            {item.location && ` • ${item.location}`}
+          </div>
+          <p class="mt-2 text-slate-300">{item.description}</p>
+        </div>
       ))}
-    </ul>
+    </div>
   </details>
 </section>
 

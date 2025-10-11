@@ -1,4 +1,5 @@
 ---
+import { links } from '@data/links';
 const { lang = 'en', copy } = Astro.props as {
   lang: 'en' | 'ru';
   copy: {
@@ -12,10 +13,10 @@ const { lang = 'en', copy } = Astro.props as {
   <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
     <p>© {new Date().getFullYear()} Vlad Mesh. {copy.rights}</p>
     <nav class="flex flex-wrap gap-4">
-      <a href="https://github.com/vladmesh" target="_blank" rel="noreferrer">{copy.social.github}</a>
-      <a href="https://www.linkedin.com/in/vladmesh" target="_blank" rel="noreferrer">{copy.social.linkedin}</a>
-      <a href="https://t.me/vladmesh" target="_blank" rel="noreferrer">{copy.social.telegram}</a>
-      <a href="https://github.com/vladmesh/personal-site" target="_blank" rel="noreferrer">
+      <a href={links.github} target="_blank" rel="noreferrer">{copy.social.github}</a>
+      <a href={links.linkedin} target="_blank" rel="noreferrer">{copy.social.linkedin}</a>
+      <a href={links.telegram} target="_blank" rel="noreferrer">{copy.social.telegram}</a>
+      <a href={links.githubRepo} target="_blank" rel="noreferrer">
         {copy.sourceLabel}
       </a>
     </nav>

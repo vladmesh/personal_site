@@ -3,9 +3,10 @@ import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import { uiCopy } from '@data/ui';
 import ContactModal from '@components/ContactModal.astro';
+import { links } from '@data/links';
 import '@styles/globals.css';
 const { title = 'Personal Site', description = 'Personal portfolio site', lang = 'en', ogImage = '/og/default.png' } = Astro.props;
-const domain = 'https://vladmesh.dev';
+const domain = links.domain;
 ---
 <!DOCTYPE html>
 <html lang={lang} class="scroll-smooth bg-slate-950 text-slate-100">
@@ -69,6 +70,6 @@ const domain = 'https://vladmesh.dev';
         }
       });
     </script>
-    <script defer data-domain="vladmesh.dev" src="https://plausible.io/js/script.js"></script>
+    <script defer data-domain={links.analytics?.domain} src={links.analytics?.plausible}></script>
   </body>
 </html>

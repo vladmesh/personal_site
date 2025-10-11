@@ -15,7 +15,14 @@ export type HomeCopy = {
   experience: {
     title: string;
     summary: string;
-    items: string[];
+    items: {
+      company: string;
+      title: string;
+      description: string;
+      from?: string;
+      to?: string;
+      location?: string;
+    }[];
   };
   projects: {
     title: string;
@@ -42,6 +49,9 @@ export type HomeCopy = {
   };
 };
 
+import { links } from '@data/links';
+import { experience as experienceData } from '@data/experience';
+
 export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
   en: {
     hero: {
@@ -50,8 +60,8 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       subtitle: 'I help teams ship backend features faster and add AI agents to products.',
       ctaPrimary: 'Download CV (EN)',
       ctaSecondary: 'Get in touch',
-      cvHref: '/cv/cv_en.pdf',
-      contactHref: 'mailto:hi@vladmesh.dev'
+      cvHref: links.cv.en,
+      contactHref: links.email
     },
     about: {
       title: 'About',
@@ -60,15 +70,7 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
         'I design architecture, assemble teams, and deliver production-ready solutions while balancing speed and code quality.'
       ]
     },
-    experience: {
-      title: 'Experience',
-      summary: 'Experience',
-      items: [
-        'Tech lead for a customer support product team: built an AI agent platform, orchestrated the roadmap, and integrated with Helpdesk/CRM.',
-        'Backend engineer in retail: launched a Go-based dynamic pricing service that reduced promo rollout from 2 days to 4 hours.',
-        'AI solutions consultant: help startups validate ideas fast, plug in LLMs, and establish delivery and operations processes.'
-      ]
-    },
+    experience: experienceData.en,
     projects: {
       title: 'Projects',
       ctaLabel: 'All projects',
@@ -89,39 +91,30 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       title: "Let's talk",
       description: [
         { type: 'text', text: 'Message me on Telegram ' },
-        { type: 'link', text: '@vladmesh', href: 'https://t.me/vladmesh' },
+        { type: 'link', text: '@vladmesh', href: links.telegram },
         { type: 'text', text: ' or send an email to ' },
-        { type: 'link', text: 'hi@vladmesh.dev', href: 'mailto:hi@vladmesh.dev' },
+        { type: 'link', text: links.emailPlain, href: links.email },
         { type: 'text', text: '.' }
       ]
     }
   },
   ru: {
     hero: {
-      eyebrow: 'Backend / AI',
-      greeting: 'Привет! Я Влад Меш — backend и AI-инженер.',
-      subtitle: 'Помогаю компаниям ускорять разработку и интегрировать AI-агентов.',
+      eyebrow: 'Разработка / Менторство',
+      greeting: 'Привет! Я Влад — разработчик и ментор.',
+      subtitle: 'Пишу бэкенды, настраиваю пайплайны, интегрирую LLM-агентов.',
       ctaPrimary: 'Скачать CV (RU)',
       ctaSecondary: 'Написать мне',
-      cvHref: '/cv/cv_ru.pdf',
-      contactHref: 'https://t.me/vladmesh'
+      cvHref: links.cv.ru,
+      contactHref: links.telegram
     },
     about: {
       title: 'Обо мне',
       paragraphs: [
-        'Я backend-инженер и техлид, который помогает командам выводить на рынок устойчивые сервисы и продукты с AI-агентами.',
-        'Проектирую архитектуру, собираю команды и довожу решения до продакшена, держу в фокусе как скорость поставки, так и качество кода.'
+        'Шесть лет я занимаюсь тем, что пишу софт и учу других писать софт. Большей частью на Python. Иногда в составе большой команды, иногда самостоятельно под ключ. Чаще это бэкенд (DRF, FastAPI, SQLAlchemy), иногда боты, скрипты, парсеры и десктопные приложения. Последний год переключился на работу с AI-агентами. Чат-боты, RAG, MCP, агентские пайплайны. Больше всего люблю работать над проектами, которые хорошо согласуются с моими интересами и ценностями. Образование, AI-safety, открытые данные, mental health. На этом сайте можно увидеть примеры моих проектов и ознакомиться с моим опытом работы. А также почитать отзывы моих клиентов и учеников. Я открыт к предложениям, связаться со мной можно по контактам ниже (или выше)'
       ]
     },
-    experience: {
-      title: 'Опыт работы',
-      summary: 'Опыт работы',
-      items: [
-        'Техлид в продуктовой команде поддержки: собрал платформу AI-агентов, организовал поток задач и интеграции с Helpdesk/CRM.',
-        'Backend-инженер в ретейле: запустил сервис динамического ценообразования на Go, сократил вывод акций с 2 дней до 4 часов.',
-        'Консультант по AI-решениям: помогаю стартапам быстро проверять гипотезы, подключать LLM и строить процессы эксплуатации.'
-      ]
-    },
+    experience: experienceData.ru,
     projects: {
       title: 'Проекты',
       ctaLabel: 'Все проекты',
@@ -142,9 +135,9 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       title: 'Свяжемся?',
       description: [
         { type: 'text', text: 'Пишите в Telegram ' },
-        { type: 'link', text: '@vladmesh', href: 'https://t.me/vladmesh' },
+        { type: 'link', text: '@vladmesh', href: links.telegram },
         { type: 'text', text: ' или на почту ' },
-        { type: 'link', text: 'hi@vladmesh.dev', href: 'mailto:hi@vladmesh.dev' },
+        { type: 'link', text: links.emailPlain, href: links.email },
         { type: 'text', text: '.' }
       ]
     }

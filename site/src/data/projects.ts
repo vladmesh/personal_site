@@ -1,3 +1,5 @@
+import { links } from '@data/links';
+
 export const projects = {
   ru: [
     {
@@ -8,8 +10,8 @@ export const projects = {
       summary: 'Организовал разработку платформы для поддержки клиентов на основе AI-агентов с интеграцией в Helpdesk и CRM.',
       stack: ['Python', 'FastAPI', 'LangChain', 'Redis', 'Docker'],
       links: [
-        { href: 'https://github.com/vladmesh/agent-platform', label: { ru: 'Исходники', en: 'Source' } },
-        { href: 'https://demo.vladmesh.dev', label: { ru: 'Демо', en: 'Demo' } }
+        { href: `${links.github}/agent-platform`, label: { ru: 'Исходники', en: 'Source' } },
+        { href: links.demos?.agentPlatform || 'https://demo.vladmesh.dev', label: { ru: 'Демо', en: 'Demo' } }
       ]
     },
     {
@@ -20,7 +22,7 @@ export const projects = {
       summary: 'Построил сервис прогнозирования цен с ML-моделями, сократил время вывода новой акции с 2 дней до 4 часов.',
       stack: ['Go', 'PostgreSQL', 'Redis', 'Kafka'],
       links: [
-        { href: 'https://github.com/vladmesh/pricing-service', label: { ru: 'Исходники', en: 'Source' } }
+        { href: `${links.github}/pricing-service`, label: { ru: 'Исходники', en: 'Source' } }
       ]
     }
   ],
@@ -33,8 +35,8 @@ export const projects = {
       summary: 'Led the build of AI agent platform for customer support with Helpdesk and CRM integrations.',
       stack: ['Python', 'FastAPI', 'LangChain', 'Redis', 'Docker'],
       links: [
-        { href: 'https://github.com/vladmesh/agent-platform', label: { ru: 'Исходники', en: 'Source' } },
-        { href: 'https://demo.vladmesh.dev', label: { ru: 'Демо', en: 'Demo' } }
+        { href: `${links.github}/agent-platform`, label: { ru: 'Исходники', en: 'Source' } },
+        { href: links.demos?.agentPlatform || 'https://demo.vladmesh.dev', label: { ru: 'Демо', en: 'Demo' } }
       ]
     },
     {
@@ -45,7 +47,7 @@ export const projects = {
       summary: 'Delivered ML-driven pricing service reducing new campaign time-to-market from 2 days to 4 hours.',
       stack: ['Go', 'PostgreSQL', 'Redis', 'Kafka'],
       links: [
-        { href: 'https://github.com/vladmesh/pricing-service', label: { ru: 'Исходники', en: 'Source' } }
+        { href: `${links.github}/pricing-service`, label: { ru: 'Исходники', en: 'Source' } }
       ]
     }
   ]
