@@ -17,7 +17,8 @@ export type Links = {
     domain?: string; // plausible data-domain
   };
   demos?: {
-    agentPlatform?: string;
+    aiAssistant?: string;
+    dndHelper?: string;
   };
 };
 
@@ -40,7 +41,8 @@ export const links: Links = {
     domain: 'vladmesh.dev'
   },
   demos: {
-    agentPlatform: 'https://demo.vladmesh.dev'
+    aiAssistant: 'https://t.me/virutual_helper_bot',
+    dndHelper: 'https://t.me/dnd_helperbot'
   }
 };
 

@@ -27,7 +27,7 @@ const caseHref = project.slug ? `/${lang}/projects/${project.slug}/` : undefined
         target="_blank"
         rel="noreferrer"
       >
-        {link.label[lang]}
+        {typeof link.label === 'string' ? link.label : link.label?.[lang]}
       </a>
     ))}
     {caseHref ? (

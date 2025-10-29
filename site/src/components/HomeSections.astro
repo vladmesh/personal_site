@@ -38,7 +38,11 @@ const { lang = 'en', content, projects = [], skills = defaultSkills, quotes = de
             {item.company}
             {item.location && ` • ${item.location}`}
           </div>
-          <p class="mt-2 text-slate-300">{item.description}</p>
+          <ul class="mt-2 list-disc space-y-1 pl-5 text-slate-300">
+            {item.description.map((line) => (
+              <li>{line}</li>
+            ))}
+          </ul>
         </div>
       ))}
     </div>
@@ -48,7 +52,6 @@ const { lang = 'en', content, projects = [], skills = defaultSkills, quotes = de
 <section id="projects" class="mt-16 space-y-8">
   <div class="flex items-end justify-between">
     <h2 class="text-3xl font-semibold text-white">{content.projects.title}</h2>
-    <a href={content.projects.ctaHref} class="text-sm text-slate-400 hover:text-white">{content.projects.ctaLabel}</a>
   </div>
   <div class="grid gap-6 md:grid-cols-2">
     {projects.map((project) => (

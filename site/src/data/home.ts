@@ -18,7 +18,7 @@ export type HomeCopy = {
     items: {
       company: string;
       title: string;
-      description: string;
+      description: string[];
       from?: string;
       to?: string;
       location?: string;
@@ -55,20 +55,19 @@ import { experience as experienceData } from '@data/experience';
 export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
   en: {
     hero: {
-      eyebrow: 'Backend / AI',
-      greeting: "Hi! I'm Vlad Mesh — backend & AI engineer.",
-      subtitle: 'I help teams ship backend features faster and add AI agents to products.',
-      ctaPrimary: 'Download CV (EN)',
-      ctaSecondary: 'Get in touch',
-      cvHref: links.cv.en,
-      contactHref: links.email
+    eyebrow: 'Development / Mentorship',
+    greeting: "Hi! I'm Vlad — a developer and mentor.",
+    subtitle: 'I build backends, set up pipelines, and integrate LLM agents.',
+    ctaPrimary: 'Download CV (EN)',
+    ctaSecondary: 'Contact me',
+    cvHref: links.cv.en,
+    contactHref: links.telegram
     },
     about: {
-      title: 'About',
-      paragraphs: [
-        "I'm a backend engineer and tech lead who helps teams launch resilient services and products powered by AI agents.",
-        'I design architecture, assemble teams, and deliver production-ready solutions while balancing speed and code quality.'
-      ]
+    title: 'About me',
+    paragraphs: [
+    "For six years I've been writing software and teaching others to write it — mostly in Python. Sometimes as part of a large team, sometimes solo end-to-end. More often it's backend (DRF, FastAPI, SQLAlchemy), sometimes bots, scripts, scrapers, and desktop apps. Over the last year I’ve shifted to AI agents: chatbots, RAG, MCP, and agentic pipelines. I enjoy projects that align with my interests and values: education, AI safety, open data, and mental health. Here you can browse examples of my projects and my work experience, as well as read feedback from clients and students. I’m open to opportunities — feel free to reach out via the contacts below (or above)."
+    ]
     },
     experience: experienceData.en,
     projects: {

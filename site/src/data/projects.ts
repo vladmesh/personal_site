@@ -3,51 +3,51 @@ import { links } from '@data/links';
 export const projects = {
   ru: [
     {
-      slug: 'agent-platform',
-      title: 'Платформа AI-агентов для поддержки',
-      role: 'Техлид · Python, FastAPI, LangChain',
-      year: '2024',
-      summary: 'Организовал разработку платформы для поддержки клиентов на основе AI-агентов с интеграцией в Helpdesk и CRM.',
-      stack: ['Python', 'FastAPI', 'LangChain', 'Redis', 'Docker'],
+      slug: 'ai-assistant',
+      title: 'Ai ассистент для личного пользования, на основе мессенджеров',
+      year: '2025',
+      summary: 'AI-ассистент для мессенджеров с различными инструментами: планирование задач, запись событий в Google Calendar, \
+      веб-поиск/парсинг, долговременная память через RAG (векторное хранилище, эмбеддинги, актуализация контекста).',
+      stack: ['Python', 'FastAPI', 'LangChain', 'Langgraph', 'Redis', 'Docker'],
       links: [
-        { href: `${links.github}/agent-platform`, label: { ru: 'Исходники', en: 'Source' } },
-        { href: links.demos?.agentPlatform || 'https://demo.vladmesh.dev', label: { ru: 'Демо', en: 'Demo' } }
+        { href: `${links.github}/Assistants`, label: 'Исходники' },
+        { href: links.demos?.aiAssistant, label: 'Демо' }
       ]
     },
     {
-      slug: 'pricing-service',
-      title: 'Сервис динамического ценообразования',
-      role: 'Backend-инженер · Go, PostgreSQL',
-      year: '2023',
-      summary: 'Построил сервис прогнозирования цен с ML-моделями, сократил время вывода новой акции с 2 дней до 4 часов.',
-      stack: ['Go', 'PostgreSQL', 'Redis', 'Kafka'],
+      slug: 'dnd-helper',
+      title: 'Справочник для игры DnD в мессенджерах',
+      year: '2025',
+      summary: 'Простенький справочник для ДнД 5e. Список монстров, заклинаний. Фильтры, пажинация, поиск.',
+      stack: ['Python', 'FastAPI', 'SqlAlchemy', 'Docker'],
       links: [
-        { href: `${links.github}/pricing-service`, label: { ru: 'Исходники', en: 'Source' } }
+        { href: `${links.github}/dnd_helper`, label: 'Исходники' },
+        { href: links.demos?.dndHelper, label: 'Демо' }
       ]
     }
   ],
   en: [
     {
-      slug: 'agent-platform',
-      title: 'AI Support Agent Platform',
-      role: 'Tech Lead · Python, FastAPI, LangChain',
-      year: '2024',
-      summary: 'Led the build of AI agent platform for customer support with Helpdesk and CRM integrations.',
-      stack: ['Python', 'FastAPI', 'LangChain', 'Redis', 'Docker'],
+      slug: 'ai-assistant',
+      title: 'AI assistant for personal use, based on messengers',
+      year: '2025',
+      summary: 'AI assistant for messengers with various tools: task planning, event recording in Google Calendar, \
+      web search/parsing, long-term memory through RAG (vector store, embeddings, context updating).',
+      stack: ['Python', 'FastAPI', 'LangChain', 'Langgraph', 'Redis', 'Docker'],
       links: [
-        { href: `${links.github}/agent-platform`, label: { ru: 'Исходники', en: 'Source' } },
-        { href: links.demos?.agentPlatform || 'https://demo.vladmesh.dev', label: { ru: 'Демо', en: 'Demo' } }
+        { href: `${links.github}/Assistants`, label: 'Source' },
+        { href: links.demos?.aiAssistant, label: 'Demo' }
       ]
     },
     {
-      slug: 'pricing-service',
-      title: 'Dynamic Pricing Service',
-      role: 'Backend Engineer · Go, PostgreSQL',
-      year: '2023',
-      summary: 'Delivered ML-driven pricing service reducing new campaign time-to-market from 2 days to 4 hours.',
-      stack: ['Go', 'PostgreSQL', 'Redis', 'Kafka'],
+      slug: 'dnd-helper',
+      title: 'DnD reference for messengers',
+      year: '2025',
+      summary: 'Simple DnD 5e reference. List of monsters and spells. Filters, pagination, search.',
+      stack: ['Python', 'FastAPI', 'SqlAlchemy', 'Docker'],
       links: [
-        { href: `${links.github}/pricing-service`, label: { ru: 'Исходники', en: 'Source' } }
+        { href: `${links.github}/dnd_helper`, label: 'Source' },
+        { href: links.demos?.dndHelper, label: 'Demo' }
       ]
     }
   ]
