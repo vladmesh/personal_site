@@ -23,9 +23,9 @@ export type Links = {
 };
 
 export const links: Links = {
-  email: 'mailto:hi@vladmesh.dev',
-  emailPlain: 'hi@vladmesh.dev',
-  telegram: 'https://t.me/vladmesh',
+  email: 'mailto:hi@vladmesh.dev@gmail.com',
+  emailPlain: 'vladmesh.dev@gmail.com',
+  telegram: 'https://t.me/vladislav_meshk',
   github: 'https://github.com/vladmesh',
   githubRepo: 'https://github.com/vladmesh/personal-site',
   linkedin: 'https://www.linkedin.com/in/vladmesh',

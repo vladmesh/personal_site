@@ -32,7 +32,7 @@ export type UICopy = {
 export const uiCopy: Record<'en' | 'ru', UICopy> = {
   en: {
     header: {
-      brand: 'Vlad Mesh',
+      brand: 'Vladislav Meshkorudnyj',
       nav: {
         projects: 'Projects',
         skills: 'Skills',
@@ -53,8 +53,8 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
       detailsLabel: 'View case'
     },
     projectsPage: {
-      metaTitle: 'Projects — Vlad Mesh',
-      metaDescription: 'Portfolio of backend and AI projects shipped by Vlad Mesh.',
+      metaTitle: 'Projects — Vladislav Meshkorudnyj',
+      metaDescription: 'Portfolio of backend and AI projects shipped by Vladislav Meshkorudnyj.',
       eyebrow: 'Portfolio',
       title: 'Selected projects',
       intro: 'Case studies of backend, platform, and AI work. Each project includes metrics and stack details.'
@@ -62,7 +62,7 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
   },
   ru: {
     header: {
-      brand: 'Vlad Mesh',
+      brand: 'Vladislav Meshkorudnyj',
       nav: {
         projects: 'Проекты',
         skills: 'Навыки',
@@ -83,8 +83,8 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
       detailsLabel: 'Подробнее'
     },
     projectsPage: {
-      metaTitle: 'Проекты — Влад Меш',
-      metaDescription: 'Портфолио backend и AI проектов Влада Меша.',
+      metaTitle: 'Проекты — Владислав Мешкорудный',
+      metaDescription: 'Портфолио backend и AI проектов.',
       eyebrow: 'Портфолио',
       title: 'Ключевые проекты',
       intro: 'Кейсы по backend-разработке, платформенным решениям и AI-агентам. Каждый проект — с цифрами и стеком.'
