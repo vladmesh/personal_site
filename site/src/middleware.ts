@@ -2,22 +2,14 @@ import type { MiddlewareHandler } from 'astro';
 
 const supported = ['ru', 'en'] as const;
 
-const detectLang = (headerValue: string | null) => {
-  if (!headerValue) return 'en';
-  const lower = headerValue.toLowerCase();
-  if (lower.includes('ru')) return 'ru';
-  return 'en';
-};
-
-export const onRequest: MiddlewareHandler = async ({ request, url, redirect }, next) => {
+export const onRequest: MiddlewareHandler = async ({ url, redirect }, next) => {
   // Allow static CV files to bypass locale redirects
   if (url.pathname.startsWith('/cv/')) {
     return next();
   }
 
   if (url.pathname === '/' || url.pathname === '') {
-    const lang = detectLang(request.headers.get('accept-language'));
-    return redirect(`/${lang}/`, 302);
+    return redirect('/en/', 302);
   }
 
   const [, maybeLocale] = url.pathname.split('/');
