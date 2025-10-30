@@ -1,47 +1,64 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
+import { projects } from '@data/projects';
+
 export async function getStaticPaths() {
-  const projects = await Astro.glob('../../../content/en/projects/*.mdx');
-  return projects.map((project) => {
-    const slug = project.slug ?? project.file?.split('/').pop()?.replace(/\.mdx$/, '') ?? '';
-    if (!slug) {
-      throw new Error('Project slug is missing for en project.');
-    }
-    return {
-      params: { slug }
-    };
-  });
+  return projects.en.map((project) => ({
+    params: { slug: project.slug }
+  }));
 }
 
 const { slug } = Astro.params;
-const projectEntries = await Astro.glob('../../../content/en/projects/*.mdx');
-const project = projectEntries.find((entry) => {
-  const entrySlug = entry.slug ?? entry.file?.split('/').pop()?.replace(/\.mdx$/, '');
-  return entrySlug === slug;
-});
+const project = projects.en.find((entry) => entry.slug === slug);
+
 if (!project) {
   throw new Error(`Project not found: ${slug}`);
 }
-const resolvedSlug = project.slug ?? project.file?.split('/').pop()?.replace(/\.mdx$/, '') ?? slug;
-const { Content, frontmatter } = project;
+
+const ogImage = `/og/projects/${project.slug}.png`;
 ---
 <BaseLayout
-  title={`${frontmatter.title} — Vlad Mesh case study`}
-  description={frontmatter.summary}
+  title={`${project.title} — Vlad Mesh case study`}
+  description={project.summary}
   lang="en"
-  ogImage={`/og/projects/${resolvedSlug}.png`}
+  ogImage={ogImage}
 >
   <article class="prose prose-invert prose-headings:font-semibold prose-a:text-brand-light prose-a:no-underline">
     <header class="mb-8 border-b border-white/10 pb-6">
-      <p class="text-sm uppercase tracking-wider text-slate-400">{frontmatter.role}</p>
-      <h1 class="mt-2 text-4xl font-semibold text-white">{frontmatter.title}</h1>
-      <p class="mt-3 text-slate-300">{frontmatter.summary}</p>
-      <div class="mt-4 flex flex-wrap gap-3 text-xs text-slate-300">
-        {frontmatter.stack.map((item) => (
-          <span class="rounded-full border border-white/10 px-3 py-1" key={item}>{item}</span>
+      {project.role ? (
+        <p class="text-sm uppercase tracking-wider text-slate-400">{project.role}</p>
+      ) : null}
+      <h1 class="mt-2 text-4xl font-semibold text-white">{project.title}</h1>
+      <p class="mt-3 text-slate-300">{project.summary}</p>
+      {project.stack?.length ? (
+        <div class="mt-4 flex flex-wrap gap-3 text-xs text-slate-300">
+          {project.stack.map((item) => (
+            <span class="rounded-full border border-white/10 px-3 py-1" key={item}>{item}</span>
+          ))}
+        </div>
+      ) : null}
+    </header>
+    {project.description?.length ? (
+      <div class="space-y-4 text-slate-200/90">
+        {project.description.map((paragraph) => (
+          <p>{paragraph}</p>
         ))}
       </div>
-    </header>
-    <Content />
+    ) : null}
+    {project.links?.length ? (
+      <footer class="mt-10 flex flex-wrap gap-4 text-sm font-medium">
+        {project.links.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            class="inline-flex items-center gap-2 text-brand-light transition hover:text-brand"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {typeof link.label === 'string' ? link.label : link.label?.en}
+          </a>
+        ))}
+      </footer>
+    ) : null}
   </article>
 </BaseLayout>

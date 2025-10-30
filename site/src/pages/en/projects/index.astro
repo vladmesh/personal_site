@@ -2,7 +2,8 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
 import { uiCopy } from '@data/ui';
-const entries = await Astro.glob('../../../content/en/projects/*.mdx');
+import { projects } from '@data/projects';
+const entries = projects.en;
 ---
 <BaseLayout
   title={uiCopy.en.projectsPage.metaTitle}
@@ -17,10 +18,9 @@ const entries = await Astro.glob('../../../content/en/projects/*.mdx');
       <p class="max-w-2xl text-slate-300">{uiCopy.en.projectsPage.intro}</p>
     </header>
     <div class="grid gap-6 md:grid-cols-2">
-      {entries.map((project) => {
-        const slug = project.slug ?? project.file?.split('/').pop()?.replace(/\.mdx$/, '');
-        return <ProjectCard project={{ ...project.frontmatter, slug }} lang="en" />;
-      })}
+      {entries.map((project) => (
+        <ProjectCard project={project} lang="en" />
+      ))}
     </div>
   </section>
 </BaseLayout>
