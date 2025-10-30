@@ -11,7 +11,9 @@ const caseHref = project.slug ? `/${lang}/projects/${project.slug}/` : undefined
       {project.year}
     </span>
   </div>
-  <p class="text-sm uppercase tracking-wider text-slate-300/80">{project.role}</p>
+  {project.role ? (
+    <p class="text-sm uppercase tracking-wider text-slate-300/80">{project.role}</p>
+  ) : null}
   <p class="text-slate-200/90">{project.summary}</p>
   <ul class="flex flex-wrap gap-2 text-xs text-slate-300">
     {project.stack?.map((item) => (
