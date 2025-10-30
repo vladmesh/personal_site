@@ -52,6 +52,8 @@ export type HomeCopy = {
 import { links } from '@data/links';
 import { experience as experienceData } from '@data/experience';
 
+const telegramHandle = `@${links.telegram.split('/').filter(Boolean).pop() ?? ''}`;
+
 export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
   en: {
     hero: {
@@ -83,14 +85,14 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       title: 'Testimonials',
       tabs: {
         dev: 'Developer',
-        teacher: 'Instructor'
+        teacher: 'Mentor'
       }
     },
     contact: {
       title: "Let's talk",
       description: [
         { type: 'text', text: 'Message me on Telegram ' },
-        { type: 'link', text: '@vladmesh', href: links.telegram },
+        { type: 'link', text: telegramHandle, href: links.telegram },
         { type: 'text', text: ' or send an email to ' },
         { type: 'link', text: links.emailPlain, href: links.email },
         { type: 'text', text: '.' }
@@ -134,7 +136,7 @@ export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
       title: 'Свяжемся?',
       description: [
         { type: 'text', text: 'Пишите в Telegram ' },
-        { type: 'link', text: '@vladmesh', href: links.telegram },
+        { type: 'link', text: telegramHandle, href: links.telegram },
         { type: 'text', text: ' или на почту ' },
         { type: 'link', text: links.emailPlain, href: links.email },
         { type: 'text', text: '.' }
