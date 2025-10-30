@@ -18,7 +18,7 @@ const teacherGroup = testimonials.filter((t) => t.kind === 'teacher');
         {tabs?.dev ?? (lang === 'ru' ? 'Разработчик' : 'Developer')}
       </a>
       <a href={`?t=teacher`} data-tab="teacher" role="button" aria-pressed={active === 'teacher' ? 'true' : 'false'} class={`rounded-full px-3 py-1 ${active === 'teacher' ? 'bg-brand text-white' : 'text-slate-300 hover:text-white'}`}>
-        {tabs?.teacher ?? (lang === 'ru' ? 'Преподаватель' : 'Instructor')}
+        {tabs?.teacher ?? (lang === 'ru' ? 'Преподаватель' : 'Mentor')}
       </a>
     </div>
   </div>
