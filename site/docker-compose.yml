@@ -1,15 +1,26 @@
 version: '3.9'
 services:
+  builder:
+    build:
+      context: .
+      dockerfile: ops/Dockerfile.builder
+    working_dir: /app
+    volumes:
+      - .:/app
+      - dist:/app/dist
   proxy:
     image: caddy:2
+    depends_on:
+      - builder
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - ./ops/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./dist:/srv/site:ro
+      - dist:/srv/site:ro
       - caddy_data:/data
       - caddy_config:/config
 volumes:
+  dist: {}
   caddy_data: {}
   caddy_config: {}
