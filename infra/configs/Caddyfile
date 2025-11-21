@@ -1,0 +1,27 @@
+vladmesh.dev, www.vladmesh.dev {
+  encode zstd gzip
+  
+  # Proxy API requests to backend service
+  handle /api/* {
+    reverse_proxy backend:8000
+  }
+  
+  # Serve static frontend files
+  root * /srv/site
+  file_server
+  
+  # Security headers
+  header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  header X-Content-Type-Options "nosniff"
+  header Referrer-Policy "strict-origin-when-cross-origin"
+  
+  # Cache static assets
+  @assets path /assets/* /og/*
+  handle @assets {
+    header Cache-Control "public, max-age=604800"
+  }
+  
+  handle_errors {
+    respond "Not found" 404
+  }
+}
