@@ -1,0 +1,84 @@
+---
+import ProjectCard from '@components/ProjectCard.astro';
+import Skills from '@components/Skills.astro';
+import Testimonials from '@components/Testimonials.astro';
+import { skillGroups as defaultSkills } from '@data/skills';
+import { testimonials as defaultTestimonials } from '@data/testimonials';
+import type { HomeCopy } from '@data/home';
+
+const { lang = 'en', content, projects = [], skills = defaultSkills, quotes = defaultTestimonials } =
+  Astro.props as {
+    lang: 'en' | 'ru';
+    content: HomeCopy;
+    projects: any[];
+    skills: typeof defaultSkills;
+    quotes: typeof defaultTestimonials;
+  };
+---
+<section id="about" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
+  <h2 class="text-3xl font-semibold text-white">{content.about.title}</h2>
+  <div class="mt-4 space-y-4 text-slate-300">
+    {content.about.paragraphs.map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
+  </div>
+</section>
+
+<section id="experience" class="mt-16">
+  <details class="rounded-3xl border border-white/10 bg-white/5 p-6" open>
+    <summary class="cursor-pointer text-3xl font-semibold text-white">{content.experience.summary}</summary>
+    <div class="mt-4 space-y-4">
+      {content.experience.items.map((item) => (
+        <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <div class="font-medium text-white">{item.title}</div>
+            <div class="text-sm text-slate-400">{[item.from, item.to].filter(Boolean).join(' — ')}</div>
+          </div>
+          <div class="text-slate-400">
+            {item.company}
+            {item.location && ` • ${item.location}`}
+          </div>
+          <ul class="mt-2 list-disc space-y-1 pl-5 text-slate-300">
+            {item.description.map((line) => (
+              <li>{line}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </details>
+</section>
+
+<section id="projects" class="mt-16 space-y-8">
+  <div class="flex items-end justify-between">
+    <h2 class="text-3xl font-semibold text-white">{content.projects.title}</h2>
+  </div>
+  <div class="grid gap-6 md:grid-cols-2">
+    {projects.map((project) => (
+      <ProjectCard project={project} lang={lang} key={project.slug} />
+    ))}
+  </div>
+</section>
+
+<div class="mt-16">
+  <Skills lang={lang} groups={skills} title={content.skills.title} subtitle={content.skills.subtitle} />
+</div>
+
+<div class="mt-16">
+  <Testimonials lang={lang} testimonials={quotes} title={content.testimonials.title} tabs={content.testimonials.tabs} />
+</div>
+
+<section id="contact" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
+  <h2 class="text-3xl font-semibold text-white">{content.contact.title}</h2>
+  <p class="mt-3 max-w-2xl text-slate-300">
+    {content.contact.description.map((segment) => (
+      segment.type === 'text' ? (
+        segment.text
+      ) : (
+        <a href={segment.href} target={segment.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" class="text-inherit underline-offset-2 hover:text-white hover:underline">
+          {segment.text}
+        </a>
+      )
+    ))}
+  </p>
+</section>

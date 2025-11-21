@@ -1,0 +1,28 @@
+---
+const { lang = 'en', copy } = Astro.props as {
+  lang: 'en' | 'ru';
+  copy: {
+    brand: string;
+    nav: { projects: string; skills: string; testimonials: string; contact: string };
+  };
+};
+const rest = Astro.url.pathname.replace(/^\/(ru|en)/, '') || '/';
+const toggledPath = `/${lang === 'ru' ? 'en' : 'ru'}${rest}`;
+const otherLang = lang === 'ru' ? 'en' : 'ru';
+---
+<header class="border-b border-white/10 bg-slate-950/80 backdrop-blur">
+  <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <a href={`/${lang}/`} class="text-lg font-semibold tracking-tight text-white">{copy.brand}</a>
+    <nav class="flex items-center gap-6 text-sm font-medium text-slate-200">
+      <a href={`/${lang}/#projects`} class="hover:text-white">{copy.nav.projects}</a>
+      <a href={`/${lang}/#skills`} class="hover:text-white">{copy.nav.skills}</a>
+      <a href={`/${lang}/#testimonials`} class="hover:text-white">{copy.nav.testimonials}</a>
+      <a href={`/${lang}/#contact`} class="hover:text-white">{copy.nav.contact}</a>
+      <a
+        href={toggledPath}
+        class="rounded-full border border-white/20 px-3 py-1 text-xs uppercase tracking-wider text-white transition hover:border-white/60"
+        >{otherLang}</a
+      >
+    </nav>
+  </div>
+</header>

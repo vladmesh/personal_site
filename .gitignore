@@ -1,0 +1,42 @@
+# Python
+services/backend/__pycache__/
+services/backend/.venv/
+services/backend/.pytest_cache/
+services/backend/.mypy_cache/
+services/backend/.ruff_cache/
+services/backend/src/**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node
+services/frontend/node_modules/
+services/frontend/dist/
+services/frontend/.astro/
+
+# Environment
+.env
+.env.local
+*.env
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+
+# Poetry
+poetry.lock
+
+# Database
+*.db
+*.sqlite
+*.sqlite3

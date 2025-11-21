@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Hero from '@components/Hero.astro';
+import HomeSections from '@components/HomeSections.astro';
+import { projects } from '@data/projects';
+import { skillGroups } from '@data/skills';
+import { testimonials } from '@data/testimonials';
+import { homeCopy } from '@data/home';
+
+const lang = 'ru';
+const pageProjects = projects[lang];
+const content = homeCopy[lang];
+---
+<BaseLayout
+  title="Влад — Backend и AI-инженер"
+  description="Backend, AI-агенты и платформа проектов. Резюме, проекты и контакты."
+  lang={lang}
+  ogImage="/og/home_ru.png"
+>
+  <Hero lang={lang} content={content.hero} />
+  <HomeSections
+    lang={lang}
+    content={content}
+    projects={pageProjects}
+    skills={skillGroups}
+    quotes={testimonials}
+  />
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+const { lang = 'en', content } = Astro.props as {
+  lang: 'en' | 'ru';
+  content: {
+    eyebrow: string;
+    greeting: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    cvHref: string;
+    contactHref: string;
+  };
+};
+---
+<section class="space-y-8 pt-10" aria-labelledby="hero-title">
+  <p class="text-sm uppercase tracking-[0.3em] text-brand-light/80">{content.eyebrow}</p>
+  <h1 id="hero-title" class="text-4xl font-semibold leading-tight sm:text-5xl">
+    {content.greeting}
+  </h1>
+  <p class="max-w-2xl text-lg text-slate-300">{content.subtitle}</p>
+  <div class="flex flex-wrap gap-4">
+    <a href={content.cvHref} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark">
+      <span>{content.ctaPrimary}</span>
+    </a>
+    <button
+      type="button"
+      class="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/60"
+      data-open-contact
+    >
+      {content.ctaSecondary}
+    </button>
+  </div>
+</section>
