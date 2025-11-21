@@ -10,6 +10,7 @@ from alembic import context
 
 # Import your models' Base here
 from app.database import Base
+import app.models  # noqa: F401
 from app.config import settings
 
 # this is the Alembic Config object, which provides
