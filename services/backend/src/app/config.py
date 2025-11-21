@@ -1,7 +1,7 @@
 """Application configuration using pydantic-settings."""
 from typing import Any
 
-from pydantic import PostgresDsn, field_validator
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,10 +16,13 @@ class Settings(BaseSettings):
     )
 
     # Database
-    DATABASE_URL: PostgresDsn
+    DATABASE_URL: str
+
+    # Project
+    PROJECT_NAME: str = "Personal Site API"
 
     # API
-    API_V1_PREFIX: str = "/api/v1"
+    API_V1_STR: str = "/api/v1"
 
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost", "http://localhost:4321"]
