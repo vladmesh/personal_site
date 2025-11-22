@@ -13,9 +13,10 @@ from app.models.testimonial import TestimonialTranslation
 from app.models.work_experience import WorkExperience, WorkExperienceTranslation
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 @pytest.mark.asyncio
-async def test_get_work_experience(client: AsyncClient, db: AsyncSession) -> None:
+async def test_get_work_experience_integration(client: AsyncClient, db: AsyncSession) -> None:
+    """Integration test: Create work experience and fetch via API using real PostgreSQL."""
     # Create test data
     stack = Stack(name="Python")
     db.add(stack)
@@ -37,6 +38,7 @@ async def test_get_work_experience(client: AsyncClient, db: AsyncSession) -> Non
 
     await db.commit()
 
+    # Make real HTTP request
     response = await client.get("/api/v1/profile/experience")
     assert response.status_code == 200
     data = response.json()
@@ -46,9 +48,10 @@ async def test_get_work_experience(client: AsyncClient, db: AsyncSession) -> Non
     assert data[0]["translations"][0]["position"] == "Developer"
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 @pytest.mark.asyncio
-async def test_get_projects(client: AsyncClient, db: AsyncSession) -> None:
+async def test_get_projects_integration(client: AsyncClient, db: AsyncSession) -> None:
+    """Integration test: Create project and fetch via API using real PostgreSQL."""
     project = Project(slug="test-project", start_date=date(2023, 1, 1))
     db.add(project)
     await db.commit()
@@ -71,9 +74,10 @@ async def test_get_projects(client: AsyncClient, db: AsyncSession) -> None:
     assert data[0]["translations"][0]["title"] == "Test Project"
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 @pytest.mark.asyncio
-async def test_get_stacks(client: AsyncClient, db: AsyncSession) -> None:
+async def test_get_stacks_integration(client: AsyncClient, db: AsyncSession) -> None:
+    """Integration test: Create stack and fetch via API using real PostgreSQL."""
     stack = Stack(name="FastAPI", category="Backend")
     db.add(stack)
     await db.commit()
@@ -86,9 +90,10 @@ async def test_get_stacks(client: AsyncClient, db: AsyncSession) -> None:
     assert data[0]["category"] == "Backend"
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 @pytest.mark.asyncio
-async def test_get_testimonials(client: AsyncClient, db: AsyncSession) -> None:
+async def test_get_testimonials_integration(client: AsyncClient, db: AsyncSession) -> None:
+    """Integration test: Create testimonial and fetch via API using real PostgreSQL."""
     testimonial = TestimonialModel(author_name="John Doe", date=date(2023, 1, 1))
     db.add(testimonial)
     await db.commit()
@@ -108,9 +113,10 @@ async def test_get_testimonials(client: AsyncClient, db: AsyncSession) -> None:
     assert data[0]["translations"][0]["content"] == "Great work!"
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 @pytest.mark.asyncio
-async def test_get_contacts(client: AsyncClient, db: AsyncSession) -> None:
+async def test_get_contacts_integration(client: AsyncClient, db: AsyncSession) -> None:
+    """Integration test: Create contact and fetch via API using real PostgreSQL."""
     contact = Contact(type="email", value="test@example.com", is_visible=True)
     db.add(contact)
     await db.commit()
@@ -128,9 +134,10 @@ async def test_get_contacts(client: AsyncClient, db: AsyncSession) -> None:
     assert data[0]["translations"][0]["label"] == "Email"
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 @pytest.mark.asyncio
-async def test_get_resume(client: AsyncClient, db: AsyncSession) -> None:
+async def test_get_resume_integration(client: AsyncClient, db: AsyncSession) -> None:
+    """Integration test: Create resume and fetch via API using real PostgreSQL."""
     resume = Resume(language_code="en", file_path="/tmp/cv.pdf", is_active=True)
     db.add(resume)
     await db.commit()

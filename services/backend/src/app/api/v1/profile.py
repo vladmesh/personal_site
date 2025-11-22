@@ -1,4 +1,4 @@
-from typing import List, Sequence
+from collections.abc import Sequence
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
@@ -23,18 +23,16 @@ from app.schemas.profile import (
 router = APIRouter(prefix="/profile", tags=["Profile"])
 
 
-@router.get("/experience", response_model=List[WorkExperienceRead])
+@router.get("/experience", response_model=list[WorkExperienceRead])
 async def get_work_experience(db: AsyncSession = Depends(get_db)) -> Sequence[WorkExperience]:
     """
     Get all work experience entries with translations and stacks.
     """
-    result = await db.execute(
-        select(WorkExperience).order_by(WorkExperience.start_date.desc())
-    )
+    result = await db.execute(select(WorkExperience).order_by(WorkExperience.start_date.desc()))
     return result.scalars().all()
 
 
-@router.get("/projects", response_model=List[ProjectRead])
+@router.get("/projects", response_model=list[ProjectRead])
 async def get_projects(db: AsyncSession = Depends(get_db)) -> Sequence[Project]:
     """
     Get all projects with translations and stacks.
@@ -45,7 +43,7 @@ async def get_projects(db: AsyncSession = Depends(get_db)) -> Sequence[Project]:
     return result.scalars().all()
 
 
-@router.get("/stacks", response_model=List[StackRead])
+@router.get("/stacks", response_model=list[StackRead])
 async def get_stacks(db: AsyncSession = Depends(get_db)) -> Sequence[Stack]:
     """
     Get all tech stacks.
@@ -54,7 +52,7 @@ async def get_stacks(db: AsyncSession = Depends(get_db)) -> Sequence[Stack]:
     return result.scalars().all()
 
 
-@router.get("/testimonials", response_model=List[TestimonialRead])
+@router.get("/testimonials", response_model=list[TestimonialRead])
 async def get_testimonials(db: AsyncSession = Depends(get_db)) -> Sequence[Testimonial]:
     """
     Get all testimonials with translations.
@@ -63,25 +61,21 @@ async def get_testimonials(db: AsyncSession = Depends(get_db)) -> Sequence[Testi
     return result.scalars().all()
 
 
-@router.get("/contacts", response_model=List[ContactRead])
+@router.get("/contacts", response_model=list[ContactRead])
 async def get_contacts(db: AsyncSession = Depends(get_db)) -> Sequence[Contact]:
     """
     Get all visible contacts with translations.
     """
     result = await db.execute(
-        select(Contact)
-        .where(Contact.is_visible == True)
-        .order_by(Contact.sort_order)
+        select(Contact).where(Contact.is_visible).order_by(Contact.sort_order)
     )
     return result.scalars().all()
 
 
-@router.get("/resume", response_model=List[ResumeRead])
+@router.get("/resume", response_model=list[ResumeRead])
 async def get_resume(db: AsyncSession = Depends(get_db)) -> Sequence[Resume]:
     """
     Get active resumes.
     """
-    result = await db.execute(
-        select(Resume).where(Resume.is_active == True)
-    )
+    result = await db.execute(select(Resume).where(Resume.is_active))
     return result.scalars().all()

@@ -74,9 +74,19 @@ make logs              # Логи всех сервисов
 make backend-shell     # Открыть shell в backend контейнере
 make backend-migrate   # Применить миграции БД
 make backend-migration NAME="description"  # Создать новую миграцию
-make backend-test      # Запустить тесты
-make backend-lint      # Линтер
-make backend-format    # Форматирование кода
+
+# Тестирование (Docker-based)
+make test              # Запустить все тесты с coverage
+make test-unit         # Только unit тесты (SQLite)
+make test-integration  # Только integration тесты (PostgreSQL)
+
+# Качество кода (Docker-based)
+make lint              # Запустить линтер
+make format            # Форматировать код
+make typecheck         # Проверка типов
+
+# Pre-commit hooks
+make pre-commit-install  # Установить git hooks
 
 # Frontend
 make frontend-shell    # Открыть shell в frontend контейнере
@@ -88,6 +98,68 @@ make test              # Запустить все тесты
 make lint              # Запустить все линтеры
 make format            # Форматировать весь код
 ```
+
+## Настройка окружения разработки
+
+### Первичная настройка
+
+```bash
+# 1. Клонировать репозиторий
+git clone <repo-url>
+cd personal_site
+
+# 2. Установить git hooks (автоформат при коммите, проверки перед пушем)
+make pre-commit-install
+
+# 3. Создать .env файл
+cat > infra/.env << EOF
+POSTGRES_PASSWORD=devpassword
+EOF
+
+# 4. Запустить dev окружение
+make dev
+```
+
+### Git Hooks
+
+После установки через `make pre-commit-install`:
+
+- **Pre-commit**: Автоматически форматирует код (`ruff format`) и исправляет линты (`ruff check --fix`) при каждом коммите
+- **Pre-push**: Запускает линтер, type checker и все тесты в Docker перед пушем. Блокирует пуш если есть ошибки
+
+### Запуск тестов
+
+Все тесты запускаются в Docker, не требуют локального Python:
+
+```bash
+# Все тесты с coverage
+make test
+
+# Только unit тесты (быстрые, SQLite in-memory)
+make test-unit
+
+# Только integration тесты (реальный PostgreSQL + HTTP запросы)
+make test-integration
+```
+
+**Типы тестов:**
+- **Unit тесты**: Используют SQLite in-memory, быстрые, изолированные
+- **Integration тесты**: Поднимают реальный PostgreSQL, делают HTTP запросы к API
+
+### Проверка качества кода
+
+```bash
+# Линтер (ruff)
+make lint
+
+# Автоформат
+make format
+
+# Type checking (mypy)
+make typecheck
+```
+
+Все команды запускаются в Docker, не требуют локальной установки зависимостей.
 
 ## Сервисы
 
@@ -132,12 +204,20 @@ make backend-migrate
 
 ### CI/CD
 
-GitHub Actions автоматически:
-- Собирает Docker образы для frontend и backend
-- Запускает тесты и линтеры
-- Деплоит на VPS при push в `main`
+GitHub Actions автоматически запускает при каждом push/PR:
 
-См. [.github/workflows/](. github/workflows/) для деталей.
+**Lint Job:**
+- Ruff linter
+- MyPy type checking
+
+**Test Job** (запускается после успешного lint):
+- Unit тесты (SQLite)
+- Integration тесты (PostgreSQL в Docker)
+
+Все проверки выполняются в Docker контейнерах для консистентности с локальным окружением.
+
+См. [.github/workflows/ci.yml](.github/workflows/ci.yml) для деталей.
+
 
 ## Deployment
 

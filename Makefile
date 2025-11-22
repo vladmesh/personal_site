@@ -2,9 +2,10 @@
 .PHONY: backend-shell backend-migrate backend-migration backend-test backend-lint backend-format backend-typecheck
 .PHONY: frontend-shell frontend-build frontend-lint
 .PHONY: test lint format typecheck
+.PHONY: test-unit test-integration test-all lint-docker format-docker typecheck-docker pre-commit-install
 
 help:  ## Show this help
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-25s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\\033[36m%-25s\\033[0m %s\\n", $$1, $$2}'
 
 # === Docker Compose Commands ===
 
@@ -67,12 +68,45 @@ frontend-build:  ## Build frontend locally
 frontend-lint:  ## Run frontend linter
 	cd services/frontend && npm run lint || echo "No lint script configured"
 
+# === Testing Commands (Docker-based) ===
+
+test-unit:  ## Run unit tests only (SQLite in Docker)
+	cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m unit -v
+
+test-integration:  ## Run integration tests only (PostgreSQL in Docker)
+	cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m integration -v
+	cd infra && docker compose -f docker-compose.test.yml down -v
+
+test-all:  ## Run all tests with coverage (in Docker)
+	cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest --cov=app --cov-report=term-missing -v
+	cd infra && docker compose -f docker-compose.test.yml down -v
+
+# === Quality Checks (Docker-based) ===
+
+lint-docker:  ## Run linter in Docker
+	cd infra && docker compose -f docker-compose.test.yml run --rm backend-test ruff check .
+
+format-docker:  ## Run formatter in Docker
+	cd infra && docker compose -f docker-compose.test.yml run --rm backend-test ruff format .
+
+typecheck-docker:  ## Run type checker in Docker
+	cd infra && docker compose -f docker-compose.test.yml run --rm backend-test mypy src/
+
+# === Pre-commit Setup ===
+
+pre-commit-install:  ## Install pre-commit and pre-push hooks
+	cd services/backend && poetry install
+	cd services/backend && poetry run pre-commit install
+	cp scripts/pre-push .git/hooks/pre-push
+	chmod +x .git/hooks/pre-push
+	@echo "✅ Pre-commit and pre-push hooks installed!"
+
 # === All Services Commands ===
 
-test: backend-test  ## Run all tests
+test: test-all  ## Run all tests
 
-lint: backend-lint frontend-lint  ## Run all linters
+lint: lint-docker  ## Run all linters
 
-format: backend-format  ## Format all code
+format: format-docker  ## Format all code
 
-typecheck: backend-typecheck  ## Run all type checkers
+typecheck: typecheck-docker  ## Run all type checkers

@@ -1,17 +1,16 @@
 import uuid
 from datetime import date, datetime
-from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict, HttpUrl
+from pydantic import BaseModel, ConfigDict
 
 
 # --- Stack ---
 class StackRead(BaseModel):
     id: uuid.UUID
     name: str
-    icon_url: Optional[str]
-    category: Optional[str]
-    proficiency: Optional[int]
+    icon_url: str | None
+    category: str | None
+    proficiency: int | None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -21,7 +20,7 @@ class WorkExperienceTranslationRead(BaseModel):
     language_code: str
     position: str
     description: str
-    location: Optional[str]
+    location: str | None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -29,12 +28,12 @@ class WorkExperienceTranslationRead(BaseModel):
 class WorkExperienceRead(BaseModel):
     id: uuid.UUID
     company_name: str
-    company_url: Optional[str]
+    company_url: str | None
     start_date: date
-    end_date: Optional[date]
+    end_date: date | None
     is_current: bool
-    translations: List[WorkExperienceTranslationRead]
-    stacks: List[StackRead]
+    translations: list[WorkExperienceTranslationRead]
+    stacks: list[StackRead]
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -44,7 +43,7 @@ class ProjectTranslationRead(BaseModel):
     language_code: str
     title: str
     description: str
-    role: Optional[str]
+    role: str | None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -52,13 +51,13 @@ class ProjectTranslationRead(BaseModel):
 class ProjectRead(BaseModel):
     id: uuid.UUID
     slug: str
-    link: Optional[str]
-    repo_link: Optional[str]
+    link: str | None
+    repo_link: str | None
     start_date: date
-    end_date: Optional[date]
+    end_date: date | None
     is_featured: bool
-    translations: List[ProjectTranslationRead]
-    stacks: List[StackRead]
+    translations: list[ProjectTranslationRead]
+    stacks: list[StackRead]
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -66,7 +65,7 @@ class ProjectRead(BaseModel):
 # --- Testimonial ---
 class TestimonialTranslationRead(BaseModel):
     language_code: str
-    author_position: Optional[str]
+    author_position: str | None
     content: str
 
     model_config = ConfigDict(from_attributes=True)
@@ -75,10 +74,10 @@ class TestimonialTranslationRead(BaseModel):
 class TestimonialRead(BaseModel):
     id: uuid.UUID
     author_name: str
-    author_url: Optional[str]
-    author_avatar_url: Optional[str]
+    author_url: str | None
+    author_avatar_url: str | None
     date: date
-    translations: List[TestimonialTranslationRead]
+    translations: list[TestimonialTranslationRead]
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -86,7 +85,7 @@ class TestimonialRead(BaseModel):
 # --- Contact ---
 class ContactTranslationRead(BaseModel):
     language_code: str
-    label: Optional[str]
+    label: str | None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -95,10 +94,10 @@ class ContactRead(BaseModel):
     id: uuid.UUID
     type: str
     value: str
-    icon: Optional[str]
+    icon: str | None
     is_visible: bool
     sort_order: int
-    translations: List[ContactTranslationRead]
+    translations: list[ContactTranslationRead]
 
     model_config = ConfigDict(from_attributes=True)
 

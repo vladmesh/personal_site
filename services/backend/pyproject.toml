@@ -18,10 +18,12 @@ pydantic-settings = "^2.6.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"
 pytest-asyncio = "^0.24.0"
+pytest-cov = "^6.0.0"
 httpx = "^0.28.0"
 ruff = "^0.8.0"
 mypy = "^1.13.0"
 aiosqlite = "^0.21.0"
+pre-commit = "^4.0.0"
 
 [tool.ruff]
 line-length = 100
@@ -29,7 +31,8 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "B", "C4", "UP"]
-ignore = []
+ignore = ["B008"]  # FastAPI Depends() in function defaults is intentional
+
 
 [tool.mypy]
 python_version = "3.12"
@@ -41,6 +44,10 @@ disallow_untyped_defs = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+markers = [
+    "unit: Unit tests using in-memory SQLite",
+    "integration: Integration tests using real PostgreSQL and HTTP requests"
+]
 
 [build-system]
 requires = ["poetry-core"]

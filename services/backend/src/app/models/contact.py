@@ -1,7 +1,6 @@
 import uuid
-from typing import List, Optional
 
-from sqlalchemy import String, Boolean, Integer, ForeignKey, Uuid, UniqueConstraint
+from sqlalchemy import Boolean, ForeignKey, Integer, String, UniqueConstraint, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -16,17 +15,15 @@ class Contact(Base, TimestampMixin):
 
     __tablename__ = "contacts"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
     type: Mapped[str] = mapped_column(String, nullable=False)  # e.g., email, linkedin
     value: Mapped[str] = mapped_column(String, nullable=False)
-    icon: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    icon: Mapped[str | None] = mapped_column(String, nullable=True)
     is_visible: Mapped[bool] = mapped_column(Boolean, default=True)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
 
     # Relationships
-    translations: Mapped[List["ContactTranslation"]] = relationship(
+    translations: Mapped[list["ContactTranslation"]] = relationship(
         back_populates="contact", cascade="all, delete-orphan", lazy="selectin"
     )
 
@@ -42,14 +39,12 @@ class ContactTranslation(Base):
 
     __tablename__ = "contact_translations"
 
-    id: Mapped[uuid.UUID] = mapped_column(
-        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
-    )
+    id: Mapped[uuid.UUID] = mapped_column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
     contact_id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), ForeignKey("contacts.id"), nullable=False
     )
     language_code: Mapped[str] = mapped_column(String(10), nullable=False)
-    label: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    label: Mapped[str | None] = mapped_column(String, nullable=True)
 
     # Relationships
     contact: Mapped[Contact] = relationship(back_populates="translations")
