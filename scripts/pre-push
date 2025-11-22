@@ -37,22 +37,22 @@ run_check() {
 FAILED=0
 
 # Run linter
-if ! run_check "Ruff linter" "cd infra && docker compose -f docker-compose.test.yml run --rm backend-test ruff check ."; then
+if ! run_check "Ruff linter" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test ruff check .)"; then
     FAILED=1
 fi
 
 # Run type checker
-if ! run_check "MyPy type checker" "cd infra && docker compose -f docker-compose.test.yml run --rm backend-test mypy src/"; then
+if ! run_check "MyPy type checker" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test mypy src/)"; then
     FAILED=1
 fi
 
 # Run unit tests
-if ! run_check "Unit tests" "cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m unit -v"; then
+if ! run_check "Unit tests" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m unit -v)"; then
     FAILED=1
 fi
 
 # Run integration tests
-if ! run_check "Integration tests" "cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m integration -v"; then
+if ! run_check "Integration tests" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m integration -v)"; then
     FAILED=1
 fi
 
