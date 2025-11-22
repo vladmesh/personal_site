@@ -35,7 +35,9 @@ class Settings(BaseSettings):
         """Parse CORS origins from string or list."""
         if isinstance(v, str):
             return [origin.strip() for origin in v.split(",")]
-        return v
+        if isinstance(v, list):
+            return v
+        raise ValueError(v)
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]

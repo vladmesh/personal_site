@@ -1,6 +1,7 @@
 """Database configuration with SQLAlchemy async engine."""
 
 from collections.abc import AsyncGenerator
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
@@ -8,8 +9,7 @@ from sqlalchemy.orm import DeclarativeBase
 from app.config import settings
 
 # Create async engine
-# Create async engine
-engine_args = {
+engine_args: dict[str, Any] = {
     "echo": False,
     "pool_pre_ping": True,
 }

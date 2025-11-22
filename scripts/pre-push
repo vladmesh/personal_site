@@ -34,34 +34,61 @@ run_check() {
 }
 
 # Track if any check failed
-FAILED=0
+IS_FAILED=0
+echo "Debug: Initial IS_FAILED=$IS_FAILED"
 
 # Run linter
-if ! run_check "Ruff linter" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test ruff check .)"; then
-    FAILED=1
+echo "Debug: Before linter IS_FAILED=$IS_FAILED"
+run_check "Ruff linter" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test ruff check .)"
+RET=$?
+echo "Debug: Ruff linter returned $RET"
+if [ $RET -ne 0 ]; then
+    echo "Debug: Ruff linter failed block entered"
+    IS_FAILED=1
 fi
+echo "Debug: After linter IS_FAILED=$IS_FAILED"
 
 # Run type checker
-if ! run_check "MyPy type checker" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test mypy src/)"; then
-    FAILED=1
+echo "Debug: Before mypy IS_FAILED=$IS_FAILED"
+run_check "MyPy type checker" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test mypy src/)"
+RET=$?
+echo "Debug: MyPy type checker returned $RET"
+if [ $RET -ne 0 ]; then
+    echo "Debug: MyPy type checker failed block entered"
+    IS_FAILED=1
 fi
+echo "Debug: After mypy IS_FAILED=$IS_FAILED"
 
 # Run unit tests
-if ! run_check "Unit tests" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m unit -v)"; then
-    FAILED=1
+echo "Debug: Before unit tests IS_FAILED=$IS_FAILED"
+run_check "Unit tests" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m unit -v)"
+RET=$?
+echo "Debug: Unit tests returned $RET"
+if [ $RET -ne 0 ]; then
+    echo "Debug: Unit tests failed block entered"
+    IS_FAILED=1
 fi
+echo "Debug: After unit tests IS_FAILED=$IS_FAILED"
 
 # Run integration tests
-if ! run_check "Integration tests" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m integration -v)"; then
-    FAILED=1
+echo "Debug: Before integration tests IS_FAILED=$IS_FAILED"
+run_check "Integration tests" "(cd infra && docker compose -f docker-compose.test.yml run --rm backend-test pytest -m integration -v)"
+RET=$?
+echo "Debug: Integration tests returned $RET"
+if [ $RET -ne 0 ]; then
+    echo "Debug: Integration tests failed block entered"
+    IS_FAILED=1
 fi
+echo "Debug: After integration tests IS_FAILED=$IS_FAILED"
 
 # Clean up
 echo -e "${YELLOW}Cleaning up test containers...${NC}"
-cd infra && docker compose -f docker-compose.test.yml down -v > /dev/null 2>&1
+(cd infra && docker compose -f docker-compose.test.yml down -v > /dev/null 2>&1) || true
+
+echo "Debug: IS_FAILED=$IS_FAILED"
 
 # Final result
-if [ $FAILED -eq 1 ]; then
+if [ "$IS_FAILED" -eq 1 ]; then
     echo -e "${RED}❌ Pre-push checks failed. Push aborted.${NC}"
     echo -e "${YELLOW}Fix the issues above and try again.${NC}"
     exit 1
