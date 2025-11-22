@@ -1,14 +1,14 @@
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+  - repo: local
     hooks:
-      # Run the formatter
-      - id: ruff-format
-        name: ruff format
+      - id: ruff-auto-fix
+        name: ruff auto-fix
+        # Run format and lint --fix, then git add the changed files.
+        # We use '|| true' for ruff check because it might exit non-zero on fix, but we want to continue if we successfully added the changes.
+        # Actually, ruff check --fix exits 0 if fixes are applied unless --exit-non-zero-on-fix is used.
+        # We explicitly do NOT use --exit-non-zero-on-fix.
+        entry: bash -c 'ruff format "$@" && ruff check --fix "$@" && git add "$@"' --
+        language: python
+        additional_dependencies: [ruff==0.8.4]
         files: ^services/backend/
-        
-      # Run the linter with auto-fix
-      - id: ruff
-        name: ruff check
-        args: [--fix, --exit-non-zero-on-fix]
-        files: ^services/backend/
+        types: [python]
