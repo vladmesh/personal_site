@@ -21,6 +21,7 @@ class Settings(BaseSettings):
 
     # Project
     PROJECT_NAME: str = "Personal Site API"
+    ENVIRONMENT: str = "development"
 
     # API
     API_V1_STR: str = "/api/v1"
