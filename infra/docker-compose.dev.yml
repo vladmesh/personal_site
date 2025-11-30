@@ -23,6 +23,7 @@ services:
     environment:
       DEBUG: "true"
       DATABASE_URL: postgresql+asyncpg://postgres:devpassword@postgres:5432/personal_site
+      PYTHONPATH: /app/src
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
       interval: 10s
