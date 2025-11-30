@@ -5,6 +5,11 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: devpassword
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   backend:
     build:
@@ -18,7 +23,16 @@ services:
     environment:
       DEBUG: "true"
       DATABASE_URL: postgresql+asyncpg://postgres:devpassword@postgres:5432/personal_site
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   frontend:
     build:
@@ -26,7 +40,8 @@ services:
       dockerfile: Dockerfile
       target: development
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     volumes:
       - ../services/frontend/src:/app/src
       - ../services/frontend/public:/app/public
