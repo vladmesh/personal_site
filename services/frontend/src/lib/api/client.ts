@@ -1,5 +1,4 @@
 const DEFAULT_TIMEOUT_MS = 8000;
-const DEFAULT_BASE_URL = "http://backend:8000";
 
 export class ApiError extends Error {
   status: number;
@@ -13,9 +12,10 @@ export class ApiError extends Error {
   }
 }
 
-const apiBaseUrl =
-  (import.meta.env.PUBLIC_API_BASE_URL as string | undefined)?.replace(/\/+$/, "") ||
-  DEFAULT_BASE_URL;
+const apiBaseUrl = (import.meta.env.PUBLIC_API_BASE_URL as string | undefined)?.replace(
+  /\/+$/,
+  "",
+);
 
 type FetchOptions = RequestInit & { timeoutMs?: number };
 
@@ -49,13 +49,17 @@ export async function fetchApi<T>(path: string, options: FetchOptions = {}): Pro
 }
 
 function buildUrl(path: string): string {
+  const base = apiBaseUrl;
+  if (!base) {
+    throw new Error("PUBLIC_API_BASE_URL is not set");
+  }
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
   }
   if (!path.startsWith("/")) {
-    return `${apiBaseUrl}/${path}`;
+    return `${base}/${path}`;
   }
-  return `${apiBaseUrl}${path}`;
+  return `${base}${path}`;
 }
 
 async function safeParseJson(response: Response): Promise<unknown> {

@@ -25,7 +25,7 @@ Create `.env` in `services/frontend`:
 cp .env.example .env
 ```
 
-Set `PUBLIC_API_BASE_URL` to the backend base URL (shared for dev/prod inside the Docker network). Default: `http://backend:8000`. This is used to fetch contacts from `/api/v1/profile/contacts`.
+Set `PUBLIC_API_BASE_URL` to the backend base URL (shared for dev/prod inside the Docker network). No default is baked in; build will fail if it is missing. This is used to fetch contacts from `/api/v1/profile/contacts`.
 
 ## Project structure
 
