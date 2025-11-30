@@ -5,17 +5,30 @@ import HomeSections from '@components/HomeSections.astro';
 import { projects } from '@data/projects';
 import { skillGroups } from '@data/skills';
 import { testimonials } from '@data/testimonials';
-import { homeCopy } from '@data/home';
+import { buildHomeCopy } from '@data/home';
+import { links } from '@data/links';
+import { fetchContacts, getTelegramHandle, selectContact } from '@lib/profile/contacts';
 
 const lang = 'ru';
 const pageProjects = projects[lang];
-const content = homeCopy[lang];
+const contacts = await fetchContacts(lang);
+const telegram = selectContact(contacts, ['telegram']);
+const email = selectContact(contacts, ['email']);
+const primaryContact = selectContact(contacts, ['telegram', 'email']);
+const content = buildHomeCopy(lang, {
+  emailHref: email?.href ?? links.email,
+  emailText: email?.display ?? links.emailPlain,
+  telegramHref: telegram?.href ?? links.telegram,
+  telegramHandle: getTelegramHandle(telegram) ?? `@${links.telegram.split('/').filter(Boolean).pop() ?? ''}`,
+  primaryContactHref: primaryContact?.href ?? links.telegram
+});
 ---
 <BaseLayout
   title="Влад — Backend и AI-инженер"
   description="Backend, AI-агенты и платформа проектов. Резюме, проекты и контакты."
   lang={lang}
   ogImage="/og/home_ru.png"
+  contacts={contacts}
 >
   <Hero lang={lang} content={content.hero} />
   <HomeSections

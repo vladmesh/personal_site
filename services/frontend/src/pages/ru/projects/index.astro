@@ -3,13 +3,16 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
 import { uiCopy } from '@data/ui';
 import { projects } from '@data/projects';
+import { fetchContacts } from '@lib/profile/contacts';
 const entries = projects.ru;
+const contacts = await fetchContacts('ru');
 ---
 <BaseLayout
   title={uiCopy.ru.projectsPage.metaTitle}
   description={uiCopy.ru.projectsPage.metaDescription}
   lang="ru"
   ogImage="/og/projects.png"
+  contacts={contacts}
 >
   <section class="space-y-8">
     <header class="space-y-3">

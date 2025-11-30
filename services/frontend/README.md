@@ -6,6 +6,7 @@ Static portfolio built with [Astro](https://astro.build/) + Tailwind + MDX. Russ
 
 - Node.js 20+
 - npm 9+
+- `.env` with `PUBLIC_API_BASE_URL` pointing to the backend (see below)
 
 ## Scripts
 
@@ -15,6 +16,16 @@ npm run dev       # start local dev server
 npm run build     # build static output to dist/
 npm run preview   # preview production build
 ```
+
+### Environment
+
+Create `.env` in `services/frontend`:
+
+```bash
+cp .env.example .env
+```
+
+Set `PUBLIC_API_BASE_URL` to the backend base URL (e.g. `http://localhost:8000` in dev, `https://api.vladmesh.dev` in prod). This is used to fetch contacts from `/api/v1/profile/contacts`.
 
 ## Project structure
 

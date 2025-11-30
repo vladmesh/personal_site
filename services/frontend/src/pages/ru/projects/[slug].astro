@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { projects } from '@data/projects';
+import { fetchContacts } from '@lib/profile/contacts';
 
 export async function getStaticPaths() {
   return projects.ru.map((project) => ({
@@ -16,12 +17,14 @@ if (!project) {
 }
 
 const ogImage = `/og/projects/${project.slug}.png`;
+const contacts = await fetchContacts('ru');
 ---
 <BaseLayout
   title={`${project.title} — кейс Влад Меш`}
   description={project.summary}
   lang="ru"
   ogImage={ogImage}
+  contacts={contacts}
 >
   <article class="prose prose-invert prose-headings:font-semibold prose-a:text-brand-light prose-a:no-underline">
     <header class="mb-8 border-b border-white/10 pb-6">

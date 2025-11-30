@@ -4,8 +4,21 @@ import Footer from '@components/Footer.astro';
 import { uiCopy } from '@data/ui';
 import ContactModal from '@components/ContactModal.astro';
 import { links } from '@data/links';
+import type { ContactsResult } from '@lib/profile/contacts';
 import '@styles/globals.css';
-const { title = 'Personal Site', description = 'Personal portfolio site', lang = 'en', ogImage = '/og/default.png' } = Astro.props;
+const {
+  title = 'Personal Site',
+  description = 'Personal portfolio site',
+  lang = 'en',
+  ogImage = '/og/default.png',
+  contacts
+} = Astro.props as {
+  title?: string;
+  description?: string;
+  lang?: 'en' | 'ru';
+  ogImage?: string;
+  contacts?: ContactsResult;
+};
 const domain = links.domain;
 ---
 <!DOCTYPE html>
@@ -34,8 +47,8 @@ const domain = links.domain;
     <main class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <slot />
     </main>
-    <Footer lang={lang} copy={uiCopy[lang].footer} />
-    <ContactModal />
+    <Footer lang={lang} copy={uiCopy[lang].footer} contacts={contacts} />
+    <ContactModal contacts={contacts} />
     <script>
       window.openContactModal = function() {
         const modal = document.getElementById('contact-modal');

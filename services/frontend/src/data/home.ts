@@ -43,104 +43,156 @@ export type HomeCopy = {
   contact: {
     title: string;
     description: (
-      | { type: 'text'; text: string }
-      | { type: 'link'; text: string; href: string }
+      | { type: "text"; text: string }
+      | { type: "link"; text: string; href: string }
     )[];
   };
 };
 
-import { links } from '@data/links';
-import { experience as experienceData } from '@data/experience';
+import { links } from "@data/links";
+import { experience as experienceData } from "@data/experience";
 
-const telegramHandle = `@${links.telegram.split('/').filter(Boolean).pop() ?? ''}`;
+export type ContactCopyInfo = {
+  emailHref: string;
+  emailText: string;
+  telegramHref: string;
+  telegramHandle: string;
+  primaryContactHref?: string;
+};
 
-export const homeCopy: Record<'en' | 'ru', HomeCopy> = {
+const baseHomeCopy = {
   en: {
     hero: {
-    eyebrow: 'Development / Mentorship',
-    greeting: "Hi! I'm Vlad — a developer and mentor.",
-    subtitle: 'I build backends, set up pipelines, and integrate LLM agents.',
-    ctaPrimary: 'Download CV (EN)',
-    ctaSecondary: 'Contact me',
-    cvHref: links.cv.en,
-    contactHref: links.telegram
+      eyebrow: "Development / Mentorship",
+      greeting: "Hi! I'm Vlad — a developer and mentor.",
+      subtitle: "I build backends, set up pipelines, and integrate LLM agents.",
+      ctaPrimary: "Download CV (EN)",
+      ctaSecondary: "Contact me",
     },
     about: {
-    title: 'About me',
-    paragraphs: [
-    "For six years I've been writing software and teaching others to write it — mostly in Python. Sometimes as part of a large team, sometimes solo end-to-end. More often it's backend (DRF, FastAPI, SQLAlchemy), sometimes bots, scripts, scrapers, and desktop apps. Over the last year I’ve shifted to AI agents: chatbots, RAG, MCP, and agentic pipelines. I enjoy projects that align with my interests and values: education, AI safety, open data, and mental health. Here you can browse examples of my projects and my work experience, as well as read feedback from clients and students. I’m open to opportunities — feel free to reach out via the contacts below (or above)."
-    ]
+      title: "About me",
+      paragraphs: [
+        "For six years I've been writing software and teaching others to write it — mostly in Python. Sometimes as part of a large team, sometimes solo end-to-end. More often it's backend (DRF, FastAPI, SQLAlchemy), sometimes bots, scripts, scrapers, and desktop apps. Over the last year I’ve shifted to AI agents: chatbots, RAG, MCP, and agentic pipelines. I enjoy projects that align with my interests and values: education, AI safety, open data, and mental health. Here you can browse examples of my projects and my work experience, as well as read feedback from clients and students. I’m open to opportunities — feel free to reach out via the contacts below (or above).",
+      ],
     },
     experience: experienceData.en,
     projects: {
-      title: 'Projects',
-      ctaLabel: 'All projects',
-      ctaHref: '/en/projects'
+      title: "Projects",
+      ctaLabel: "All projects",
+      ctaHref: "/en/projects",
     },
     skills: {
-      title: 'Skills',
-      subtitle: 'Core stack and tooling.'
+      title: "Skills",
+      subtitle: "Core stack and tooling.",
     },
     testimonials: {
-      title: 'Testimonials',
+      title: "Testimonials",
       tabs: {
-        dev: 'Developer',
-        teacher: 'Mentor'
-      }
+        dev: "Developer",
+        teacher: "Mentor",
+      },
     },
     contact: {
       title: "Let's talk",
-      description: [
-        { type: 'text', text: 'Message me on Telegram ' },
-        { type: 'link', text: telegramHandle, href: links.telegram },
-        { type: 'text', text: ' or send an email to ' },
-        { type: 'link', text: links.emailPlain, href: links.email },
-        { type: 'text', text: '.' }
-      ]
-    }
+    },
   },
   ru: {
     hero: {
-      eyebrow: 'Разработка / Менторство',
-      greeting: 'Привет! Я Влад — разработчик и ментор.',
-      subtitle: 'Пишу бэкенды, настраиваю пайплайны, интегрирую LLM-агентов.',
-      ctaPrimary: 'Скачать CV (RU)',
-      ctaSecondary: 'Написать мне',
-      cvHref: links.cv.ru,
-      contactHref: links.telegram
+      eyebrow: "Разработка / Менторство",
+      greeting: "Привет! Я Влад — разработчик и ментор.",
+      subtitle: "Пишу бэкенды, настраиваю пайплайны, интегрирую LLM-агентов.",
+      ctaPrimary: "Скачать CV (RU)",
+      ctaSecondary: "Написать мне",
     },
     about: {
-      title: 'Обо мне',
+      title: "Обо мне",
       paragraphs: [
-        'Шесть лет я занимаюсь тем, что пишу софт и учу других писать софт. Большей частью на Python. Иногда в составе большой команды, иногда самостоятельно под ключ. Чаще это бэкенд (DRF, FastAPI, SQLAlchemy), иногда боты, скрипты, парсеры и десктопные приложения. Последний год переключился на работу с AI-агентами. Чат-боты, RAG, MCP, агентские пайплайны. Больше всего люблю работать над проектами, которые хорошо согласуются с моими интересами и ценностями. Образование, AI-safety, открытые данные, mental health. На этом сайте можно увидеть примеры моих проектов и ознакомиться с моим опытом работы. А также почитать отзывы моих клиентов и учеников. Я открыт к предложениям, связаться со мной можно по контактам ниже (или выше)'
-      ]
+        "Шесть лет я занимаюсь тем, что пишу софт и учу других писать софт. Большей частью на Python. Иногда в составе большой команды, иногда самостоятельно под ключ. Чаще это бэкенд (DRF, FastAPI, SQLAlchemy), иногда боты, скрипты, парсеры и десктопные приложения. Последний год переключился на работу с AI-агентами. Чат-боты, RAG, MCP, агентские пайплайны. Больше всего люблю работать над проектами, которые хорошо согласуются с моими интересами и ценностями. Образование, AI-safety, открытые данные, mental health. На этом сайте можно увидеть примеры моих проектов и ознакомиться с моим опытом работы. А также почитать отзывы моих клиентов и учеников. Я открыт к предложениям, связаться со мной можно по контактам ниже (или выше)",
+      ],
     },
     experience: experienceData.ru,
     projects: {
-      title: 'Проекты',
-      ctaLabel: 'Все проекты',
-      ctaHref: '/ru/projects'
+      title: "Проекты",
+      ctaLabel: "Все проекты",
+      ctaHref: "/ru/projects",
     },
     skills: {
-      title: 'Навыки',
-      subtitle: 'Основные стек и инструменты.'
+      title: "Навыки",
+      subtitle: "Основные стек и инструменты.",
     },
     testimonials: {
-      title: 'Отзывы',
+      title: "Отзывы",
       tabs: {
-        dev: 'Разработчик',
-        teacher: 'Преподаватель'
-      }
+        dev: "Разработчик",
+        teacher: "Преподаватель",
+      },
     },
     contact: {
-      title: 'Свяжемся?',
-      description: [
-        { type: 'text', text: 'Пишите в Telegram ' },
-        { type: 'link', text: telegramHandle, href: links.telegram },
-        { type: 'text', text: ' или на почту ' },
-        { type: 'link', text: links.emailPlain, href: links.email },
-        { type: 'text', text: '.' }
-      ]
-    }
-  }
+      title: "Свяжемся?",
+    },
+  },
+} as const satisfies Record<"en" | "ru", Omit<HomeCopy, "hero" | "contact"> & {
+  hero: Omit<HomeCopy["hero"], "cvHref" | "contactHref">;
+  contact: Omit<HomeCopy["contact"], "description">;
+}>;
+
+const fallbackContactInfo: ContactCopyInfo = {
+  emailHref: links.email,
+  emailText: links.emailPlain,
+  telegramHref: links.telegram,
+  telegramHandle: buildTelegramHandle(links.telegram),
+  primaryContactHref: links.telegram,
 };
+
+export function buildHomeCopy(
+  lang: "en" | "ru",
+  contactInfo: ContactCopyInfo = fallbackContactInfo,
+): HomeCopy {
+  const base = baseHomeCopy[lang];
+  const info = {
+    ...fallbackContactInfo,
+    ...contactInfo,
+  };
+
+  return {
+    ...base,
+    hero: {
+      ...base.hero,
+      cvHref: links.cv[lang],
+      contactHref: info.primaryContactHref ?? info.telegramHref,
+    },
+    contact: {
+      ...base.contact,
+      description: buildContactDescription(lang, info),
+    },
+  };
+}
+
+function buildContactDescription(
+  lang: "en" | "ru",
+  info: ContactCopyInfo,
+): HomeCopy["contact"]["description"] {
+  const descriptions = {
+    en: [
+      { type: "text" as const, text: "Message me on Telegram " },
+      { type: "link" as const, text: info.telegramHandle, href: info.telegramHref },
+      { type: "text" as const, text: " or send an email to " },
+      { type: "link" as const, text: info.emailText, href: info.emailHref },
+      { type: "text" as const, text: "." },
+    ],
+    ru: [
+      { type: "text" as const, text: "Пишите в Telegram " },
+      { type: "link" as const, text: info.telegramHandle, href: info.telegramHref },
+      { type: "text" as const, text: " или на почту " },
+      { type: "link" as const, text: info.emailText, href: info.emailHref },
+      { type: "text" as const, text: "." },
+    ],
+  };
+
+  return descriptions[lang];
+}
+
+function buildTelegramHandle(href: string): string {
+  const handle = href.split("/").filter(Boolean).pop();
+  return `@${handle ?? ""}`;
+}
