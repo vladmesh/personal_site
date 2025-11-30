@@ -1,4 +1,3 @@
-import { links } from "@data/links";
 import { ApiError, fetchApi } from "@lib/api/client";
 
 const CONTACTS_ENDPOINT = "/api/v1/profile/contacts";
@@ -30,24 +29,22 @@ export type ContactLink = {
 };
 
 export type ContactsResult = {
-  source: "api" | "fallback";
   items: ContactLink[];
   lookup: Record<string, ContactLink>;
 };
 
 export async function fetchContacts(lang: "en" | "ru"): Promise<ContactsResult> {
-  try {
-    const payload = await fetchApi<ContactApiModel[]>(CONTACTS_ENDPOINT);
-    const items = normalizeContacts(payload, lang);
-    return {
-      source: "api",
-      items,
-      lookup: toLookup(items),
-    };
-  } catch (error) {
-    console.warn("[contacts] Falling back to static links:", formatError(error));
-    return buildFallbackContacts(lang);
+  const payload = await fetchApi<ContactApiModel[]>(CONTACTS_ENDPOINT);
+  const items = normalizeContacts(payload, lang);
+
+  if (!items.length) {
+    throw new ApiError("No contacts returned from API", 502, payload);
   }
+
+  return {
+    items,
+    lookup: toLookup(items),
+  };
 }
 
 export function selectContact(
@@ -58,7 +55,7 @@ export function selectContact(
     const candidate = contacts.lookup[type];
     if (candidate) return candidate;
   }
-  return contacts.items[0];
+  return undefined;
 }
 
 export function getTelegramHandle(contact?: ContactLink): string | undefined {
@@ -88,84 +85,6 @@ function normalizeContact(contact: ContactApiModel, lang: "en" | "ru"): ContactL
     value: contact.value,
     display: formatDisplay(contact.type, contact.value, href),
   };
-}
-
-function buildFallbackContacts(lang: "en" | "ru"): ContactsResult {
-  const labels = fallbackLabels[lang];
-  const items: ContactLink[] = [];
-
-  addIfPresent(items, {
-    type: "email",
-    rawValue: links.emailPlain,
-    href: links.email,
-    label: labels.email,
-    sortOrder: 1,
-  });
-  addIfPresent(items, {
-    type: "telegram",
-    rawValue: links.telegram,
-    href: links.telegram,
-    label: labels.telegram,
-    sortOrder: 2,
-  });
-  addIfPresent(items, {
-    type: "github",
-    rawValue: links.github,
-    href: links.github,
-    label: labels.github,
-    sortOrder: 3,
-  });
-  addIfPresent(items, {
-    type: "github_repo",
-    rawValue: links.githubRepo,
-    href: links.githubRepo,
-    label: labels.githubRepo,
-    sortOrder: 4,
-  });
-  addIfPresent(items, {
-    type: "linkedin",
-    rawValue: links.linkedin,
-    href: links.linkedin,
-    label: labels.linkedin,
-    sortOrder: 5,
-  });
-  addIfPresent(items, {
-    type: "phone",
-    rawValue: links.phone ?? "",
-    href: links.phone ?? "",
-    label: labels.phone,
-    sortOrder: 6,
-  });
-  addIfPresent(items, {
-    type: "whatsapp",
-    rawValue: links.whatsapp ?? "",
-    href: links.whatsapp ?? "",
-    label: labels.whatsapp,
-    sortOrder: 7,
-  });
-
-  return {
-    source: "fallback",
-    items,
-    lookup: toLookup(items),
-  };
-}
-
-function addIfPresent(
-  items: ContactLink[],
-  entry: { type: string; rawValue: string; href: string; label: string; sortOrder: number },
-) {
-  if (!entry.href) return;
-  items.push({
-    type: entry.type,
-    label: entry.label,
-    href: entry.href,
-    icon: entry.type,
-    sortOrder: entry.sortOrder,
-    isVisible: true,
-    value: entry.rawValue,
-    display: formatDisplay(entry.type, entry.rawValue, entry.href),
-  });
 }
 
 function buildHref(type: string, value: string): string | null {
@@ -223,43 +142,3 @@ function toLookup(items: ContactLink[]): Record<string, ContactLink> {
     return acc;
   }, {});
 }
-
-function formatError(error: unknown): string {
-  if (error instanceof ApiError) {
-    return `${error.message} (${error.status})`;
-  }
-  if (error instanceof Error) return error.message;
-  return String(error);
-}
-
-const fallbackLabels: Record<
-  "en" | "ru",
-  {
-    email: string;
-    telegram: string;
-    github: string;
-    githubRepo: string;
-    linkedin: string;
-    phone: string;
-    whatsapp: string;
-  }
-> = {
-  en: {
-    email: "Email",
-    telegram: "Telegram",
-    github: "GitHub",
-    githubRepo: "Source Code",
-    linkedin: "LinkedIn",
-    phone: "Phone",
-    whatsapp: "WhatsApp",
-  },
-  ru: {
-    email: "Email",
-    telegram: "Telegram",
-    github: "GitHub",
-    githubRepo: "Исходный код",
-    linkedin: "LinkedIn",
-    phone: "Телефон",
-    whatsapp: "WhatsApp",
-  },
-};

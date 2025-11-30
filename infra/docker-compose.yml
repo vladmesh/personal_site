@@ -36,6 +36,8 @@ services:
     build:
       context: ../services/frontend
       dockerfile: Dockerfile
+    environment:
+      PUBLIC_API_BASE_URL: http://backend:8000
     depends_on:
       - backend
     ports:

@@ -1,5 +1,5 @@
 const DEFAULT_TIMEOUT_MS = 8000;
-const DEFAULT_BASE_URL = "http://localhost:8000";
+const DEFAULT_BASE_URL = "http://backend:8000";
 
 export class ApiError extends Error {
   status: number;

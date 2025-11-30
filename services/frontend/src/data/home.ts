@@ -136,34 +136,22 @@ const baseHomeCopy = {
   contact: Omit<HomeCopy["contact"], "description">;
 }>;
 
-const fallbackContactInfo: ContactCopyInfo = {
-  emailHref: links.email,
-  emailText: links.emailPlain,
-  telegramHref: links.telegram,
-  telegramHandle: buildTelegramHandle(links.telegram),
-  primaryContactHref: links.telegram,
-};
-
 export function buildHomeCopy(
   lang: "en" | "ru",
-  contactInfo: ContactCopyInfo = fallbackContactInfo,
+  contactInfo: ContactCopyInfo,
 ): HomeCopy {
   const base = baseHomeCopy[lang];
-  const info = {
-    ...fallbackContactInfo,
-    ...contactInfo,
-  };
 
   return {
     ...base,
     hero: {
       ...base.hero,
       cvHref: links.cv[lang],
-      contactHref: info.primaryContactHref ?? info.telegramHref,
+      contactHref: contactInfo.primaryContactHref ?? contactInfo.telegramHref,
     },
     contact: {
       ...base.contact,
-      description: buildContactDescription(lang, info),
+      description: buildContactDescription(lang, contactInfo),
     },
   };
 }
@@ -190,9 +178,4 @@ function buildContactDescription(
   };
 
   return descriptions[lang];
-}
-
-function buildTelegramHandle(href: string): string {
-  const handle = href.split("/").filter(Boolean).pop();
-  return `@${handle ?? ""}`;
 }

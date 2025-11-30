@@ -25,7 +25,7 @@ Create `.env` in `services/frontend`:
 cp .env.example .env
 ```
 
-Set `PUBLIC_API_BASE_URL` to the backend base URL (e.g. `http://localhost:8000` in dev, `https://api.vladmesh.dev` in prod). This is used to fetch contacts from `/api/v1/profile/contacts`.
+Set `PUBLIC_API_BASE_URL` to the backend base URL (shared for dev/prod inside the Docker network). Default: `http://backend:8000`. This is used to fetch contacts from `/api/v1/profile/contacts`.
 
 ## Project structure
 

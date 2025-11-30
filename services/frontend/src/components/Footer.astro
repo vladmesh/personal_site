@@ -1,5 +1,4 @@
 ---
-import { links } from '@data/links';
 import type { ContactsResult } from '@lib/profile/contacts';
 const { lang = 'en', copy, contacts } = Astro.props as {
   lang: 'en' | 'ru';
@@ -11,21 +10,22 @@ const { lang = 'en', copy, contacts } = Astro.props as {
   contacts?: ContactsResult;
 };
 const lookup = contacts?.lookup ?? {};
-const github = lookup.github?.href ?? links.github;
-const linkedin = lookup.linkedin?.href ?? links.linkedin;
-const telegram = lookup.telegram?.href ?? links.telegram;
-const githubRepo = lookup.github_repo?.href ?? links.githubRepo;
+const socials = [
+  { href: lookup.github?.href, label: copy.social.github },
+  { href: lookup.linkedin?.href, label: copy.social.linkedin },
+  { href: lookup.telegram?.href, label: copy.social.telegram },
+  { href: lookup.github_repo?.href, label: copy.sourceLabel }
+].filter((item) => Boolean(item.href));
 ---
 <footer class="border-t border-white/10 bg-slate-950/80 py-8">
   <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
     <p>© {new Date().getFullYear()} Vlad. {copy.rights}</p>
     <nav class="flex flex-wrap gap-4">
-      <a href={github} target="_blank" rel="noreferrer">{copy.social.github}</a>
-      <a href={linkedin} target="_blank" rel="noreferrer">{copy.social.linkedin}</a>
-      <a href={telegram} target="_blank" rel="noreferrer">{copy.social.telegram}</a>
-      <a href={githubRepo} target="_blank" rel="noreferrer">
-        {copy.sourceLabel}
-      </a>
+      {socials.map((item) => (
+        <a href={item.href} target="_blank" rel="noreferrer">
+          {item.label}
+        </a>
+      ))}
     </nav>
   </div>
 </footer>

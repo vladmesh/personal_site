@@ -1,18 +1,8 @@
 ---
-import { links } from '@data/links';
 import type { ContactsResult } from '@lib/profile/contacts';
 const { contacts } = Astro.props as { contacts?: ContactsResult };
-const fallbackContacts = [
-  { href: links.email, label: 'Email', type: 'email', isVisible: true },
-  { href: links.telegram, label: 'Telegram', type: 'telegram', isVisible: true },
-  { href: links.whatsapp, label: 'WhatsApp', type: 'whatsapp', isVisible: true },
-  { href: links.linkedin, label: 'LinkedIn', type: 'linkedin', isVisible: true },
-  { href: links.phone, label: 'Phone', type: 'phone', isVisible: true }
-].filter((item) => Boolean(item.href));
 const allowedTypes = ['email', 'telegram', 'whatsapp', 'linkedin', 'phone'];
-const contactItems = (contacts?.items ?? fallbackContacts).filter((item) =>
-  allowedTypes.includes(item.type)
-);
+const contactItems = (contacts?.items ?? []).filter((item) => allowedTypes.includes(item.type));
 ---
 <dialog id="contact-modal" class="fixed inset-0 z-50 m-0 h-full w-full bg-black/60 p-0 hidden" aria-modal="true" aria-labelledby="contact-title">
   <div class="absolute inset-0 flex items-center justify-center p-4">

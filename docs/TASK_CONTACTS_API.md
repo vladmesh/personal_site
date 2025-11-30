@@ -19,7 +19,7 @@
 3) Адаптер контактов  
    - Написать `src/lib/profile/contacts.ts` с функцией `fetchContacts(lang)` → нормализованный объект/массив, который можно подставить в UI.  
    - В адаптере выбирать перевод по `language_code`, сортировать по `sort_order`, учитывать `is_visible`, маппить `type` → href (mailto/tel/https).  
-   - Оставить fallback на статические `links` для полей, которых еще нет в API (cv, analytics, demos).
+   - Fallback на статический `links` для контактов не нужен; если API недоступен — билд/рендер должен падать.
 
 4) Интеграция в страницы  
    - В `pages/*/index.astro` загрузить контакты через `Astro.fetch` или клиентский остров (решить стратегию: build-time vs runtime для `output: static`).  
