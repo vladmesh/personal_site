@@ -9,11 +9,11 @@ help:  ## Show this help
 
 # === Docker Compose Commands ===
 
-dev:  ## Start development environment
-	cd infra && docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+dev:  ## Start development environment (detached)
+	cd infra && docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 
-dev-build:  ## Build and start development environment
-	cd infra && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+dev-build:  ## Build and start development environment (detached)
+	cd infra && docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
 
 build:  ## Build all services
 	cd infra && docker compose -f docker-compose.yml build
