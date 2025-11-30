@@ -25,6 +25,8 @@ services:
       context: ../services/frontend
       dockerfile: Dockerfile
       target: development
+    depends_on:
+      - backend
     volumes:
       - ../services/frontend/src:/app/src
       - ../services/frontend/public:/app/public
