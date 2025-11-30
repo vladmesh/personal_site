@@ -22,6 +22,8 @@ export type Links = {
   };
 };
 
+// TODO: Migrating to backend API - these links are now served from /api/v1/profile/contacts
+// Some fields (cv, domain, analytics, demos) are not yet migrated to backend
 export const links: Links = {
   email: 'mailto:hi@vladmesh.dev@gmail.com',
   emailPlain: 'vladmesh.dev@gmail.com',
@@ -45,5 +47,19 @@ export const links: Links = {
     dndHelper: 'https://t.me/dnd_helperbot'
   }
 };
+
+/*
+// MIGRATED TO BACKEND: Contact links now available at /api/v1/profile/contacts
+// API returns:
+// - email: vladmesh.dev@gmail.com
+// - telegram: https://t.me/vladislav_meshk
+// - github: https://github.com/vladmesh
+// - github_repo: https://github.com/vladmesh/personal-site
+// - linkedin: https://www.linkedin.com/in/vladmesh
+// - phone: +79000000000 (hidden)
+// - whatsapp: https://wa.me/79000000000 (hidden)
+//
+// Each contact includes translations for 'en' and 'ru' with labels
+*/
 
 

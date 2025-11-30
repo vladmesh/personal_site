@@ -1,0 +1,50 @@
+#!/bin/bash
+# Pre-commit hook to run Ruff formatting and linting in Docker
+# Automatically adds fixed files to the commit
+
+# Get staged Python files
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$')
+
+if [ -z "$FILES" ]; then
+    exit 0
+fi
+
+echo "🔍 Running pre-commit checks on staged Python files..."
+
+# Filter for backend files and strip 'services/backend/' prefix
+# The backend-test container mounts '../services/backend' to '/app'
+# So 'services/backend/src/main.py' on host -> 'src/main.py' in container
+BACKEND_FILES=$(echo "$FILES" | grep "^services/backend/" | sed 's|^services/backend/||')
+
+if [ -z "$BACKEND_FILES" ]; then
+    echo "No backend files to check (skipping Docker check)."
+    exit 0
+fi
+
+# 1. Run Ruff Format
+echo "🎨 Running Ruff format..."
+echo "$BACKEND_FILES" | xargs docker compose -f infra/docker-compose.test.yml run --rm -T backend-test ruff format
+FORMAT_RET=$?
+
+if [ $FORMAT_RET -ne 0 ]; then
+    echo "❌ Ruff format failed."
+    exit 1
+fi
+
+# 2. Run Ruff Check (Lint) with Fix
+echo "🧹 Running Ruff check --fix..."
+echo "$BACKEND_FILES" | xargs docker compose -f infra/docker-compose.test.yml run --rm -T backend-test ruff check --fix
+CHECK_RET=$?
+
+if [ $CHECK_RET -ne 0 ]; then
+    echo "❌ Ruff check failed."
+    exit 1
+fi
+
+# 3. Add changes to git
+# We add the ORIGINAL file paths (relative to project root)
+echo "➕ Adding fixed files to commit..."
+echo "$FILES" | xargs git add
+
+echo "✅ Pre-commit checks passed!"
+exit 0
