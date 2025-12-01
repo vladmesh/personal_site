@@ -76,6 +76,7 @@ class TestimonialRead(BaseModel):
     author_name: str
     author_url: str | None
     author_avatar_url: str | None
+    kind: str | None
     date: date
     translations: list[TestimonialTranslationRead]
 
@@ -111,3 +112,68 @@ class ResumeRead(BaseModel):
     is_active: bool
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# --- Localized profile payload for frontend ---
+class LocalizedWorkExperienceRead(BaseModel):
+    id: uuid.UUID
+    company_name: str
+    company_url: str | None
+    start_date: date
+    end_date: date | None
+    is_current: bool
+    position: str
+    description: str
+    location: str | None
+    stacks: list[StackRead]
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LocalizedProjectRead(BaseModel):
+    id: uuid.UUID
+    slug: str
+    link: str | None
+    repo_link: str | None
+    start_date: date
+    end_date: date | None
+    is_featured: bool
+    title: str
+    description: str
+    role: str | None
+    stacks: list[StackRead]
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LocalizedTestimonialRead(BaseModel):
+    id: uuid.UUID
+    author_name: str
+    author_url: str | None
+    author_avatar_url: str | None
+    kind: str | None
+    date: date
+    author_position: str | None
+    content: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class LocalizedContactRead(BaseModel):
+    id: uuid.UUID
+    type: str
+    value: str
+    icon: str | None
+    sort_order: int
+    label: str | None
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ProfileFullRead(BaseModel):
+    experience: list[LocalizedWorkExperienceRead]
+    projects: list[LocalizedProjectRead]
+    stacks: list[StackRead]
+    testimonials: list[LocalizedTestimonialRead]
+    contacts: list[LocalizedContactRead]
+    resumes: list[ResumeRead]

@@ -20,6 +20,7 @@ class Testimonial(Base, TimestampMixin):
     author_name: Mapped[str] = mapped_column(String, nullable=False)
     author_url: Mapped[str | None] = mapped_column(String, nullable=True)
     author_avatar_url: Mapped[str | None] = mapped_column(String, nullable=True)
+    kind: Mapped[str | None] = mapped_column(String, nullable=True)
     date: Mapped[date] = mapped_column(Date, nullable=False)
 
     # Relationships

@@ -147,3 +147,73 @@ async def test_get_resume_integration(client: AsyncClient, db: AsyncSession) -> 
     data = response.json()
     assert len(data) == 1
     assert data[0]["file_path"] == "/tmp/cv.pdf"
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_get_full_profile_integration(client: AsyncClient, db: AsyncSession) -> None:
+    """Integration test: Aggregate profile data with localization."""
+    stack = Stack(name="Python")
+    db.add(stack)
+    await db.commit()
+
+    exp = WorkExperience(company_name="Test Corp", start_date=date(2023, 1, 1), is_current=True)
+    db.add(exp)
+    await db.commit()
+    await db.refresh(exp)
+    exp_trans = WorkExperienceTranslation(
+        work_experience_id=exp.id,
+        language_code="ru",
+        position="Разработчик",
+        description="Описание",
+        location="Москва",
+    )
+    exp.stacks.append(stack)
+    db.add(exp_trans)
+
+    proj = Project(slug="proj-1", start_date=date(2024, 1, 1))
+    db.add(proj)
+    await db.commit()
+    await db.refresh(proj)
+    proj_trans = ProjectTranslation(
+        project_id=proj.id,
+        language_code="ru",
+        title="Проект",
+        description="Описание проекта",
+        role="Разработчик",
+    )
+    proj.stacks.append(stack)
+    db.add(proj_trans)
+
+    testim = TestimonialModel(author_name="John", date=date(2024, 2, 2))
+    db.add(testim)
+    await db.commit()
+    await db.refresh(testim)
+    testim_trans = TestimonialTranslation(
+        testimonial_id=testim.id,
+        language_code="ru",
+        content="Отзыв",
+        author_position="Клиент",
+    )
+    db.add(testim_trans)
+
+    contact = Contact(type="email", value="test@example.com", is_visible=True)
+    db.add(contact)
+    await db.commit()
+    await db.refresh(contact)
+    contact_trans = ContactTranslation(contact_id=contact.id, language_code="ru", label="Почта")
+    db.add(contact_trans)
+
+    resume = Resume(language_code="ru", file_path="/tmp/cv_ru.pdf", is_active=True)
+    db.add(resume)
+
+    await db.commit()
+
+    response = await client.get("/api/v1/profile/full?lang=ru")
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["experience"][0]["position"] == "Разработчик"
+    assert payload["projects"][0]["title"] == "Проект"
+    assert payload["testimonials"][0]["content"] == "Отзыв"
+    assert payload["contacts"][0]["label"] == "Почта"
+    assert payload["resumes"][0]["language_code"] == "ru"
