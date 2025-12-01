@@ -17,9 +17,6 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-ARG PUBLIC_API_BASE_URL
-ENV PUBLIC_API_BASE_URL=${PUBLIC_API_BASE_URL}
-
 COPY package*.json ./
 RUN npm ci
 
@@ -27,11 +24,16 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM caddy:2-alpine AS production
+FROM node:20-alpine AS production
 
-COPY --from=builder /app/dist /srv/site
+WORKDIR /app
 
-# Caddyfile will be mounted via volume
-EXPOSE 80 443
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
 
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+ENV HOST=0.0.0.0
+ENV PORT=4321
+
+EXPOSE 4321
+
+CMD ["node", "./dist/server/entry.mjs"]

@@ -3,13 +3,15 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwind from '@astrojs/tailwind';
+import node from '@astrojs/node';
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   integrations: [mdx(), tailwind()],
   srcDir: 'src',
-  output: 'static',
+  output: 'server',
+  adapter: node({ mode: 'standalone' }),
   build: {
     format: 'directory'
   },

@@ -49,5 +49,5 @@ services:
     ports:
       - "4321:4321"
     environment:
-      PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:?PUBLIC_API_BASE_URL is required}
+      PUBLIC_API_BASE_URL: http://backend:8000
     command: npm run dev -- --host 0.0.0.0

@@ -2,13 +2,6 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { fetchProfile } from '@lib/profile/full';
 
-export async function getStaticPaths() {
-  const profile = await fetchProfile('en');
-  return profile.projects.map((project) => ({
-    params: { slug: project.slug }
-  }));
-}
-
 const { slug } = Astro.params;
 const profile = await fetchProfile('en');
 const project = profile.projects.find((entry) => entry.slug === slug);
