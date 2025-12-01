@@ -112,7 +112,7 @@ function pickLabel(
   return translations[0]?.label ?? undefined;
 }
 
-function prettifyType(type: string): string {
+export function prettifyType(type: string): string {
   return type
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase())

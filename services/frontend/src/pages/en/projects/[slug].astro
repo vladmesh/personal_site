@@ -1,23 +1,24 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { projects } from '@data/projects';
-import { fetchContacts } from '@lib/profile/contacts';
+import { fetchProfile } from '@lib/profile/full';
 
 export async function getStaticPaths() {
-  return projects.en.map((project) => ({
+  const profile = await fetchProfile('en');
+  return profile.projects.map((project) => ({
     params: { slug: project.slug }
   }));
 }
 
 const { slug } = Astro.params;
-const project = projects.en.find((entry) => entry.slug === slug);
+const profile = await fetchProfile('en');
+const project = profile.projects.find((entry) => entry.slug === slug);
 
 if (!project) {
   throw new Error(`Project not found: ${slug}`);
 }
 
 const ogImage = `/og/projects/${project.slug}.png`;
-const contacts = await fetchContacts('en');
+const contacts = profile.contacts;
 ---
 <BaseLayout
   title={`${project.title} — Vlad Mesh case study`}

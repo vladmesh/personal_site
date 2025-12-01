@@ -2,31 +2,33 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Hero from '@components/Hero.astro';
 import HomeSections from '@components/HomeSections.astro';
-import { projects } from '@data/projects';
-import { skillGroups } from '@data/skills';
-import { testimonials } from '@data/testimonials';
 import { buildHomeCopy } from '@data/home';
-import { fetchContacts, getTelegramHandle, selectContact } from '@lib/profile/contacts';
+import { fetchProfile } from '@lib/profile/full';
+import { getTelegramHandle, selectContact } from '@lib/profile/contacts';
 
 const lang = 'en';
-const pageProjects = projects[lang];
-const contacts = await fetchContacts(lang);
-if (!contacts.items.length) {
-  throw new Error('No contacts returned from API');
-}
+const profile = await fetchProfile(lang);
+const contacts = profile.contacts;
 const telegram = selectContact(contacts, ['telegram']);
 const email = selectContact(contacts, ['email']);
 const primaryContact = selectContact(contacts, ['telegram', 'email']);
 if (!telegram || !email || !primaryContact) {
   throw new Error('Required contacts (telegram/email) are missing in API response');
 }
-const content = buildHomeCopy(lang, {
-  emailHref: email.href,
-  emailText: email.display,
-  telegramHref: telegram.href,
-  telegramHandle: getTelegramHandle(telegram) ?? '',
-  primaryContactHref: primaryContact.href
-});
+const content = buildHomeCopy(
+  lang,
+  {
+    emailHref: email.href,
+    emailText: email.display,
+    telegramHref: telegram.href,
+    telegramHandle: getTelegramHandle(telegram) ?? '',
+    primaryContactHref: primaryContact.href
+  },
+  {
+    experience: profile.experience,
+    resumeHref: profile.resumes[lang]
+  }
+);
 ---
 <BaseLayout
   title="Vlad — Backend & AI Engineer"
@@ -39,8 +41,8 @@ const content = buildHomeCopy(lang, {
   <HomeSections
     lang={lang}
     content={content}
-    projects={pageProjects}
-    skills={skillGroups}
-    quotes={testimonials}
+    projects={profile.projects}
+    skills={profile.skills}
+    quotes={profile.testimonials}
   />
 </BaseLayout>

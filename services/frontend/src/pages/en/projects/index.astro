@@ -2,10 +2,11 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
 import { uiCopy } from '@data/ui';
-import { projects } from '@data/projects';
-import { fetchContacts } from '@lib/profile/contacts';
-const entries = projects.en;
-const contacts = await fetchContacts('en');
+import { fetchProfile } from '@lib/profile/full';
+
+const profile = await fetchProfile('en');
+const entries = profile.projects;
+const contacts = profile.contacts;
 ---
 <BaseLayout
   title={uiCopy.en.projectsPage.metaTitle}

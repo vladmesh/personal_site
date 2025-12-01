@@ -60,6 +60,11 @@ export type ContactCopyInfo = {
   primaryContactHref?: string;
 };
 
+type HomeOverrides = {
+  experience?: HomeCopy["experience"];
+  resumeHref?: string;
+};
+
 const baseHomeCopy = {
   en: {
     hero: {
@@ -139,6 +144,7 @@ const baseHomeCopy = {
 export function buildHomeCopy(
   lang: "en" | "ru",
   contactInfo: ContactCopyInfo,
+  overrides: HomeOverrides = {},
 ): HomeCopy {
   const base = baseHomeCopy[lang];
 
@@ -146,13 +152,14 @@ export function buildHomeCopy(
     ...base,
     hero: {
       ...base.hero,
-      cvHref: links.cv[lang],
+      cvHref: overrides.resumeHref ?? links.cv[lang],
       contactHref: contactInfo.primaryContactHref ?? contactInfo.telegramHref,
     },
     contact: {
       ...base.contact,
       description: buildContactDescription(lang, contactInfo),
     },
+    experience: overrides.experience ?? base.experience,
   };
 }
 
