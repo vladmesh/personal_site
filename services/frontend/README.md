@@ -1,6 +1,6 @@
 # Vlad Mesh — Personal Site
 
-Static portfolio built with [Astro](https://astro.build/) + Tailwind + MDX. Russian and English versions live side by side under `/ru/*` and `/en/*` routes.
+Portfolio built with [Astro](https://astro.build/) + Tailwind + MDX. Russian and English versions live side by side under `/ru/*` and `/en/*` routes. Контент (опыт, проекты, навыки, отзывы, контакты, резюме) теперь подтягивается из backend API `/api/v1/profile/full`.
 
 ## Requirements
 
@@ -25,7 +25,7 @@ Create `.env` in `services/frontend`:
 cp .env.example .env
 ```
 
-Set `PUBLIC_API_BASE_URL` to the backend base URL (shared for dev/prod inside the Docker network). No default is baked in; build will fail if it is missing. This is used to fetch contacts from `/api/v1/profile/contacts`.
+Set `PUBLIC_API_BASE_URL` to the backend base URL (shared for dev/prod inside the Docker network). No default is baked in; build will fail if it is missing. This is used by the profile client to fetch `/api/v1/profile/full`.
 
 ## Project structure
 
@@ -49,10 +49,10 @@ site/
 
 ## Content workflow
 
-- Case studies live in `src/content/{ru|en}/projects/*.mdx`.
-- Update summary/stack inside MDX frontmatter; list view pulls the same data.
-- Upload latest CVs to `public/cv/cv_ru.pdf` and `public/cv/cv_en.pdf`.
-- OG images go into `public/og/` (one per page).
+- Основной контент (опыт, проекты, навыки, отзывы, контакты, резюме) приходит из backend API. Обновляйте данные через БД/миграции сидов в `services/backend`.
+- Case studies (MDX) остаются в `src/content/{ru|en}/projects/*.mdx` и отвечают только за развернутые кейсы.
+- Обновляйте резюме в `public/cv/cv_ru.pdf` и `public/cv/cv_en.pdf` или меняйте пути в БД.
+- OG изображения лежат в `public/og/`.
 
 ## Deployment
 

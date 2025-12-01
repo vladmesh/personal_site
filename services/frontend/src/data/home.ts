@@ -50,7 +50,6 @@ export type HomeCopy = {
 };
 
 import { links } from "@data/links";
-import { experience as experienceData } from "@data/experience";
 
 export type ContactCopyInfo = {
   emailHref: string;
@@ -80,7 +79,11 @@ const baseHomeCopy = {
         "For six years I've been writing software and teaching others to write it — mostly in Python. Sometimes as part of a large team, sometimes solo end-to-end. More often it's backend (DRF, FastAPI, SQLAlchemy), sometimes bots, scripts, scrapers, and desktop apps. Over the last year I’ve shifted to AI agents: chatbots, RAG, MCP, and agentic pipelines. I enjoy projects that align with my interests and values: education, AI safety, open data, and mental health. Here you can browse examples of my projects and my work experience, as well as read feedback from clients and students. I’m open to opportunities — feel free to reach out via the contacts below (or above).",
       ],
     },
-    experience: experienceData.en,
+    experience: {
+      title: "Experience",
+      summary: "Experience",
+      items: [],
+    },
     projects: {
       title: "Projects",
       ctaLabel: "All projects",
@@ -115,7 +118,11 @@ const baseHomeCopy = {
         "Шесть лет я занимаюсь тем, что пишу софт и учу других писать софт. Большей частью на Python. Иногда в составе большой команды, иногда самостоятельно под ключ. Чаще это бэкенд (DRF, FastAPI, SQLAlchemy), иногда боты, скрипты, парсеры и десктопные приложения. Последний год переключился на работу с AI-агентами. Чат-боты, RAG, MCP, агентские пайплайны. Больше всего люблю работать над проектами, которые хорошо согласуются с моими интересами и ценностями. Образование, AI-safety, открытые данные, mental health. На этом сайте можно увидеть примеры моих проектов и ознакомиться с моим опытом работы. А также почитать отзывы моих клиентов и учеников. Я открыт к предложениям, связаться со мной можно по контактам ниже (или выше)",
       ],
     },
-    experience: experienceData.ru,
+    experience: {
+      title: "Опыт работы",
+      summary: "Опыт работы",
+      items: [],
+    },
     projects: {
       title: "Проекты",
       ctaLabel: "Все проекты",

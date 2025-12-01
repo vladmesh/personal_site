@@ -2,18 +2,16 @@
 import ProjectCard from '@components/ProjectCard.astro';
 import Skills from '@components/Skills.astro';
 import Testimonials from '@components/Testimonials.astro';
-import { skillGroups as defaultSkills } from '@data/skills';
-import { testimonials as defaultTestimonials } from '@data/testimonials';
 import type { HomeCopy } from '@data/home';
+import type { SkillGroup, TestimonialEntry } from '@lib/profile/full';
 
-const { lang = 'en', content, projects = [], skills = defaultSkills, quotes = defaultTestimonials } =
-  Astro.props as {
-    lang: 'en' | 'ru';
-    content: HomeCopy;
-    projects: any[];
-    skills: typeof defaultSkills;
-    quotes: typeof defaultTestimonials;
-  };
+const { lang = 'en', content, projects = [], skills = [], quotes = [] } = Astro.props as {
+  lang: 'en' | 'ru';
+  content: HomeCopy;
+  projects: any[];
+  skills: SkillGroup[];
+  quotes: TestimonialEntry[];
+};
 ---
 <section id="about" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
   <h2 class="text-3xl font-semibold text-white">{content.about.title}</h2>

@@ -165,7 +165,7 @@ make typecheck
 
 ### Frontend
 
-Статический сайт на Astro с поддержкой RU/EN локализации.
+Astro-приложение (RU/EN), теперь тянет профильные данные из backend API (`/api/v1/profile/full`).
 
 - **Технологии**: Astro, Tailwind CSS, TypeScript
 - **Порт (dev)**: 4321

@@ -1,7 +1,7 @@
 ---
-import type { Testimonial } from '@data/testimonials';
+import type { TestimonialEntry } from '@lib/profile/full';
 const { testimonials = [], lang = 'en', title, tabs } = Astro.props as {
-  testimonials: Testimonial[];
+  testimonials: TestimonialEntry[];
   lang: 'en' | 'ru';
   title?: string;
   tabs?: { dev: string; teacher: string };

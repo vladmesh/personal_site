@@ -2,8 +2,6 @@ import { fetchApi } from "@lib/api/client";
 import { prettifyType } from "@lib/profile/contacts";
 import type { ContactLink, ContactsResult } from "@lib/profile/contacts";
 import type { HomeCopy } from "@data/home";
-import type { Testimonial } from "@data/testimonials";
-import type { skillGroups as defaultSkillGroups } from "@data/skills";
 
 type Lang = "en" | "ru";
 
@@ -90,13 +88,25 @@ export type FrontProject = {
   links: { href: string; label: string }[];
 };
 
-export type SkillGroup = (typeof defaultSkillGroups)[number];
+export type SkillGroup = {
+  title: { en: string; ru: string };
+  description: { en: string; ru: string };
+  items: string[];
+};
+
+export type TestimonialEntry = {
+  kind: "dev" | "teacher";
+  quote: { en: string; ru: string };
+  author: string;
+  role?: string;
+  url?: string;
+};
 
 export type ProfileData = {
   experience: HomeCopy["experience"];
   projects: FrontProject[];
   skills: SkillGroup[];
-  testimonials: Testimonial[];
+  testimonials: TestimonialEntry[];
   contacts: ContactsResult;
   resumes: Record<Lang, string | undefined>;
 };
@@ -230,7 +240,7 @@ function buildTestimonials(entries: ApiTestimonial[], lang: Lang): Testimonial[]
     author: entry.author_name,
     role: entry.author_position ?? undefined,
     url: entry.author_url ?? undefined,
-  }));
+  })) as TestimonialEntry[];
 }
 
 function buildContacts(contacts: ApiContact[]): ContactsResult {
