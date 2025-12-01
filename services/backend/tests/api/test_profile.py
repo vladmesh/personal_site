@@ -4,6 +4,7 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.v1.profile import PROFILE_CACHE_MAX_AGE
 from app.models.contact import Contact, ContactTranslation
 from app.models.project import Project, ProjectTranslation
 from app.models.resume import Resume
@@ -11,6 +12,8 @@ from app.models.stack import Stack
 from app.models.testimonial import Testimonial as TestimonialModel
 from app.models.testimonial import TestimonialTranslation
 from app.models.work_experience import WorkExperience, WorkExperienceTranslation
+
+EXPECTED_CACHE_CONTROL = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
 
 
 @pytest.mark.unit
@@ -39,6 +42,7 @@ async def test_get_work_experience(client: AsyncClient, db: AsyncSession) -> Non
 
     response = await client.get("/api/v1/profile/experience")
     assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
     data = response.json()
     assert len(data) == 1
     assert data[0]["company_name"] == "Test Corp"
@@ -65,6 +69,7 @@ async def test_get_projects(client: AsyncClient, db: AsyncSession) -> None:
 
     response = await client.get("/api/v1/profile/projects")
     assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
     data = response.json()
     assert len(data) == 1
     assert data[0]["slug"] == "test-project"
@@ -80,6 +85,7 @@ async def test_get_stacks(client: AsyncClient, db: AsyncSession) -> None:
 
     response = await client.get("/api/v1/profile/stacks")
     assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
     data = response.json()
     assert len(data) == 1
     assert data[0]["name"] == "FastAPI"
@@ -102,6 +108,7 @@ async def test_get_testimonials(client: AsyncClient, db: AsyncSession) -> None:
 
     response = await client.get("/api/v1/profile/testimonials")
     assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
     data = response.json()
     assert len(data) == 1
     assert data[0]["author_name"] == "John Doe"
@@ -122,6 +129,7 @@ async def test_get_contacts(client: AsyncClient, db: AsyncSession) -> None:
 
     response = await client.get("/api/v1/profile/contacts")
     assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
     data = response.json()
     assert len(data) == 1
     assert data[0]["value"] == "test@example.com"
@@ -137,6 +145,7 @@ async def test_get_resume(client: AsyncClient, db: AsyncSession) -> None:
 
     response = await client.get("/api/v1/profile/resume")
     assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
     data = response.json()
     assert len(data) == 1
     assert data[0]["file_path"] == "/tmp/cv.pdf"
@@ -218,6 +227,7 @@ async def test_get_full_profile_localized(client: AsyncClient, db: AsyncSession)
 
     response = await client.get("/api/v1/profile/full?lang=ru")
     assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
     payload = response.json()
 
     assert payload["experience"][0]["position"] == "Разработчик"

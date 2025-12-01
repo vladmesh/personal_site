@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from typing import Any
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -28,21 +28,28 @@ from app.schemas.profile import (
 
 router = APIRouter(prefix="/profile", tags=["Profile"])
 
+# Cache duration for profile data (1 hour)
+PROFILE_CACHE_MAX_AGE = 3600
+
 
 @router.get("/experience", response_model=list[WorkExperienceRead])
-async def get_work_experience(db: AsyncSession = Depends(get_db)) -> Sequence[WorkExperience]:
+async def get_work_experience(
+    response: Response, db: AsyncSession = Depends(get_db)
+) -> Sequence[WorkExperience]:
     """
     Get all work experience entries with translations and stacks.
     """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
     result = await db.execute(select(WorkExperience).order_by(WorkExperience.start_date.desc()))
     return result.scalars().all()
 
 
 @router.get("/projects", response_model=list[ProjectRead])
-async def get_projects(db: AsyncSession = Depends(get_db)) -> Sequence[Project]:
+async def get_projects(response: Response, db: AsyncSession = Depends(get_db)) -> Sequence[Project]:
     """
     Get all projects with translations and stacks.
     """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
     result = await db.execute(
         select(Project).order_by(Project.is_featured.desc(), Project.start_date.desc())
     )
@@ -50,28 +57,33 @@ async def get_projects(db: AsyncSession = Depends(get_db)) -> Sequence[Project]:
 
 
 @router.get("/stacks", response_model=list[StackRead])
-async def get_stacks(db: AsyncSession = Depends(get_db)) -> Sequence[Stack]:
+async def get_stacks(response: Response, db: AsyncSession = Depends(get_db)) -> Sequence[Stack]:
     """
     Get all tech stacks.
     """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
     result = await db.execute(select(Stack).order_by(Stack.name))
     return result.scalars().all()
 
 
 @router.get("/testimonials", response_model=list[TestimonialRead])
-async def get_testimonials(db: AsyncSession = Depends(get_db)) -> Sequence[Testimonial]:
+async def get_testimonials(
+    response: Response, db: AsyncSession = Depends(get_db)
+) -> Sequence[Testimonial]:
     """
     Get all testimonials with translations.
     """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
     result = await db.execute(select(Testimonial).order_by(Testimonial.date.desc()))
     return result.scalars().all()
 
 
 @router.get("/contacts", response_model=list[ContactRead])
-async def get_contacts(db: AsyncSession = Depends(get_db)) -> Sequence[Contact]:
+async def get_contacts(response: Response, db: AsyncSession = Depends(get_db)) -> Sequence[Contact]:
     """
     Get all visible contacts with translations.
     """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
     result = await db.execute(
         select(Contact).where(Contact.is_visible).order_by(Contact.sort_order)
     )
@@ -79,16 +91,18 @@ async def get_contacts(db: AsyncSession = Depends(get_db)) -> Sequence[Contact]:
 
 
 @router.get("/resume", response_model=list[ResumeRead])
-async def get_resume(db: AsyncSession = Depends(get_db)) -> Sequence[Resume]:
+async def get_resume(response: Response, db: AsyncSession = Depends(get_db)) -> Sequence[Resume]:
     """
     Get active resumes.
     """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
     result = await db.execute(select(Resume).where(Resume.is_active))
     return result.scalars().all()
 
 
 @router.get("/full", response_model=ProfileFullRead)
 async def get_full_profile(
+    response: Response,
     lang: str = Query("en", min_length=2, max_length=5, description="Language code, e.g. en or ru"),
     db: AsyncSession = Depends(get_db),
 ) -> ProfileFullRead:
@@ -96,6 +110,7 @@ async def get_full_profile(
     Aggregate profile data for a specific language.
     Translations fall back to English, then to the first available translation.
     """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
     work_experiences_result = await db.execute(
         select(WorkExperience).order_by(WorkExperience.start_date.desc())
     )
