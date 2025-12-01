@@ -17,6 +17,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+ARG PUBLIC_API_BASE_URL
+ENV PUBLIC_API_BASE_URL=${PUBLIC_API_BASE_URL}
+
 COPY package*.json ./
 RUN npm ci
 
