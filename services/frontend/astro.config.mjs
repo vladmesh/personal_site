@@ -10,9 +10,9 @@ const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 export default defineConfig({
   env: {
     schema: {
-      PUBLIC_API_BASE_URL: envField.string({
+      INTERNAL_API_URL: envField.string({
         context: 'server',
-        access: 'public',
+        access: 'secret',
         optional: false,
       }),
     },

@@ -33,7 +33,7 @@ services:
   frontend:
     image: ghcr.io/vladmesh/personal_site/frontend:latest
     environment:
-      PUBLIC_API_BASE_URL: http://backend:8000
+      INTERNAL_API_URL: http://backend:8000
       HOST: 0.0.0.0
       PORT: 4321
     depends_on:

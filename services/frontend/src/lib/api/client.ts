@@ -1,4 +1,4 @@
-import { PUBLIC_API_BASE_URL } from "astro:env/server";
+import { INTERNAL_API_URL } from "astro:env/server";
 
 const DEFAULT_TIMEOUT_MS = 8000;
 
@@ -14,7 +14,7 @@ export class ApiError extends Error {
   }
 }
 
-const apiBaseUrl = PUBLIC_API_BASE_URL.replace(/\/+$/, "");
+const apiBaseUrl = INTERNAL_API_URL.replace(/\/+$/, "");
 
 type FetchOptions = RequestInit & { timeoutMs?: number };
 
@@ -50,7 +50,7 @@ export async function fetchApi<T>(path: string, options: FetchOptions = {}): Pro
 function buildUrl(path: string): string {
   const base = apiBaseUrl;
   if (!base) {
-    throw new Error("PUBLIC_API_BASE_URL is not set");
+    throw new Error("INTERNAL_API_URL is not set");
   }
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;

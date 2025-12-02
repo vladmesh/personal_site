@@ -38,7 +38,7 @@ services:
       context: ../services/frontend
       dockerfile: Dockerfile
     environment:
-      PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:?PUBLIC_API_BASE_URL is required}
+      INTERNAL_API_URL: ${INTERNAL_API_URL:-http://backend:8000}
     depends_on:
       - backend
     ports:
