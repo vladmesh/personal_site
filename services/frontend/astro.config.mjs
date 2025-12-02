@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { defineConfig } from 'astro/config';
+import { defineConfig, envField } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwind from '@astrojs/tailwind';
 import node from '@astrojs/node';
@@ -8,6 +8,15 @@ import node from '@astrojs/node';
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
+  env: {
+    schema: {
+      PUBLIC_API_BASE_URL: envField.string({
+        context: 'server',
+        access: 'public',
+        optional: false,
+      }),
+    },
+  },
   integrations: [mdx(), tailwind()],
   srcDir: 'src',
   output: 'server',

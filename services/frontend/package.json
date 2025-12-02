@@ -11,10 +11,10 @@
     "lint": "echo 'No lint configured yet'"
   },
   "dependencies": {
-    "@astrojs/mdx": "^3.1.4",
-    "@astrojs/node": "^8.3.4",
-    "@astrojs/tailwind": "^5.1.0",
-    "astro": "^4.16.10",
+    "@astrojs/mdx": "^4.3.12",
+    "@astrojs/node": "^9.5.1",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.16.3",
     "class-variance-authority": "^0.7.0"
   },
   "devDependencies": {

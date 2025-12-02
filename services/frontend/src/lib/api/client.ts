@@ -1,3 +1,5 @@
+import { PUBLIC_API_BASE_URL } from "astro:env/server";
+
 const DEFAULT_TIMEOUT_MS = 8000;
 
 export class ApiError extends Error {
@@ -12,10 +14,7 @@ export class ApiError extends Error {
   }
 }
 
-const apiBaseUrl = (import.meta.env.PUBLIC_API_BASE_URL || (typeof process !== "undefined" ? process.env.PUBLIC_API_BASE_URL : undefined))?.replace(
-  /\/+$/,
-  "",
-);
+const apiBaseUrl = PUBLIC_API_BASE_URL.replace(/\/+$/, "");
 
 type FetchOptions = RequestInit & { timeoutMs?: number };
 
