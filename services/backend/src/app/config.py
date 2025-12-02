@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost", "http://localhost:4321"]
 
+    # Admin
+    ADMIN_USERNAME: str = "admin"
+    ADMIN_PASSWORD: str
+    ADMIN_SECRET_KEY: str
+
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod
     def parse_cors_origins(cls, v: Any) -> list[str]:

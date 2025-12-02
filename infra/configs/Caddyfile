@@ -1,8 +1,15 @@
 vladmesh.dev, www.vladmesh.dev {
   encode zstd gzip
 
-  # Proxy all requests to frontend SSR server
-  reverse_proxy frontend:4321
+  # Admin panel - proxy to backend
+  handle /admin* {
+    reverse_proxy backend:8000
+  }
+
+  # Proxy all other requests to frontend SSR server
+  handle {
+    reverse_proxy frontend:4321
+  }
 
   # Security headers
   header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"

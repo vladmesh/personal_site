@@ -5,7 +5,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 
+from app.admin import setup_admin
 from app.api.v1 import health, profile
 from app.config import settings
 from app.database import engine
@@ -24,7 +26,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    lifespan=lifespan,
 )
+
+# Session middleware for admin authentication
+app.add_middleware(SessionMiddleware, secret_key=settings.ADMIN_SECRET_KEY)
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
@@ -35,6 +41,9 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+# Setup admin panel
+setup_admin(app, engine)
 
 app.include_router(profile.router, prefix=settings.API_V1_STR)
 
