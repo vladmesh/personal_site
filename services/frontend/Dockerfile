@@ -21,6 +21,9 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+# Set a dummy value for build-time validation. 
+# Since context is 'server', the actual value will be read from process.env at runtime.
+ENV PUBLIC_API_BASE_URL="http://build-time-placeholder"
 RUN npm run build
 
 # Production stage
