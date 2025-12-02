@@ -12,6 +12,10 @@ export default defineConfig({
   srcDir: 'src',
   output: 'server',
   adapter: node({ mode: 'standalone' }),
+  server: {
+    host: '0.0.0.0',
+    port: 4321
+  },
   build: {
     format: 'directory'
   },
