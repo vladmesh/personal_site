@@ -1,0 +1,24 @@
+name: Debug SSH
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "Key file size: $(wc -c < ~/.ssh/id_ed25519)"
+          echo "Key file lines: $(wc -l < ~/.ssh/id_ed25519)"
+          echo "Key starts with: $(head -1 ~/.ssh/id_ed25519)"
+          echo "Key ends with: $(tail -1 ~/.ssh/id_ed25519)"
+          ssh-keygen -l -f ~/.ssh/id_ed25519 || echo "Invalid key format"
+          
+      - name: Test SSH connection
+        run: |
+          ssh-keyscan -p ${{ secrets.VPS_SSH_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          ssh -v -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo 'SSH OK'" 2>&1 | head -50
