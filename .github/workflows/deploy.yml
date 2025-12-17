@@ -64,13 +64,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          echo "Key fingerprint:"
-          ssh-keygen -l -f ~/.ssh/id_ed25519 || echo "Invalid key"
           ssh-keyscan -p ${{ secrets.VPS_SSH_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Test SSH
-        run: |
-          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no -o BatchMode=yes ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo SSH OK"
 
       - name: Copy configs to VPS
         run: |
@@ -78,13 +72,14 @@ jobs:
 
       - name: Deploy
         run: |
-          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-            "cd /opt/services/personal_site && \
-            echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' > .env && \
-            echo 'ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}' >> .env && \
-            echo 'ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}' >> .env && \
-            echo 'ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }}' >> .env && \
-            echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin && \
-            docker compose pull && \
-            docker compose up -d && \
-            docker image prune -f"
+          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
+            cd /opt/services/personal_site
+            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" > .env
+            echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
+            echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+            echo "ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }}" >> .env
+            echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            sudo docker compose pull
+            sudo docker compose up -d
+            sudo docker image prune -f
+          '
