@@ -7,8 +7,13 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  BACKEND_IMAGE: ghcr.io/vladmesh/personal_site/backend
-  FRONTEND_IMAGE: ghcr.io/vladmesh/personal_site/frontend
+  # Registry owner derived from the repo, so forks build under their own account.
+  # ghcr requires a lowercase owner; rename here if your GitHub login has capitals.
+  REGISTRY_OWNER: ${{ github.repository_owner }}
+  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/personal_site/backend
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/personal_site/frontend
+  # Public domain Caddy serves and requests a TLS cert for. Change per deployment.
+  SITE_DOMAIN: vladmesh.dev
 
 jobs:
   ci:
@@ -66,9 +71,17 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p ${{ secrets.VPS_SSH_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Bootstrap deploy directory on VPS
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
+            sudo mkdir -p /opt/services/personal_site/configs
+            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /opt/services/personal_site
+          '
+
       - name: Copy configs to VPS
         run: |
-          scp -i ~/.ssh/id_ed25519 -P ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no infra/docker-compose.ansible.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/services/personal_site/docker-compose.yml
+          scp -i ~/.ssh/id_ed25519 -P ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no infra/docker-compose.prod.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/services/personal_site/docker-compose.yml
+          scp -i ~/.ssh/id_ed25519 -P ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no infra/configs/Caddyfile ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/services/personal_site/configs/Caddyfile
 
       - name: Deploy
         run: |
@@ -78,8 +91,23 @@ jobs:
             echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
             echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
             echo "ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }}" >> .env
+            echo "SITE_DOMAIN=${{ env.SITE_DOMAIN }}" >> .env
+            echo "REGISTRY_OWNER=${{ github.repository_owner }}" >> .env
             echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
             sudo docker compose pull
             sudo docker compose up -d
             sudo docker image prune -f
+          '
+
+      - name: Verify deployment
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
+            cd /opt/services/personal_site
+            sleep 45
+            sudo docker compose ps
+            if ! sudo docker compose ps --status running --services | grep -q caddy; then
+              echo "::error::caddy not running after deploy"
+              sudo docker compose logs --tail=80
+              exit 1
+            fi
           '

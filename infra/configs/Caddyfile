@@ -1,4 +1,4 @@
-vladmesh.dev, www.vladmesh.dev {
+{$SITE_DOMAIN}, www.{$SITE_DOMAIN} {
   encode zstd gzip
 
   # Admin panel - proxy to backend
