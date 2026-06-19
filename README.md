@@ -7,8 +7,9 @@
 ```
 personal_site/
 ├── infra/              # Инфраструктура
-│   ├── docker-compose.yml        # Production compose
+│   ├── docker-compose.yml        # Base compose (dev/local build)
 │   ├── docker-compose.dev.yml    # Development override
+│   ├── docker-compose.prod.yml   # Production stack (ghcr images + Caddy)
 │   ├── configs/                  # Конфигурации (Caddy)
 │   └── scripts/                  # Скрипты (init-db.sh)
 ├── services/
@@ -221,9 +222,21 @@ GitHub Actions автоматически запускает при каждом
 
 ## Deployment
 
-Деплой осуществляется через Docker Compose на VPS. Caddy автоматически получает SSL сертификаты от Let's Encrypt.
+Push в `main` (или ручной `workflow_dispatch`) запускает workflow `Deploy`: CI → сборка образов в ghcr → деплой на VPS по SSH. См. [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
-Подробнее: [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md)
+На сервере поднимается self-contained стек [infra/docker-compose.prod.yml](infra/docker-compose.prod.yml): `postgres + backend + frontend + caddy`. Caddy держит 80/443 и сам получает Let's Encrypt сертификат для `SITE_DOMAIN`. Миграции применяются автоматически при старте backend (`alembic upgrade head` в entrypoint).
+
+Чтобы развернуть свой инстанс (форк):
+
+1. **DNS**: A-запись `your-domain` (и `www`) → IP сервера. Если домен на Cloudflare, держи запись DNS-only (серое облако), иначе ACME-челлендж Caddy не пройдёт.
+2. **Параметры** в `deploy.yml`: `SITE_DOMAIN` (твой домен). `REGISTRY_OWNER` выводится из владельца репозитория автоматически (`github.repository_owner`).
+3. **GitHub Secrets**:
+   - доступ к серверу: `VPS_HOST`, `VPS_USER`, `VPS_SSH_PORT`, `VPS_SSH_KEY` (приватный ключ, публичная половина — в `~/.ssh/authorized_keys` на сервере);
+   - приложение: `POSTGRES_PASSWORD`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SECRET_KEY`.
+4. На сервере нужен Docker с Compose v2 и passwordless `sudo` для docker у `VPS_USER`. Каталог `/opt/services/personal_site` workflow создаёт сам.
+5. Push в `main` → через несколько минут сайт живой на `https://your-domain`. Контент правится в админке `https://your-domain/admin` (логин из `ADMIN_*`).
+
+Дорожная карта: [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md)
 
 ## Дорожная карта
 
