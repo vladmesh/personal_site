@@ -3,7 +3,16 @@ name: Deploy
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - 'LICENSE'
   workflow_dispatch:
+
+# Let an in-flight deploy finish before the next one starts; never cancel mid-deploy.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   REGISTRY: ghcr.io
@@ -20,24 +29,41 @@ jobs:
     name: CI
     uses: ./.github/workflows/ci.yml
 
-  build-and-push:
-    name: Build and Push Images
+  # Only rebuild an image whose service actually changed. workflow_dispatch forces both.
+  changes:
+    name: Detect changes
     runs-on: ubuntu-latest
-    needs: ci
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'services/backend/**'
+            frontend:
+              - 'services/frontend/**'
+
+  build-backend:
+    name: Build backend
+    runs-on: ubuntu-latest
+    needs: [ci, changes]
+    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'workflow_dispatch' }}
     permissions:
       contents: read
       packages: write
-
     steps:
       - uses: actions/checkout@v4
-
+      - uses: docker/setup-buildx-action@v3
       - name: Log in to Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build and push backend
         uses: docker/build-push-action@v5
         with:
@@ -46,7 +72,26 @@ jobs:
           target: production
           push: true
           tags: ${{ env.BACKEND_IMAGE }}:latest,${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
 
+  build-frontend:
+    name: Build frontend
+    runs-on: ubuntu-latest
+    needs: [ci, changes]
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch' }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push frontend
         uses: docker/build-push-action@v5
         with:
@@ -55,12 +100,16 @@ jobs:
           target: production
           push: true
           tags: ${{ env.FRONTEND_IMAGE }}:latest,${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
 
   deploy:
     name: Deploy to VPS
     runs-on: ubuntu-latest
-    needs: build-and-push
-
+    needs: [ci, build-backend, build-frontend]
+    # Run as long as CI passed and no build failed. Skipped builds (unchanged
+    # service) are not failures, so an infra-only push still redeploys.
+    if: ${{ !cancelled() && !failure() }}
     steps:
       - uses: actions/checkout@v4
 
@@ -83,9 +132,10 @@ jobs:
           scp -i ~/.ssh/id_ed25519 -P ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no infra/docker-compose.prod.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/services/personal_site/docker-compose.yml
           scp -i ~/.ssh/id_ed25519 -P ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no infra/configs/Caddyfile ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/services/personal_site/configs/Caddyfile
 
-      - name: Deploy
+      - name: Deploy and verify
         run: |
           ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
+            set -e
             cd /opt/services/personal_site
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" > .env
             echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
@@ -97,17 +147,22 @@ jobs:
             sudo docker compose pull
             sudo docker compose up -d
             sudo docker image prune -f
-          '
 
-      - name: Verify deployment
-        run: |
-          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
-            cd /opt/services/personal_site
-            sleep 45
+            echo "Waiting for backend and frontend healthchecks..."
+            for i in $(seq 1 24); do
+              states=$(sudo docker compose ps --format "{{.Service}}={{.Health}}")
+              echo "$states"
+              if echo "$states" | grep -q "backend=healthy" && echo "$states" | grep -q "frontend=healthy"; then
+                echo "Services healthy."
+                break
+              fi
+              if [ "$i" = "24" ]; then
+                echo "::error::services did not become healthy within ~2 min"
+                sudo docker compose ps
+                sudo docker compose logs --tail=80
+                exit 1
+              fi
+              sleep 5
+            done
             sudo docker compose ps
-            if ! sudo docker compose ps --status running --services | grep -q caddy; then
-              echo "::error::caddy not running after deploy"
-              sudo docker compose logs --tail=80
-              exit 1
-            fi
           '

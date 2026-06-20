@@ -16,6 +16,9 @@ services:
 
   # Backend test runner (doesn't start server, just runs commands)
   backend-test:
+    # CI pre-builds and tags this image (cached); compose then reuses it instead
+    # of rebuilding. Locally the image is missing, so compose builds it on first run.
+    image: personal-site-backend-test:latest
     build:
       context: ../services/backend
       dockerfile: Dockerfile
