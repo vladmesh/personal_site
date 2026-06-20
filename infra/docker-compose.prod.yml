@@ -38,6 +38,7 @@ services:
     environment:
       INTERNAL_API_URL: http://backend:8000
       SITE_URL: https://${SITE_DOMAIN:-localhost}
+      SITE_BRAND: ${SITE_BRAND:-Your Name}
       HOST: 0.0.0.0
       PORT: 4321
     depends_on:

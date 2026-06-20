@@ -23,6 +23,8 @@ env:
   FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/personal_site/frontend
   # Public domain Caddy serves and requests a TLS cert for. Change per deployment.
   SITE_DOMAIN: vladmesh.dev
+  # Display name shown in the site header, footer, and meta titles.
+  SITE_BRAND: Vladislav Meshkorudnyj
 
 jobs:
   ci:
@@ -142,6 +144,7 @@ jobs:
             echo "ADMIN_PASSWORD_HASH=${{ secrets.ADMIN_PASSWORD_HASH }}" >> .env
             echo "ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }}" >> .env
             echo "SITE_DOMAIN=${{ env.SITE_DOMAIN }}" >> .env
+            echo "SITE_BRAND=${{ env.SITE_BRAND }}" >> .env
             echo "REGISTRY_OWNER=${{ github.repository_owner }}" >> .env
             echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
             sudo docker compose pull

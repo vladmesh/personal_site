@@ -24,6 +24,13 @@ export default defineConfig({
         optional: true,
         default: 'http://localhost:4321',
       }),
+      // Display name in header, footer, and meta titles. Runtime-overridable.
+      SITE_BRAND: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+        default: 'Your Name',
+      }),
     },
   },
   integrations: [mdx(), tailwind()],
