@@ -31,7 +31,9 @@ class Settings(BaseSettings):
 
     # Admin
     ADMIN_USERNAME: str = "admin"
-    ADMIN_PASSWORD: str
+    # PBKDF2 hash, not a plaintext password. Generate with:
+    #   python -m app.security '<your password>'
+    ADMIN_PASSWORD_HASH: str
     ADMIN_SECRET_KEY: str
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
