@@ -15,6 +15,15 @@ export default defineConfig({
         access: 'secret',
         optional: false,
       }),
+      // Full public origin of the site, used for OG tags and hreflang.
+      // Server-only + secret so it is read at runtime (overridable via compose
+      // env), not inlined at build time.
+      SITE_URL: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+        default: 'http://localhost:4321',
+      }),
     },
   },
   integrations: [mdx(), tailwind()],
@@ -31,7 +40,8 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        '@lib': resolve(projectRoot, 'src/lib')
+        '@lib': resolve(projectRoot, 'src/lib'),
+        '@config': resolve(projectRoot, 'src/config')
       }
     }
   },

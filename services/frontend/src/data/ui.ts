@@ -1,4 +1,10 @@
+import { siteConfig } from '@config/site';
+
 export type UICopy = {
+  home: {
+    metaTitle: string;
+    metaDescription: string;
+  };
   header: {
     brand: string;
     nav: {
@@ -31,8 +37,12 @@ export type UICopy = {
 
 export const uiCopy: Record<'en' | 'ru', UICopy> = {
   en: {
+    home: {
+      metaTitle: `${siteConfig.brand} — Portfolio`,
+      metaDescription: 'Backend engineering, AI agents, and selected projects.'
+    },
     header: {
-      brand: 'Vladislav Meshkorudnyj',
+      brand: siteConfig.brand,
       nav: {
         projects: 'Projects',
         skills: 'Skills',
@@ -53,16 +63,20 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
       detailsLabel: 'View case'
     },
     projectsPage: {
-      metaTitle: 'Projects — Vladislav Meshkorudnyj',
-      metaDescription: 'Portfolio of backend and AI projects shipped by Vladislav Meshkorudnyj.',
+      metaTitle: `Projects — ${siteConfig.brand}`,
+      metaDescription: 'Selected backend, platform, and AI case studies.',
       eyebrow: 'Portfolio',
       title: 'Selected projects',
       intro: 'Case studies of backend, platform, and AI work. Each project includes metrics and stack details.'
     }
   },
   ru: {
+    home: {
+      metaTitle: `${siteConfig.brand} — Портфолио`,
+      metaDescription: 'Backend-разработка, AI-агенты и избранные проекты.'
+    },
     header: {
-      brand: 'Vladislav Meshkorudnyj',
+      brand: siteConfig.brand,
       nav: {
         projects: 'Проекты',
         skills: 'Навыки',
@@ -83,7 +97,7 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
       detailsLabel: 'Подробнее'
     },
     projectsPage: {
-      metaTitle: 'Проекты — Владислав Мешкорудный',
+      metaTitle: `Проекты — ${siteConfig.brand}`,
       metaDescription: 'Портфолио backend и AI проектов.',
       eyebrow: 'Портфолио',
       title: 'Ключевые проекты',

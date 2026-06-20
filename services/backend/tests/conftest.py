@@ -9,10 +9,15 @@ from sqlalchemy.pool import StaticPool
 # Set default env vars for unit testing
 if "TEST_DATABASE_URL" not in os.environ:
     os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///:memory:"
-if "ADMIN_PASSWORD" not in os.environ:
-    os.environ["ADMIN_PASSWORD"] = "test"
 if "ADMIN_SECRET_KEY" not in os.environ:
     os.environ["ADMIN_SECRET_KEY"] = "testsecretkey"
+
+# app.security is stdlib-only and pulls in no settings, so it is safe to import
+# before the env is fully populated. The admin login password for tests is "test".
+from app.security import hash_password
+
+if "ADMIN_PASSWORD_HASH" not in os.environ:
+    os.environ["ADMIN_PASSWORD_HASH"] = hash_password("test")
 
 from app.database import Base, get_db
 from app.main import app

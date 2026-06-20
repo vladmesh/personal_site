@@ -1,5 +1,6 @@
 ---
 import type { ContactsResult } from '@lib/profile/contacts';
+import { siteConfig } from '@config/site';
 const { lang = 'en', copy, contacts } = Astro.props as {
   lang: 'en' | 'ru';
   copy: {
@@ -19,7 +20,7 @@ const socials = [
 ---
 <footer class="border-t border-white/10 bg-slate-950/80 py-8">
   <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-    <p>© {new Date().getFullYear()} Vlad. {copy.rights}</p>
+    <p>© {new Date().getFullYear()} {siteConfig.brand}. {copy.rights}</p>
     <nav class="flex flex-wrap gap-4">
       {socials.map((item) => (
         <a href={item.href} target="_blank" rel="noreferrer">
