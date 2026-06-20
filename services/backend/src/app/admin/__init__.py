@@ -6,6 +6,7 @@ from app.admin.auth import AdminAuth
 from app.admin.views import (
     ContactAdmin,
     ContactTranslationAdmin,
+    OfferAdmin,
     ProjectAdmin,
     ProjectTranslationAdmin,
     ResumeAdmin,
@@ -41,6 +42,7 @@ def setup_admin(app, engine) -> Admin:  # type: ignore[no-untyped-def]
     admin.add_view(StackAdmin)
     admin.add_view(ResumeAdmin)
     admin.add_view(SiteContentAdmin)
+    admin.add_view(OfferAdmin)
 
     return admin
 

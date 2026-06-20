@@ -8,6 +8,7 @@ export type UICopy = {
   header: {
     brand: string;
     nav: {
+      offer: string;
       projects: string;
       skills: string;
       testimonials: string;
@@ -44,7 +45,8 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
     header: {
       brand: siteConfig.brand,
       nav: {
-        projects: 'Projects',
+        offer: 'Offer',
+        projects: 'Work',
         skills: 'Skills',
         testimonials: 'Testimonials',
         contact: 'Contact'
@@ -78,7 +80,8 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
     header: {
       brand: siteConfig.brand,
       nav: {
-        projects: 'Проекты',
+        offer: 'Оффер',
+        projects: 'Работы',
         skills: 'Навыки',
         testimonials: 'Отзывы',
         contact: 'Контакты'

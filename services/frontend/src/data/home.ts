@@ -5,8 +5,12 @@ export type HomeCopy = {
     subtitle: string;
     ctaPrimary: string;
     ctaSecondary: string;
-    cvHref: string;
-    contactHref: string;
+    // Primary CTA target. Empty string => the button opens the contact modal.
+    // Set to an anchor like "#offer" (see offerVisible) to repoint it without
+    // touching the component.
+    primaryHref: string;
+    // Secondary CTA target (CV download).
+    secondaryHref: string;
   };
   about: {
     title: string;
@@ -68,6 +72,8 @@ type HomeOverrides = {
   experience?: HomeCopy["experience"];
   resumeHref?: string;
   siteContent?: SiteContentCopy | null;
+  // When the offer block is visible, point the hero primary CTA at it.
+  offerVisible?: boolean;
 };
 
 const baseHomeCopy = {
@@ -76,8 +82,8 @@ const baseHomeCopy = {
       eyebrow: "",
       greeting: "Your headline",
       subtitle: "A short subtitle about what you do.",
-      ctaPrimary: "Download CV (EN)",
-      ctaSecondary: "Contact me",
+      ctaPrimary: "Contact me",
+      ctaSecondary: "Download CV",
     },
     about: {
       title: "About",
@@ -89,7 +95,7 @@ const baseHomeCopy = {
       items: [],
     },
     projects: {
-      title: "Projects",
+      title: "Work",
       ctaLabel: "All projects",
       ctaHref: "/en/projects",
     },
@@ -113,8 +119,8 @@ const baseHomeCopy = {
       eyebrow: "",
       greeting: "Ваш заголовок",
       subtitle: "Короткий подзаголовок о том, чем вы занимаетесь.",
-      ctaPrimary: "Скачать CV (RU)",
-      ctaSecondary: "Написать мне",
+      ctaPrimary: "Написать мне",
+      ctaSecondary: "Скачать CV",
     },
     about: {
       title: "Обо мне",
@@ -126,7 +132,7 @@ const baseHomeCopy = {
       items: [],
     },
     projects: {
-      title: "Проекты",
+      title: "Работы",
       ctaLabel: "Все проекты",
       ctaHref: "/ru/projects",
     },
@@ -146,7 +152,7 @@ const baseHomeCopy = {
     },
   },
 } as const satisfies Record<"en" | "ru", Omit<HomeCopy, "hero" | "contact"> & {
-  hero: Omit<HomeCopy["hero"], "cvHref" | "contactHref">;
+  hero: Omit<HomeCopy["hero"], "primaryHref" | "secondaryHref">;
   contact: Omit<HomeCopy["contact"], "description">;
 }>;
 
@@ -165,8 +171,8 @@ export function buildHomeCopy(
       eyebrow: sc?.hero.eyebrow ?? base.hero.eyebrow,
       greeting: sc?.hero.greeting ?? base.hero.greeting,
       subtitle: sc?.hero.subtitle ?? base.hero.subtitle,
-      cvHref: overrides.resumeHref ?? siteConfig.cv[lang],
-      contactHref: contactInfo.primaryContactHref ?? contactInfo.telegramHref,
+      primaryHref: overrides.offerVisible ? "#offer" : "",
+      secondaryHref: overrides.resumeHref ?? siteConfig.cv[lang],
     },
     about: sc?.about ?? base.about,
     contact: {

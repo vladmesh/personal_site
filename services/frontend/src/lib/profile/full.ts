@@ -76,6 +76,7 @@ type ProfileFullResponse = {
   contacts: ApiContact[];
   resumes: ApiResume[];
   site_content: ApiSiteContent | null;
+  offer: ApiOffer | null;
 };
 
 type ApiSiteContent = {
@@ -84,6 +85,18 @@ type ApiSiteContent = {
   hero_subtitle: string;
   about_title: string;
   about_body: string;
+};
+
+type ApiOffer = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  body: string;
+  bullets: string;
+  price: string;
+  timeline: string;
+  cta_label: string;
+  cta_href: string;
 };
 
 export type FrontProject = {
@@ -111,6 +124,18 @@ export type TestimonialEntry = {
   url?: string;
 };
 
+export type FrontOffer = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  body: string[];
+  bullets: string[];
+  price: string;
+  timeline: string;
+  ctaLabel: string;
+  ctaHref: string;
+};
+
 export type ProfileData = {
   experience: HomeCopy["experience"];
   projects: FrontProject[];
@@ -119,6 +144,7 @@ export type ProfileData = {
   contacts: ContactsResult;
   resumes: Record<Lang, string | undefined>;
   siteContent: SiteContentCopy | null;
+  offer: FrontOffer | null;
 };
 
 const CONTACT_SECTION_LABELS: Record<Lang, Record<string, string>> = {
@@ -172,6 +198,22 @@ export async function fetchProfile(lang: Lang): Promise<ProfileData> {
     contacts,
     resumes: resumeMap,
     siteContent: buildSiteContent(payload.site_content),
+    offer: buildOffer(payload.offer),
+  };
+}
+
+function buildOffer(offer: ApiOffer | null): FrontOffer | null {
+  if (!offer) return null;
+  return {
+    eyebrow: offer.eyebrow,
+    title: offer.title,
+    subtitle: offer.subtitle,
+    body: splitLines(offer.body),
+    bullets: splitLines(offer.bullets),
+    price: offer.price,
+    timeline: offer.timeline,
+    ctaLabel: offer.cta_label,
+    ctaHref: offer.cta_href,
   };
 }
 

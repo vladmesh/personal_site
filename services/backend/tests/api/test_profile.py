@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.v1.profile import PROFILE_CACHE_MAX_AGE
 from app.models.contact import Contact, ContactTranslation
+from app.models.offer import Offer
 from app.models.project import Project, ProjectTranslation
 from app.models.resume import Resume
 from app.models.site_content import SiteContent
@@ -295,3 +296,65 @@ async def test_full_profile_site_content_absent(client: AsyncClient, db: AsyncSe
     response = await client.get("/api/v1/profile/full?lang=en")
     assert response.status_code == 200
     assert response.json()["site_content"] is None
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_get_offer(client: AsyncClient, db: AsyncSession) -> None:
+    db.add_all(
+        [
+            Offer(language_code="en", is_visible=True, title="Health Check"),
+            Offer(language_code="ru", is_visible=False, title="Аудит"),
+        ]
+    )
+    await db.commit()
+
+    response = await client.get("/api/v1/profile/offer")
+    assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
+    data = response.json()
+    # Standalone endpoint returns every row, including hidden ones.
+    assert len(data) == 2
+    assert {row["language_code"] for row in data} == {"en", "ru"}
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_full_profile_offer_visible(client: AsyncClient, db: AsyncSession) -> None:
+    db.add(
+        Offer(
+            language_code="en",
+            is_visible=True,
+            title="Health Check",
+            body="Para one\nPara two",
+            bullets="One\nTwo",
+        )
+    )
+    await db.commit()
+
+    response = await client.get("/api/v1/profile/full?lang=en")
+    assert response.status_code == 200
+    offer = response.json()["offer"]
+    assert offer is not None
+    assert offer["title"] == "Health Check"
+    assert offer["body"] == "Para one\nPara two"
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_full_profile_offer_hidden(client: AsyncClient, db: AsyncSession) -> None:
+    # A row exists but is hidden: /full must omit it so the page renders without the block.
+    db.add(Offer(language_code="en", is_visible=False, title="Health Check"))
+    await db.commit()
+
+    response = await client.get("/api/v1/profile/full?lang=en")
+    assert response.status_code == 200
+    assert response.json()["offer"] is None
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_full_profile_offer_absent(client: AsyncClient, db: AsyncSession) -> None:
+    response = await client.get("/api/v1/profile/full?lang=en")
+    assert response.status_code == 200
+    assert response.json()["offer"] is None

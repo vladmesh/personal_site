@@ -1,0 +1,64 @@
+---
+import type { FrontOffer } from '@lib/profile/full';
+const { lang = 'en', offer } = Astro.props as {
+  lang: 'en' | 'ru';
+  offer: FrontOffer;
+};
+const priceLabel = lang === 'ru' ? 'Цена' : 'Price';
+const timelineLabel = lang === 'ru' ? 'Срок' : 'Timeline';
+const ctaFallback = lang === 'ru' ? 'Связаться' : 'Get in touch';
+const ctaLabel = offer.ctaLabel || ctaFallback;
+const ctaExternal = offer.ctaHref.startsWith('http');
+const ctaClass =
+  'inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand/30 transition hover:bg-brand-dark';
+---
+<section id="offer" class="mt-16 rounded-3xl border border-brand/40 bg-brand/5 p-8">
+  {offer.eyebrow && (
+    <p class="text-sm uppercase tracking-[0.3em] text-brand-light/80">{offer.eyebrow}</p>
+  )}
+  <h2 class="mt-2 text-3xl font-semibold text-white">{offer.title}</h2>
+  {offer.subtitle && (
+    <p class="mt-3 max-w-2xl text-lg text-slate-300">{offer.subtitle}</p>
+  )}
+  {offer.body.length > 0 && (
+    <div class="mt-4 space-y-3 text-slate-300">
+      {offer.body.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </div>
+  )}
+  {offer.bullets.length > 0 && (
+    <ul class="mt-5 grid gap-2 text-slate-200 sm:grid-cols-2">
+      {offer.bullets.map((bullet) => (
+        <li class="flex gap-2">
+          <span class="text-brand-light">—</span>
+          <span>{bullet}</span>
+        </li>
+      ))}
+    </ul>
+  )}
+  {(offer.price || offer.timeline) && (
+    <div class="mt-6 flex flex-wrap gap-6 text-sm text-slate-400">
+      {offer.price && (
+        <div><span class="text-slate-500">{priceLabel}: </span>{offer.price}</div>
+      )}
+      {offer.timeline && (
+        <div><span class="text-slate-500">{timelineLabel}: </span>{offer.timeline}</div>
+      )}
+    </div>
+  )}
+  <div class="mt-6">
+    {offer.ctaHref ? (
+      <a
+        href={offer.ctaHref}
+        target={ctaExternal ? '_blank' : undefined}
+        rel={ctaExternal ? 'noopener noreferrer' : undefined}
+        class={ctaClass}
+      >
+        {ctaLabel}
+      </a>
+    ) : (
+      <button type="button" class={ctaClass} data-open-contact>{ctaLabel}</button>
+    )}
+  </div>
+</section>
