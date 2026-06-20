@@ -116,6 +116,24 @@ class SiteContentRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+# --- Offer ---
+class OfferRead(BaseModel):
+    id: uuid.UUID
+    language_code: str
+    is_visible: bool
+    eyebrow: str
+    title: str
+    subtitle: str
+    body: str
+    bullets: str
+    price: str
+    timeline: str
+    cta_label: str
+    cta_href: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 # --- Resume ---
 class ResumeRead(BaseModel):
     id: uuid.UUID
@@ -193,6 +211,20 @@ class LocalizedSiteContentRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class LocalizedOfferRead(BaseModel):
+    eyebrow: str
+    title: str
+    subtitle: str
+    body: str
+    bullets: str
+    price: str
+    timeline: str
+    cta_label: str
+    cta_href: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ProfileFullRead(BaseModel):
     experience: list[LocalizedWorkExperienceRead]
     projects: list[LocalizedProjectRead]
@@ -201,3 +233,4 @@ class ProfileFullRead(BaseModel):
     contacts: list[LocalizedContactRead]
     resumes: list[ResumeRead]
     site_content: LocalizedSiteContentRead | None = None
+    offer: LocalizedOfferRead | None = None

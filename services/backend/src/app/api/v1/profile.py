@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
 from app.models.contact import Contact
+from app.models.offer import Offer
 from app.models.project import Project
 from app.models.resume import Resume
 from app.models.site_content import SiteContent
@@ -16,10 +17,12 @@ from app.models.work_experience import WorkExperience
 from app.schemas.profile import (
     ContactRead,
     LocalizedContactRead,
+    LocalizedOfferRead,
     LocalizedProjectRead,
     LocalizedSiteContentRead,
     LocalizedTestimonialRead,
     LocalizedWorkExperienceRead,
+    OfferRead,
     ProfileFullRead,
     ProjectRead,
     ResumeRead,
@@ -105,6 +108,16 @@ async def get_site_content(
     return result.scalars().all()
 
 
+@router.get("/offer", response_model=list[OfferRead])
+async def get_offer(response: Response, db: AsyncSession = Depends(get_db)) -> Sequence[Offer]:
+    """
+    Get the homepage offer block, one row per language (including hidden ones).
+    """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
+    result = await db.execute(select(Offer).order_by(Offer.language_code))
+    return result.scalars().all()
+
+
 @router.get("/resume", response_model=list[ResumeRead])
 async def get_resume(response: Response, db: AsyncSession = Depends(get_db)) -> Sequence[Resume]:
     """
@@ -141,6 +154,7 @@ async def get_full_profile(
         select(Resume).where(Resume.is_active).order_by(Resume.language_code)
     )
     site_content_result = await db.execute(select(SiteContent))
+    offer_result = await db.execute(select(Offer))
 
     work_experiences = [
         _serialize_work_experience(entry, lang) for entry in work_experiences_result.scalars().all()
@@ -156,6 +170,12 @@ async def get_full_profile(
     site_content = (
         LocalizedSiteContentRead.model_validate(site_content_row) if site_content_row else None
     )
+    offer_row = _pick_translation(offer_result.scalars().all(), lang)
+    offer = (
+        LocalizedOfferRead.model_validate(offer_row)
+        if offer_row and offer_row.is_visible
+        else None
+    )
 
     return ProfileFullRead(
         experience=work_experiences,
@@ -165,6 +185,7 @@ async def get_full_profile(
         contacts=contacts,
         resumes=resumes,
         site_content=site_content,
+        offer=offer,
     )
 
 

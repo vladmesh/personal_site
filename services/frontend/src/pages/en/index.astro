@@ -28,7 +28,8 @@ const content = buildHomeCopy(
   {
     experience: profile.experience,
     resumeHref: profile.resumes[lang],
-    siteContent: profile.siteContent
+    siteContent: profile.siteContent,
+    offerVisible: Boolean(profile.offer)
   }
 );
 ---
@@ -38,6 +39,7 @@ const content = buildHomeCopy(
   lang={lang}
   ogImage="/og/home_en.png"
   contacts={contacts}
+  showOffer={Boolean(profile.offer)}
 >
   <Hero lang={lang} content={content.hero} />
   <HomeSections
@@ -46,5 +48,6 @@ const content = buildHomeCopy(
     projects={profile.projects}
     skills={profile.skills}
     quotes={profile.testimonials}
+    offer={profile.offer}
   />
 </BaseLayout>

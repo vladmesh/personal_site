@@ -1,16 +1,18 @@
 ---
+import Offer from '@components/Offer.astro';
 import ProjectCard from '@components/ProjectCard.astro';
 import Skills from '@components/Skills.astro';
 import Testimonials from '@components/Testimonials.astro';
 import type { HomeCopy } from '@data/home';
-import type { SkillGroup, TestimonialEntry } from '@lib/profile/full';
+import type { FrontOffer, SkillGroup, TestimonialEntry } from '@lib/profile/full';
 
-const { lang = 'en', content, projects = [], skills = [], quotes = [] } = Astro.props as {
+const { lang = 'en', content, projects = [], skills = [], quotes = [], offer = null } = Astro.props as {
   lang: 'en' | 'ru';
   content: HomeCopy;
   projects: any[];
   skills: SkillGroup[];
   quotes: TestimonialEntry[];
+  offer?: FrontOffer | null;
 };
 ---
 <section id="about" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
@@ -21,6 +23,8 @@ const { lang = 'en', content, projects = [], skills = [], quotes = [] } = Astro.
     ))}
   </div>
 </section>
+
+{offer && <Offer lang={lang} offer={offer} />}
 
 <section id="experience" class="mt-16">
   <details class="rounded-3xl border border-white/10 bg-white/5 p-6" open>

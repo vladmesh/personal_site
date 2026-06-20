@@ -5,6 +5,7 @@ from sqladmin import ModelView
 from app.models import (
     Contact,
     ContactTranslation,
+    Offer,
     Project,
     ProjectTranslation,
     Resume,
@@ -263,6 +264,36 @@ class SiteContentAdmin(ModelView, model=SiteContent):
     name = "Site Content"
     name_plural = "Site Content"
     icon = "fa-solid fa-house"
+
+
+class OfferAdmin(ModelView, model=Offer):
+    """Admin view for Offer (homepage offer block, one row per language)."""
+
+    column_list = [
+        Offer.id,
+        Offer.language_code,
+        Offer.is_visible,
+        Offer.title,
+    ]
+    column_searchable_list = [Offer.language_code, Offer.title]
+    column_sortable_list = [Offer.language_code, Offer.is_visible]
+    column_default_sort = "language_code"
+    form_columns = [
+        Offer.language_code,
+        Offer.is_visible,
+        Offer.eyebrow,
+        Offer.title,
+        Offer.subtitle,
+        Offer.body,
+        Offer.bullets,
+        Offer.price,
+        Offer.timeline,
+        Offer.cta_label,
+        Offer.cta_href,
+    ]
+    name = "Offer"
+    name_plural = "Offer"
+    icon = "fa-solid fa-bullhorn"
 
 
 class ResumeAdmin(ModelView, model=Resume):
