@@ -5,6 +5,8 @@ services/backend/.pytest_cache/
 services/backend/.mypy_cache/
 services/backend/.ruff_cache/
 services/backend/src/**/__pycache__/
+services/backend/.coverage
+services/backend/htmlcov/
 *.pyc
 *.pyo
 *.pyd
