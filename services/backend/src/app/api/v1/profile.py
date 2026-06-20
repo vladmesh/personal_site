@@ -9,6 +9,7 @@ from app.database import get_db
 from app.models.contact import Contact
 from app.models.project import Project
 from app.models.resume import Resume
+from app.models.site_content import SiteContent
 from app.models.stack import Stack
 from app.models.testimonial import Testimonial
 from app.models.work_experience import WorkExperience
@@ -16,11 +17,13 @@ from app.schemas.profile import (
     ContactRead,
     LocalizedContactRead,
     LocalizedProjectRead,
+    LocalizedSiteContentRead,
     LocalizedTestimonialRead,
     LocalizedWorkExperienceRead,
     ProfileFullRead,
     ProjectRead,
     ResumeRead,
+    SiteContentRead,
     StackRead,
     TestimonialRead,
     WorkExperienceRead,
@@ -90,6 +93,18 @@ async def get_contacts(response: Response, db: AsyncSession = Depends(get_db)) -
     return result.scalars().all()
 
 
+@router.get("/site-content", response_model=list[SiteContentRead])
+async def get_site_content(
+    response: Response, db: AsyncSession = Depends(get_db)
+) -> Sequence[SiteContent]:
+    """
+    Get homepage hero/about copy, one row per language.
+    """
+    response.headers["Cache-Control"] = f"public, max-age={PROFILE_CACHE_MAX_AGE}"
+    result = await db.execute(select(SiteContent).order_by(SiteContent.language_code))
+    return result.scalars().all()
+
+
 @router.get("/resume", response_model=list[ResumeRead])
 async def get_resume(response: Response, db: AsyncSession = Depends(get_db)) -> Sequence[Resume]:
     """
@@ -125,6 +140,7 @@ async def get_full_profile(
     resumes_result = await db.execute(
         select(Resume).where(Resume.is_active).order_by(Resume.language_code)
     )
+    site_content_result = await db.execute(select(SiteContent))
 
     work_experiences = [
         _serialize_work_experience(entry, lang) for entry in work_experiences_result.scalars().all()
@@ -136,6 +152,10 @@ async def get_full_profile(
     ]
     contacts = [_serialize_contact(entry, lang) for entry in contacts_result.scalars().all()]
     resumes = [ResumeRead.model_validate(entry) for entry in resumes_result.scalars().all()]
+    site_content_row = _pick_translation(site_content_result.scalars().all(), lang)
+    site_content = (
+        LocalizedSiteContentRead.model_validate(site_content_row) if site_content_row else None
+    )
 
     return ProfileFullRead(
         experience=work_experiences,
@@ -144,6 +164,7 @@ async def get_full_profile(
         testimonials=testimonials,
         contacts=contacts,
         resumes=resumes,
+        site_content=site_content,
     )
 
 

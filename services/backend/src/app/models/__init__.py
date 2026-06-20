@@ -1,6 +1,7 @@
 from app.models.contact import Contact, ContactTranslation
 from app.models.project import Project, ProjectTranslation, project_stacks
 from app.models.resume import Resume
+from app.models.site_content import SiteContent
 from app.models.stack import Stack
 from app.models.testimonial import Testimonial, TestimonialTranslation
 from app.models.work_experience import (
@@ -16,6 +17,7 @@ __all__ = [
     "ProjectTranslation",
     "project_stacks",
     "Resume",
+    "SiteContent",
     "Stack",
     "Testimonial",
     "TestimonialTranslation",
