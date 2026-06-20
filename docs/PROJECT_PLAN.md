@@ -46,9 +46,9 @@
 - **UI-лейблы** (навигация, заголовки секций, CTA) — i18n-строки в коде.
 
 Разбивка по PR:
-- [ ] **PR 1 — зачистка и siteConfig** (ветка `chore/templatize-site-config`): удалён легаси `site/`; `links.ts`/`ui.ts`/analytics/мета сведены в `siteConfig` с нейтральными плейсхолдерами и env-домен через `SITE_URL`; чинит баг двойного `@` в email. Остаётся только нарратив Hero/About в `home.ts` (→ PR 2).
-- [ ] **PR 2 — Hero/About в backend**: модель `SiteContent` (per-locale: eyebrow, greeting, subtitle, about-заголовок и абзацы) + отдача в `/full` + sqladmin-вьюшка + провод в `home.ts`; удалить захардкоженный текст. После этого вся главная редактируется через `/admin`.
-- [ ] **PR 3 — обезличить seed**: убрать персональные данные из `seed_contacts_data.py` / `seed_profile_content.py` (или вынести в опциональный example-seed), чтобы чистая БД поднималась пустой.
+- [x] **PR 1 — зачистка и siteConfig** (PR #12, в проде): удалён легаси `site/`; `links.ts`/`ui.ts`/analytics/мета сведены в `siteConfig` с нейтральными плейсхолдерами и env-домен через `SITE_URL`; чинит баг двойного `@` в email. Бренд — плейсхолдер `Your Name` (по решению — оставлен, вернём в PR 2).
+- [~] **PR 2 — Hero/About в backend** (ветка `feat/site-content-hero-about`): модель `SiteContent` (per-locale: eyebrow, greeting, subtitle, about-заголовок и абзацы) + эндпоинт `/site-content` и поле в `/full` + sqladmin-вьюшка + провод в `home.ts`; захардкоженный нарратив убран, в коде остались нейтральные плейсхолдеры. После деплоя Hero/About редактируются через `/admin` (до заполнения на проде покажутся плейсхолдеры).
+- [ ] **PR 3 — обезличить seed**: убрать персональные данные из `seed_contacts_data.py` / `seed_profile_content.py` (или вынести в опциональный example-seed); заодно опциональный seed для `site_content`, чтобы чистая БД поднималась пустой/с примером.
 
 ### 1. Контент (Приоритет: ПОСЛЕ шаблонизации)
 P0 воронки: сайт живой, но контент — заглушки. Правится в `/admin` без передеплоя.

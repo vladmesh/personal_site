@@ -103,6 +103,19 @@ class ContactRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+# --- Site Content ---
+class SiteContentRead(BaseModel):
+    id: uuid.UUID
+    language_code: str
+    hero_eyebrow: str
+    hero_greeting: str
+    hero_subtitle: str
+    about_title: str
+    about_body: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 # --- Resume ---
 class ResumeRead(BaseModel):
     id: uuid.UUID
@@ -170,6 +183,16 @@ class LocalizedContactRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class LocalizedSiteContentRead(BaseModel):
+    hero_eyebrow: str
+    hero_greeting: str
+    hero_subtitle: str
+    about_title: str
+    about_body: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class ProfileFullRead(BaseModel):
     experience: list[LocalizedWorkExperienceRead]
     projects: list[LocalizedProjectRead]
@@ -177,3 +200,4 @@ class ProfileFullRead(BaseModel):
     testimonials: list[LocalizedTestimonialRead]
     contacts: list[LocalizedContactRead]
     resumes: list[ResumeRead]
+    site_content: LocalizedSiteContentRead | None = None

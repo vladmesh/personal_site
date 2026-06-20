@@ -59,25 +59,29 @@ export type ContactCopyInfo = {
   primaryContactHref?: string;
 };
 
+export type SiteContentCopy = {
+  hero: { eyebrow: string; greeting: string; subtitle: string };
+  about: { title: string; paragraphs: string[] };
+};
+
 type HomeOverrides = {
   experience?: HomeCopy["experience"];
   resumeHref?: string;
+  siteContent?: SiteContentCopy | null;
 };
 
 const baseHomeCopy = {
   en: {
     hero: {
-      eyebrow: "Development / Mentorship",
-      greeting: "Hi! I'm Vlad — a developer and mentor.",
-      subtitle: "I build backends, set up pipelines, and integrate LLM agents.",
+      eyebrow: "",
+      greeting: "Your headline",
+      subtitle: "A short subtitle about what you do.",
       ctaPrimary: "Download CV (EN)",
       ctaSecondary: "Contact me",
     },
     about: {
-      title: "About me",
-      paragraphs: [
-        "For six years I've been writing software and teaching others to write it — mostly in Python. Sometimes as part of a large team, sometimes solo end-to-end. More often it's backend (DRF, FastAPI, SQLAlchemy), sometimes bots, scripts, scrapers, and desktop apps. Over the last year I’ve shifted to AI agents: chatbots, RAG, MCP, and agentic pipelines. I enjoy projects that align with my interests and values: education, AI safety, open data, and mental health. Here you can browse examples of my projects and my work experience, as well as read feedback from clients and students. I’m open to opportunities — feel free to reach out via the contacts below (or above).",
-      ],
+      title: "About",
+      paragraphs: [],
     },
     experience: {
       title: "Experience",
@@ -106,17 +110,15 @@ const baseHomeCopy = {
   },
   ru: {
     hero: {
-      eyebrow: "Разработка / Менторство",
-      greeting: "Привет! Я Влад — разработчик и ментор.",
-      subtitle: "Пишу бэкенды, настраиваю пайплайны, интегрирую LLM-агентов.",
+      eyebrow: "",
+      greeting: "Ваш заголовок",
+      subtitle: "Короткий подзаголовок о том, чем вы занимаетесь.",
       ctaPrimary: "Скачать CV (RU)",
       ctaSecondary: "Написать мне",
     },
     about: {
       title: "Обо мне",
-      paragraphs: [
-        "Шесть лет я занимаюсь тем, что пишу софт и учу других писать софт. Большей частью на Python. Иногда в составе большой команды, иногда самостоятельно под ключ. Чаще это бэкенд (DRF, FastAPI, SQLAlchemy), иногда боты, скрипты, парсеры и десктопные приложения. Последний год переключился на работу с AI-агентами. Чат-боты, RAG, MCP, агентские пайплайны. Больше всего люблю работать над проектами, которые хорошо согласуются с моими интересами и ценностями. Образование, AI-safety, открытые данные, mental health. На этом сайте можно увидеть примеры моих проектов и ознакомиться с моим опытом работы. А также почитать отзывы моих клиентов и учеников. Я открыт к предложениям, связаться со мной можно по контактам ниже (или выше)",
-      ],
+      paragraphs: [],
     },
     experience: {
       title: "Опыт работы",
@@ -154,14 +156,19 @@ export function buildHomeCopy(
   overrides: HomeOverrides = {},
 ): HomeCopy {
   const base = baseHomeCopy[lang];
+  const sc = overrides.siteContent;
 
   return {
     ...base,
     hero: {
       ...base.hero,
+      eyebrow: sc?.hero.eyebrow ?? base.hero.eyebrow,
+      greeting: sc?.hero.greeting ?? base.hero.greeting,
+      subtitle: sc?.hero.subtitle ?? base.hero.subtitle,
       cvHref: overrides.resumeHref ?? siteConfig.cv[lang],
       contactHref: contactInfo.primaryContactHref ?? contactInfo.telegramHref,
     },
+    about: sc?.about ?? base.about,
     contact: {
       ...base.contact,
       description: buildContactDescription(lang, contactInfo),

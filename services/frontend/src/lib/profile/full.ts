@@ -1,7 +1,7 @@
 import { fetchApi } from "@lib/api/client";
 import { prettifyType } from "@lib/profile/contacts";
 import type { ContactLink, ContactsResult } from "@lib/profile/contacts";
-import type { HomeCopy } from "@data/home";
+import type { HomeCopy, SiteContentCopy } from "@data/home";
 
 type Lang = "en" | "ru";
 
@@ -75,6 +75,15 @@ type ProfileFullResponse = {
   testimonials: ApiTestimonial[];
   contacts: ApiContact[];
   resumes: ApiResume[];
+  site_content: ApiSiteContent | null;
+};
+
+type ApiSiteContent = {
+  hero_eyebrow: string;
+  hero_greeting: string;
+  hero_subtitle: string;
+  about_title: string;
+  about_body: string;
 };
 
 export type FrontProject = {
@@ -109,6 +118,7 @@ export type ProfileData = {
   testimonials: TestimonialEntry[];
   contacts: ContactsResult;
   resumes: Record<Lang, string | undefined>;
+  siteContent: SiteContentCopy | null;
 };
 
 const CONTACT_SECTION_LABELS: Record<Lang, Record<string, string>> = {
@@ -161,6 +171,22 @@ export async function fetchProfile(lang: Lang): Promise<ProfileData> {
     testimonials: buildTestimonials(payload.testimonials, lang),
     contacts,
     resumes: resumeMap,
+    siteContent: buildSiteContent(payload.site_content),
+  };
+}
+
+function buildSiteContent(content: ApiSiteContent | null): SiteContentCopy | null {
+  if (!content) return null;
+  return {
+    hero: {
+      eyebrow: content.hero_eyebrow,
+      greeting: content.hero_greeting,
+      subtitle: content.hero_subtitle,
+    },
+    about: {
+      title: content.about_title,
+      paragraphs: splitLines(content.about_body),
+    },
   };
 }
 

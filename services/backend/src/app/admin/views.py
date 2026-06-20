@@ -8,6 +8,7 @@ from app.models import (
     Project,
     ProjectTranslation,
     Resume,
+    SiteContent,
     Stack,
     Testimonial,
     TestimonialTranslation,
@@ -238,6 +239,30 @@ class StackAdmin(ModelView, model=Stack):
     name = "Stack"
     name_plural = "Stacks"
     icon = "fa-solid fa-layer-group"
+
+
+class SiteContentAdmin(ModelView, model=SiteContent):
+    """Admin view for SiteContent (homepage hero/about copy, one row per language)."""
+
+    column_list = [
+        SiteContent.id,
+        SiteContent.language_code,
+        SiteContent.hero_greeting,
+    ]
+    column_searchable_list = [SiteContent.language_code]
+    column_sortable_list = [SiteContent.language_code]
+    column_default_sort = "language_code"
+    form_columns = [
+        SiteContent.language_code,
+        SiteContent.hero_eyebrow,
+        SiteContent.hero_greeting,
+        SiteContent.hero_subtitle,
+        SiteContent.about_title,
+        SiteContent.about_body,
+    ]
+    name = "Site Content"
+    name_plural = "Site Content"
+    icon = "fa-solid fa-house"
 
 
 class ResumeAdmin(ModelView, model=Resume):

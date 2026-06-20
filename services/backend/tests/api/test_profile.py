@@ -8,6 +8,7 @@ from app.api.v1.profile import PROFILE_CACHE_MAX_AGE
 from app.models.contact import Contact, ContactTranslation
 from app.models.project import Project, ProjectTranslation
 from app.models.resume import Resume
+from app.models.site_content import SiteContent
 from app.models.stack import Stack
 from app.models.testimonial import Testimonial as TestimonialModel
 from app.models.testimonial import TestimonialTranslation
@@ -235,3 +236,62 @@ async def test_get_full_profile_localized(client: AsyncClient, db: AsyncSession)
     assert payload["testimonials"][0]["content"] == "Отзыв"
     assert payload["contacts"][0]["label"] == "Почта"
     assert payload["resumes"][0]["language_code"] == "ru"
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_get_site_content(client: AsyncClient, db: AsyncSession) -> None:
+    db.add_all(
+        [
+            SiteContent(
+                language_code="en",
+                hero_greeting="Hi there",
+                hero_subtitle="I build things",
+                about_title="About",
+                about_body="Line one\nLine two",
+            ),
+            SiteContent(language_code="ru", hero_greeting="Привет"),
+        ]
+    )
+    await db.commit()
+
+    response = await client.get("/api/v1/profile/site-content")
+    assert response.status_code == 200
+    assert response.headers.get("cache-control") == EXPECTED_CACHE_CONTROL
+    data = response.json()
+    assert len(data) == 2
+    assert {row["language_code"] for row in data} == {"en", "ru"}
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_full_profile_site_content_localized_with_fallback(
+    client: AsyncClient, db: AsyncSession
+) -> None:
+    # Only an English row exists: a ru request must fall back to it.
+    db.add(
+        SiteContent(
+            language_code="en",
+            hero_eyebrow="Eyebrow",
+            hero_greeting="Hi there",
+            hero_subtitle="I build things",
+            about_title="About",
+            about_body="Para one\nPara two",
+        )
+    )
+    await db.commit()
+
+    response = await client.get("/api/v1/profile/full?lang=ru")
+    assert response.status_code == 200
+    site_content = response.json()["site_content"]
+    assert site_content is not None
+    assert site_content["hero_greeting"] == "Hi there"
+    assert site_content["about_body"] == "Para one\nPara two"
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_full_profile_site_content_absent(client: AsyncClient, db: AsyncSession) -> None:
+    response = await client.get("/api/v1/profile/full?lang=en")
+    assert response.status_code == 200
+    assert response.json()["site_content"] is None

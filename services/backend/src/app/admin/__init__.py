@@ -9,6 +9,7 @@ from app.admin.views import (
     ProjectAdmin,
     ProjectTranslationAdmin,
     ResumeAdmin,
+    SiteContentAdmin,
     StackAdmin,
     TestimonialAdmin,
     TestimonialTranslationAdmin,
@@ -39,6 +40,7 @@ def setup_admin(app, engine) -> Admin:  # type: ignore[no-untyped-def]
     admin.add_view(ContactTranslationAdmin)
     admin.add_view(StackAdmin)
     admin.add_view(ResumeAdmin)
+    admin.add_view(SiteContentAdmin)
 
     return admin
 
