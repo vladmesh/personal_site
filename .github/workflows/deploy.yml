@@ -139,7 +139,7 @@ jobs:
             cd /opt/services/personal_site
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" > .env
             echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
-            echo "ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}" >> .env
+            echo "ADMIN_PASSWORD_HASH=${{ secrets.ADMIN_PASSWORD_HASH }}" >> .env
             echo "ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }}" >> .env
             echo "SITE_DOMAIN=${{ env.SITE_DOMAIN }}" >> .env
             echo "REGISTRY_OWNER=${{ github.repository_owner }}" >> .env
