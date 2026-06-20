@@ -1,4 +1,4 @@
-import { SITE_URL } from "astro:env/server";
+import { SITE_BRAND, SITE_URL } from "astro:env/server";
 
 /**
  * Site configuration: deployment-level knobs (brand, domain, analytics, asset
@@ -15,8 +15,8 @@ type Lang = "en" | "ru";
 const origin = SITE_URL.replace(/\/+$/, "");
 
 export const siteConfig = {
-  /** Display name used in header, footer copyright, and meta titles. */
-  brand: "Your Name",
+  /** Display name used in header, footer copyright, and meta titles. Set via SITE_BRAND. */
+  brand: SITE_BRAND,
   /** Full public origin, e.g. https://example.com. Drives OG tags and hreflang. */
   domain: origin,
   defaultLocale: "en" as Lang,

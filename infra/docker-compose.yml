@@ -43,6 +43,7 @@ services:
     environment:
       INTERNAL_API_URL: ${INTERNAL_API_URL:-http://backend:8000}
       SITE_URL: ${SITE_URL:-http://localhost:4321}
+      SITE_BRAND: ${SITE_BRAND:-Your Name}
     depends_on:
       - backend
     ports:
