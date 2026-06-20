@@ -5,6 +5,8 @@
 **Архитектура**: Микросервисная (Frontend + Backend + PostgreSQL)
 **Технологии**: Astro + Tailwind (frontend), FastAPI + SQLAlchemy + Alembic (backend)
 **Инфраструктура**: Docker Compose, Caddy, GitHub Actions
+**Деплой**: ✅ live на https://vladmesh.dev (push в main → автодеплой, Let's Encrypt TLS)
+**CI/CD**: ✅ ускорен ~8 мин → ~3 мин
 
 ## Цели первой итерации
 
@@ -23,39 +25,40 @@
 - ✅ Makefile для управления сервисами
 - ✅ Базовая структура API с health check endpoint
 - ✅ Обновлена документация
+- ✅ Модели контента + read-API (`/api/v1/profile/*`, агрегатор `/full`)
+- ✅ Админка sqladmin (парольная аутентификация)
+- ✅ Frontend интегрирован с backend API (`/profile/full`)
+- ✅ Рабочий CI/CD: образы в ghcr, автодеплой на VPS, Caddy + автовыпуск TLS
+- ✅ GitHub Secrets и доступ к VPS настроены
+- ✅ **CI/CD ускорен ~8 мин → ~3 мин** (PR #10): кеш Docker-слоёв (`type=gha`), параллельная сборка backend/frontend, пересборка только изменившегося сервиса (path-фильтры), один прогон `pytest --cov` вместо трёх, единая lint+test джоба, health-poll вместо фиксированного `sleep`, docs-only пуши деплой не триггерят.
 
 ## Бэклог следующих шагов
 
-### 1. Backend Development (Приоритет: Высокий)
-   - [ ] Создать модели для контента (Projects, Skills, Testimonials)
-   - [ ] Реализовать CRUD API endpoints для контента
-   - [ ] Добавить админку для управления контентом (FastAPI Admin или custom UI)
-   - [ ] Настроить аутентификацию для админки (OAuth2 + JWT)
-   - [ ] Интегрировать frontend с backend API
-
-### 2. Контент
-   - [ ] Заменить заглушки проектов/отзывов на реальные данные.
-   - [ ] Добавить PDF резюме в `public/cv/`.
+### 1. Контент (Приоритет: ПЕРВЫЙ)
+P0 воронки: сайт живой, но контент — заглушки. Правится в `/admin` без передеплоя.
+   - [ ] Репозишн Hero/About под Technical & Security Health Check.
+   - [ ] Заменить dev-проекты на обезличенные кейсы (ситуация → что нашёл → результат, с цифрами).
+   - [ ] Секция оффера/услуг.
+   - [ ] Добавить RU PDF резюме в `public/cv/` (сейчас только en).
    - [ ] Сгенерировать OG-изображения для страниц и кейсов.
 
-### 3. UI/UX
-   - [ ] Настроить адаптивные отступы и анимации (Framer Motion / Astro transitions).
-   - [ ] Добавить секцию "Services" / "Услуги" с офферами.
+### 2. UI/UX
+   - [ ] Настроить адаптивные отступы и анимации (Astro transitions).
    - [ ] Продумать печатную версию `/ru/cv`.
 
-### 4. Технический долг
+### 3. Технический долг
+   - [ ] Обновить версии GitHub Actions — `actions/checkout`, `docker/build-push-action@v5→v6`, `docker/login-action`, `docker/setup-buildx-action`, `dorny/paths-filter` ещё на Node 20 (CI пишет deprecation-варнинг, форсится на Node 24). Бамп уберёт варнинг.
    - [ ] Настроить ESLint/Prettier и husky-hooks.
    - [ ] Подключить Plausible (сменить `data-domain`).
    - [ ] Включить sitemap/robots + hreflang для вложенных страниц.
-   - [ ] Обновить CI/CD для работы с микросервисами.
+   - [ ] Добавить `.dockerignore`, убрать неиспользуемый `development` stage из Dockerfile (см. `INFRA_AUDIT.md`).
+   - [ ] Аутентификация админки: сейчас пароль (sqladmin); при необходимости — OAuth2/JWT.
 
-### 5. Инфраструктура
-   - [ ] Подготовить GitHub Secrets для деплоя.
-   - [ ] Настроить Caddy на VPS и проверить автоматический выпуск сертификатов.
+### 4. Инфраструктура
    - [ ] Добавить мониторинг uptime (UptimeRobot/BetterStack).
-   - [ ] Настроить backup стратегию для PostgreSQL.
+   - [ ] Настроить backup стратегию для PostgreSQL (cron `pg_dump` + off-site).
 
-### 6. Итерация 2+
+### 5. Итерация 2+
    - [ ] Реализовать Cloudflare Worker для формы контактов.
    - [ ] Поддержка UTM-трекера и коротких ссылок.
    - [ ] Сбор отдельных PDF-профилей под вакансии.
