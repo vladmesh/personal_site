@@ -50,7 +50,7 @@ cat > infra/.env << EOF
 POSTGRES_PASSWORD=<secure-password>
 POSTGRES_DB=personal_site
 POSTGRES_USER=postgres
-BACKEND_CORS_ORIGINS=https://vladmesh.dev
+BACKEND_CORS_ORIGINS=https://your-domain.example
 EOF
 
 # Собрать и запустить

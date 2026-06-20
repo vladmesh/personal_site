@@ -46,10 +46,11 @@
 - **UI-лейблы** (навигация, заголовки секций, CTA) — i18n-строки в коде.
 
 Разбивка по PR:
-- [x] **PR 1 — зачистка и siteConfig** (PR #12, в проде): удалён легаси `site/`; `links.ts`/`ui.ts`/analytics/мета сведены в `siteConfig` с нейтральными плейсхолдерами и env-домен через `SITE_URL`; чинит баг двойного `@` в email. Бренд — плейсхолдер `Your Name` (по решению — оставлен, вернём в PR 2).
-- [~] **PR 2 — Hero/About в backend** (ветка `feat/site-content-hero-about`): модель `SiteContent` (per-locale: eyebrow, greeting, subtitle, about-заголовок и абзацы) + эндпоинт `/site-content` и поле в `/full` + sqladmin-вьюшка + провод в `home.ts`; захардкоженный нарратив убран, в коде остались нейтральные плейсхолдеры. После деплоя Hero/About редактируются через `/admin` (до заполнения на проде покажутся плейсхолдеры).
-- [~] **PR 3 — обезличить seed** (ветка `chore/depersonalize-seeds`): личные данные в `seed_contacts_data.py` / `seed_profile_content.py` заменены на фейковое демо (Acme/Globex, example-проекты, Jane Doe/John Smith); `add_site_content.py` сидит placeholder hero/about. Правлю тела уже применённых ревизий → прод не перезапускает их, его данные целы; свежий форк получает фейк. **Сквош миграций — отдельно, потом** (когда схема устаканится): схлопнуть всё в один schema-only baseline + example-seed, `alembic stamp` прод.
-  - Остаётся вне этого PR: реальный CV-PDF в `public/cv/` (бинарь, заменить вручную), реальные значения в `deploy.yml` (`SITE_DOMAIN`/`SITE_BRAND`/`REGISTRY_OWNER` — deployment-конфиг, так и задумано).
+- [x] **PR 1 — зачистка и siteConfig** (PR #12, в проде): удалён легаси `site/`; `links.ts`/`ui.ts`/analytics/мета сведены в `siteConfig`; env-домен через `SITE_URL`; фикс бага двойного `@` в email.
+- [x] **PR 2 — Hero/About в backend** (PR #13, в проде): модель `SiteContent` + `/site-content` + поле в `/full` + sqladmin + провод в `home.ts`; нарратив убран в БД, контент залит в прод, правится в `/admin`. Бренд возвращён через `SITE_BRAND` (PR #14).
+- [x] **PR 3 — обезличить seed** (PR #15, в проде): личные данные в seed-миграциях заменены на фейковое демо (Acme/Globex, example-проекты, Jane Doe/John Smith), placeholder hero/about.
+- [x] **PR 4 — финальная зачистка + сквош** (ветка `chore/full-depersonalize`): миграции схлопнуты в `0001_squash_schema` (schema-only, паритет с продом проверен `pg_dump`-диффом) + `0002_example_seed` (фейк-демо); прод re-stamped на `0002_example_seed` (схема/данные целы). README / `.env.example` / `docker-compose.prod.yml` обезличены; `deploy.yml` берёт `SITE_DOMAIN`/`SITE_BRAND` из GH-variables (в репо — плейсхолдеры); удалён легаси `services/frontend/{ops,docker-compose.yml,manage.sh}`. В исходниках не осталось ни одного `vladmesh`.
+  - Остаётся вручную при раздаче шаблона: реальный CV-PDF в `public/cv/`, и эта планнинг-дока (внутренняя, ссылается на проект).
 
 ### 1. Контент (Приоритет: ПОСЛЕ шаблонизации)
 P0 воронки: сайт живой, но контент — заглушки. Правится в `/admin` без передеплоя.
