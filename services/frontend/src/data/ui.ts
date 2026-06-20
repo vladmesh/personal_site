@@ -46,7 +46,7 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
       brand: siteConfig.brand,
       nav: {
         offer: 'Offer',
-        projects: 'Work',
+        projects: 'Personal projects',
         skills: 'Skills',
         testimonials: 'Testimonials',
         contact: 'Contact'
@@ -81,7 +81,7 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
       brand: siteConfig.brand,
       nav: {
         offer: 'Оффер',
-        projects: 'Работы',
+        projects: 'Личные проекты',
         skills: 'Навыки',
         testimonials: 'Отзывы',
         contact: 'Контакты'

@@ -95,7 +95,7 @@ const baseHomeCopy = {
       items: [],
     },
     projects: {
-      title: "Work",
+      title: "Personal projects",
       ctaLabel: "All projects",
       ctaHref: "/en/projects",
     },
@@ -132,7 +132,7 @@ const baseHomeCopy = {
       items: [],
     },
     projects: {
-      title: "Работы",
+      title: "Личные проекты",
       ctaLabel: "Все проекты",
       ctaHref: "/ru/projects",
     },
