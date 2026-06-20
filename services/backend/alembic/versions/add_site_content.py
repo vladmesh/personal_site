@@ -1,3 +1,5 @@
+# ruff: noqa: E501
+
 """add site_content table for homepage hero/about copy
 
 Revision ID: site_content_003
@@ -6,9 +8,11 @@ Create Date: 2026-06-20 01:30:00.000000
 
 """
 
+import uuid
 from collections.abc import Sequence
 
 import sqlalchemy as sa
+from sqlalchemy.sql import column, table
 
 from alembic import op
 
@@ -43,6 +47,42 @@ def upgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("language_code", name="uq_site_content_language_code"),
+    )
+
+    # Placeholder hero/about copy so a fresh template DB renders something.
+    # Edit in /admin (Site Content); prod is already migrated so this won't run there.
+    site_content = table(
+        "site_content",
+        column("id", sa.Uuid),
+        column("language_code", sa.String),
+        column("hero_eyebrow", sa.String),
+        column("hero_greeting", sa.String),
+        column("hero_subtitle", sa.String),
+        column("about_title", sa.String),
+        column("about_body", sa.Text),
+    )
+    op.bulk_insert(
+        site_content,
+        [
+            {
+                "id": uuid.uuid4(),
+                "language_code": "en",
+                "hero_eyebrow": "Backend / AI",
+                "hero_greeting": "Hi, I'm Your Name",
+                "hero_subtitle": "Backend developer and mentor. Edit this copy in /admin.",
+                "about_title": "About",
+                "about_body": "Placeholder about text. Edit it in the admin panel under Site Content.",
+            },
+            {
+                "id": uuid.uuid4(),
+                "language_code": "ru",
+                "hero_eyebrow": "Backend / AI",
+                "hero_greeting": "Привет, я Ваше Имя",
+                "hero_subtitle": "Backend-разработчик и ментор. Отредактируйте текст в /admin.",
+                "about_title": "Обо мне",
+                "about_body": "Заглушка для блока «обо мне». Отредактируйте её в админке, раздел Site Content.",
+            },
+        ],
     )
 
 

@@ -48,7 +48,8 @@
 Разбивка по PR:
 - [x] **PR 1 — зачистка и siteConfig** (PR #12, в проде): удалён легаси `site/`; `links.ts`/`ui.ts`/analytics/мета сведены в `siteConfig` с нейтральными плейсхолдерами и env-домен через `SITE_URL`; чинит баг двойного `@` в email. Бренд — плейсхолдер `Your Name` (по решению — оставлен, вернём в PR 2).
 - [~] **PR 2 — Hero/About в backend** (ветка `feat/site-content-hero-about`): модель `SiteContent` (per-locale: eyebrow, greeting, subtitle, about-заголовок и абзацы) + эндпоинт `/site-content` и поле в `/full` + sqladmin-вьюшка + провод в `home.ts`; захардкоженный нарратив убран, в коде остались нейтральные плейсхолдеры. После деплоя Hero/About редактируются через `/admin` (до заполнения на проде покажутся плейсхолдеры).
-- [ ] **PR 3 — обезличить seed**: убрать персональные данные из `seed_contacts_data.py` / `seed_profile_content.py` (или вынести в опциональный example-seed); заодно опциональный seed для `site_content`, чтобы чистая БД поднималась пустой/с примером.
+- [~] **PR 3 — обезличить seed** (ветка `chore/depersonalize-seeds`): личные данные в `seed_contacts_data.py` / `seed_profile_content.py` заменены на фейковое демо (Acme/Globex, example-проекты, Jane Doe/John Smith); `add_site_content.py` сидит placeholder hero/about. Правлю тела уже применённых ревизий → прод не перезапускает их, его данные целы; свежий форк получает фейк. **Сквош миграций — отдельно, потом** (когда схема устаканится): схлопнуть всё в один schema-only baseline + example-seed, `alembic stamp` прод.
+  - Остаётся вне этого PR: реальный CV-PDF в `public/cv/` (бинарь, заменить вручную), реальные значения в `deploy.yml` (`SITE_DOMAIN`/`SITE_BRAND`/`REGISTRY_OWNER` — deployment-конфиг, так и задумано).
 
 ### 1. Контент (Приоритет: ПОСЛЕ шаблонизации)
 P0 воронки: сайт живой, но контент — заглушки. Правится в `/admin` без передеплоя.

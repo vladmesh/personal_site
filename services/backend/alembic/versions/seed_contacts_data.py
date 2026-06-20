@@ -22,7 +22,7 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    """Add contact seed data from frontend links.ts"""
+    """Seed example contact data (placeholders; replace via /admin)."""
 
     # Define tables for bulk insert
     contacts = table(
@@ -59,7 +59,7 @@ def upgrade() -> None:
             {
                 "id": email_id,
                 "type": "email",
-                "value": "vladmesh.dev@gmail.com",
+                "value": "you@example.com",
                 "icon": "email",
                 "is_visible": True,
                 "sort_order": 1,
@@ -67,7 +67,7 @@ def upgrade() -> None:
             {
                 "id": telegram_id,
                 "type": "telegram",
-                "value": "https://t.me/vladislav_meshk",
+                "value": "https://t.me/yourhandle",
                 "icon": "telegram",
                 "is_visible": True,
                 "sort_order": 2,
@@ -75,7 +75,7 @@ def upgrade() -> None:
             {
                 "id": github_id,
                 "type": "github",
-                "value": "https://github.com/vladmesh",
+                "value": "https://github.com/your-org",
                 "icon": "github",
                 "is_visible": True,
                 "sort_order": 3,
@@ -83,7 +83,7 @@ def upgrade() -> None:
             {
                 "id": github_repo_id,
                 "type": "github_repo",
-                "value": "https://github.com/vladmesh/personal-site",
+                "value": "https://github.com/your-org/personal-site",
                 "icon": "github",
                 "is_visible": True,
                 "sort_order": 4,
@@ -91,7 +91,7 @@ def upgrade() -> None:
             {
                 "id": linkedin_id,
                 "type": "linkedin",
-                "value": "https://www.linkedin.com/in/vladmesh",
+                "value": "https://www.linkedin.com/in/your-handle",
                 "icon": "linkedin",
                 "is_visible": True,
                 "sort_order": 5,
@@ -99,7 +99,7 @@ def upgrade() -> None:
             {
                 "id": phone_id,
                 "type": "phone",
-                "value": "+79000000000",
+                "value": "+10000000000",
                 "icon": "phone",
                 "is_visible": False,  # Might want to keep phone private
                 "sort_order": 6,
@@ -107,7 +107,7 @@ def upgrade() -> None:
             {
                 "id": whatsapp_id,
                 "type": "whatsapp",
-                "value": "https://wa.me/79000000000",
+                "value": "https://wa.me/10000000000",
                 "icon": "whatsapp",
                 "is_visible": False,
                 "sort_order": 7,

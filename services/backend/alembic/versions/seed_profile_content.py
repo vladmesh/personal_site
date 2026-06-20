@@ -1,10 +1,14 @@
 # ruff: noqa: E501
 
-"""add testimonial kind and seed profile content
+"""add testimonial kind and seed example profile content
 
 Revision ID: seed_profile_content_002
 Revises: seed_contacts_001
 Create Date: 2025-11-22 05:30:00.000000
+
+Seeds placeholder profile content (experience, projects, testimonials, skills,
+resumes) so a fresh template database renders a populated demo. Replace it all
+via /admin. The stack list is generic tech, kept as-is.
 
 """
 
@@ -30,7 +34,7 @@ def _seed_uuid(key: str) -> uuid.UUID:
 
 
 def upgrade() -> None:
-    """Add testimonial kind column and seed profile content data."""
+    """Add testimonial kind column and seed example profile content."""
     op.add_column("testimonials", sa.Column("kind", sa.String(), nullable=True))
 
     # Table shortcuts
@@ -115,35 +119,27 @@ def upgrade() -> None:
         column("is_active", sa.Boolean),
     )
 
-    # --- Seed stacks (skills) ---
+    # --- Seed stacks (generic tech list) ---
     stack_entries = [
         ("Python", "Backend"),
         ("FastAPI", "Backend"),
         ("Django", "Backend"),
-        ("Go", "Backend"),
         ("Node.js", "Backend"),
-        ("GraphQL", "Backend"),
         ("REST", "Backend"),
-        ("gRPC", "Backend"),
-        ("LangChain", "Data & AI"),
-        ("Langgraph", "Data & AI"),
-        ("OpenAI API", "Data & AI"),
-        ("PydanticAI", "Data & AI"),
-        ("PostgreSQL", "Data & AI"),
-        ("ClickHouse", "Data & AI"),
-        ("Airflow", "Data & AI"),
-        ("Redis", "Data & AI"),
-        ("RabbitMQ", "Backend"),
         ("SQLAlchemy", "Backend"),
+        ("RabbitMQ", "Backend"),
+        ("LangChain", "Data & AI"),
+        ("OpenAI API", "Data & AI"),
+        ("PostgreSQL", "Data & AI"),
+        ("Redis", "Data & AI"),
+        ("Airflow", "Data & AI"),
         ("Docker", "DevOps"),
         ("Kubernetes", "DevOps"),
         ("Terraform", "DevOps"),
         ("GitHub Actions", "DevOps"),
         ("Grafana", "DevOps"),
-        ("Prometheus", "DevOps"),
         ("Team Leadership", "Communication"),
         ("Roadmapping", "Communication"),
-        ("Stakeholder Management", "Communication"),
         ("Tech Writing", "Communication"),
     ]
     stack_records = [
@@ -159,112 +155,75 @@ def upgrade() -> None:
     op.bulk_insert(stacks, stack_records)
     stack_ids = {record["name"]: record["id"] for record in stack_records}
 
-    # --- Seed work experience ---
+    # --- Seed work experience (placeholder) ---
     experience_entries = [
         {
-            "id": _seed_uuid("work-exp-dnk"),
-            "company_name": "DNK IT Solutions",
-            "company_url": "https://uppersetup.com",
+            "id": _seed_uuid("work-exp-1"),
+            "company_name": "Acme Corp",
+            "company_url": "https://example.com",
             "start_date": date(2022, 1, 1),
-            "end_date": date(2023, 12, 31),
+            "end_date": date(2024, 12, 31),
             "is_current": False,
             "translations": [
                 {
                     "language_code": "en",
-                    "position": "Python Software Developer",
+                    "position": "Senior Backend Engineer",
                     "description": "\n".join(
                         [
-                            "Participated in the design and development of a platform that automates company registration in the UAE (uppersetup.com).",
-                            "Designed a microservices backend architecture in Python using FastAPI, SQLAlchemy, and Redis.",
-                            "Conducted load testing and unit testing.",
-                            "Developed and implemented a CI/CD pipeline for automated deployments.",
+                            "Led backend development for a SaaS platform.",
+                            "Designed microservices with FastAPI, SQLAlchemy, and PostgreSQL.",
+                            "Set up CI/CD and observability. (Placeholder, edit in /admin.)",
                         ]
                     ),
-                    "location": "Bishkek",
+                    "location": "Remote",
                 },
                 {
                     "language_code": "ru",
-                    "position": "Python разработчик",
+                    "position": "Старший backend-инженер",
                     "description": "\n".join(
                         [
-                            "Участвовал в проектировании и разработке платформы, которая подбирает параметры и автоматизирует регистрацию компании в ОАЭ (uppersetup.com).",
-                            "Проектировал микросервисную архитектуру для бэкенда на Python, с использованием FastAPI, SQLAlchemy, Redis.",
-                            "Проводил нагрузочное и unit тестирование.",
-                            "Разработал и внедрил CI/CD pipeline для автоматизации деплоя.",
+                            "Вёл разработку бэкенда SaaS-платформы.",
+                            "Проектировал микросервисы на FastAPI, SQLAlchemy и PostgreSQL.",
+                            "Настроил CI/CD и мониторинг. (Заглушка, отредактируйте в /admin.)",
                         ]
                     ),
-                    "location": "Бишкек",
+                    "location": "Удалённо",
                 },
             ],
-            "stacks": ["Python", "FastAPI", "SQLAlchemy", "Redis"],
+            "stacks": ["Python", "FastAPI", "SQLAlchemy", "PostgreSQL", "Docker"],
         },
         {
-            "id": _seed_uuid("work-exp-practicum"),
-            "company_name": "Yandex Practicum",
-            "company_url": "https://practicum.yandex.ru",
-            "start_date": date(2021, 1, 1),
-            "end_date": date(2022, 12, 31),
-            "is_current": False,
-            "translations": [
-                {
-                    "language_code": "en",
-                    "position": "Backend Engineer",
-                    "description": "\n".join(
-                        [
-                            "Contributed to backend development of a children’s math platform as part of a Scrum team.",
-                            "Developed a Python monolith using Django REST Framework, Celery, Redis, and PostgreSQL.",
-                            "Optimized for high load: database query tuning, indexing, sharding, etc.",
-                        ]
-                    ),
-                    "location": "Saint Petersburg",
-                },
-                {
-                    "language_code": "ru",
-                    "position": "Backend-инженер",
-                    "description": "\n".join(
-                        [
-                            "Участвовал в разработке бэкенда для платформы детской математики, в составе Scrum-команды.",
-                            "Разрабатывал монолитную архитектуру на Python, с использованием DRF, Celery, Redis, PostgreSQL.",
-                            "Занимался оптимизацией под высокие нагрузки: отладка запросов, индексы, шардирование и т.д.",
-                        ]
-                    ),
-                    "location": "Санкт-Петербург",
-                },
-            ],
-            "stacks": ["Django", "Redis", "PostgreSQL"],
-        },
-        {
-            "id": _seed_uuid("work-exp-piterauto"),
-            "company_name": "Piterauto",
-            "company_url": "https://www.piteravto.ru",
-            "start_date": date(2018, 1, 1),
+            "id": _seed_uuid("work-exp-2"),
+            "company_name": "Globex",
+            "company_url": "https://example.com",
+            "start_date": date(2019, 1, 1),
             "end_date": date(2021, 12, 31),
             "is_current": False,
             "translations": [
                 {
                     "language_code": "en",
-                    "position": "Software Developer",
+                    "position": "Backend Developer",
                     "description": "\n".join(
                         [
-                            "Integrated CRMs, built end-to-end data pipelines (ETL), and set up business process automation.",
-                            "Designed and launched a trip fiscalization system using Python, FastAPI, PostgreSQL, RabbitMQ, and Docker; later evolved into a standalone product (mega-fiscal.ru).",
+                            "Built and maintained REST APIs for a high-traffic service.",
+                            "Optimized database queries and caching.",
                         ]
                     ),
-                    "location": "Saint Petersburg",
+                    "location": "Remote",
                 },
                 {
                     "language_code": "ru",
-                    "position": "Разработчик ПО",
+                    "position": "Backend-разработчик",
                     "description": "\n".join(
                         [
-                            "Интегрировал CRM, строил сквозные пайплайны данных (ETL), настраивал автоматизацию бизнес-процессов.",
-                            "Разработал и внедрил систему для фискализации поездок на Python, FastAPI, PostgreSQL, RabbitMQ, Docker. Позже проект вырос в отдельный продукт (mega-fiscal.ru).",
+                            "Разрабатывал и поддерживал REST API для нагруженного сервиса.",
+                            "Оптимизировал запросы к БД и кеширование.",
                         ]
                     ),
-                    "location": "Санкт-Петербург",
+                    "location": "Удалённо",
                 },
             ],
-            "stacks": ["Python", "FastAPI", "PostgreSQL", "Docker", "RabbitMQ"],
+            "stacks": ["Django", "Redis", "PostgreSQL"],
         },
     ]
 
@@ -308,79 +267,75 @@ def upgrade() -> None:
     if experience_stack_links:
         op.bulk_insert(work_experience_stacks, experience_stack_links)
 
-    # --- Seed projects ---
+    # --- Seed projects (placeholder) ---
     project_entries = [
         {
-            "id": _seed_uuid("project-ai-assistant"),
-            "slug": "ai-assistant",
-            "link": "https://t.me/virutual_helper_bot",
-            "repo_link": "https://github.com/vladmesh/Assistants",
-            "start_date": date(2025, 1, 1),
+            "id": _seed_uuid("project-1"),
+            "slug": "example-api",
+            "link": None,
+            "repo_link": "https://github.com/your-org/example-api",
+            "start_date": date(2024, 1, 1),
             "end_date": None,
             "is_featured": True,
             "translations": [
                 {
                     "language_code": "en",
-                    "title": "AI assistant for personal use, based on messengers",
+                    "title": "Example REST API",
                     "description": "\n".join(
                         [
-                            "AI assistant for messengers with tools for task planning, calendar scheduling, web search/scraping, and long-term memory via RAG (vector store, embeddings, context updating).",
-                            "Keeps personal productivity in chat: creates todo lists, breaks large goals into steps, and follows up on deadlines.",
-                            "Integrates Google Calendar to schedule meetings and add events automatically; triggers web search/scraping and RAG pipeline backed by a vector store for research-heavy tasks.",
+                            "A sample backend service with auth, background jobs, and a clean OpenAPI schema.",
+                            "Replace this with one of your own case studies in /admin.",
                         ]
                     ),
-                    "role": "Builder & product owner",
+                    "role": "Author",
                 },
                 {
                     "language_code": "ru",
-                    "title": "Ai ассистент для личного пользования, на основе мессенджеров",
+                    "title": "Пример REST API",
                     "description": "\n".join(
                         [
-                            "AI-ассистент для мессенджеров с инструментами: планирование задач, запись событий в Google Calendar, веб-поиск/парсинг, долговременная память через RAG (векторное хранилище, эмбеддинги, актуализация контекста).",
-                            "Ассистент помогает вести ежедневные задачи в мессенджере: создает todo-листы, разбивает большие задачи на шаги и напоминает о дедлайнах.",
-                            "Через интеграцию с Google Calendar может планировать встречи и автоматически добавлять события, подключает веб-поиск/парсинг и RAG-пайплайн для сложных запросов.",
+                            "Демо backend-сервис с аутентификацией, фоновыми задачами и аккуратной OpenAPI-схемой.",
+                            "Замените на свой кейс в /admin.",
                         ]
                     ),
-                    "role": "Разработчик и продукт-менеджер",
+                    "role": "Автор",
                 },
             ],
-            "stacks": ["Python", "FastAPI", "LangChain", "Langgraph", "Redis", "Docker"],
+            "stacks": ["Python", "FastAPI", "PostgreSQL", "Docker"],
         },
         {
-            "id": _seed_uuid("project-dnd-helper"),
-            "slug": "dnd-helper",
-            "link": "https://t.me/dnd_helperbot",
-            "repo_link": "https://github.com/vladmesh/dnd_helper",
-            "start_date": date(2025, 2, 1),
+            "id": _seed_uuid("project-2"),
+            "slug": "example-bot",
+            "link": None,
+            "repo_link": "https://github.com/your-org/example-bot",
+            "start_date": date(2024, 3, 1),
             "end_date": None,
             "is_featured": False,
             "translations": [
                 {
                     "language_code": "en",
-                    "title": "DnD reference for messengers",
+                    "title": "Example Chat Bot",
                     "description": "\n".join(
                         [
-                            "Simple DnD 5e reference bot: monsters and spells with filters for level, school, and creature type.",
-                            "Adds cursor-based pagination to keep answers compact in messenger UI while exposing full data.",
-                            "Runs in Docker and exposes a FastAPI + SQLAlchemy backend powering the bot and public API.",
+                            "A messenger bot template with commands, inline keyboards, and a small API.",
+                            "Swap in your own project in /admin.",
                         ]
                     ),
-                    "role": "Backend developer",
+                    "role": "Author",
                 },
                 {
                     "language_code": "ru",
-                    "title": "Справочник для игры DnD в мессенджерах",
+                    "title": "Пример чат-бота",
                     "description": "\n".join(
                         [
-                            "Справочник по DnD 5e: список монстров и заклинаний с фильтрами по уровню, школе магии и типу существа.",
-                            "Реализована пагинация, чтобы ответы оставались компактными в интерфейсе мессенджера.",
-                            "Бот разворачивается в Docker и использует FastAPI + SQLAlchemy для API и хранения данных.",
+                            "Шаблон бота для мессенджера с командами, клавиатурами и небольшим API.",
+                            "Замените на свой проект в /admin.",
                         ]
                     ),
-                    "role": "Разработчик",
+                    "role": "Автор",
                 },
             ],
-            "stacks": ["Python", "FastAPI", "SQLAlchemy", "Docker"],
+            "stacks": ["Python", "FastAPI", "Redis"],
         },
     ]
 
@@ -423,12 +378,12 @@ def upgrade() -> None:
     if project_stack_links:
         op.bulk_insert(project_stacks, project_stack_links)
 
-    # --- Seed testimonials ---
+    # --- Seed testimonials (placeholder) ---
     testimonial_entries = [
         {
-            "id": _seed_uuid("testimonial-nikita"),
-            "author_name": "Nikita Nikitin",
-            "author_url": "https://www.upwork.com/freelancers/~01b6b1e325874479ec",
+            "id": _seed_uuid("testimonial-1"),
+            "author_name": "Jane Doe",
+            "author_url": None,
             "author_avatar_url": None,
             "kind": "dev",
             "date": date(2024, 5, 1),
@@ -436,57 +391,19 @@ def upgrade() -> None:
                 {
                     "language_code": "en",
                     "author_position": None,
-                    "content": (
-                        "I highly recommend Vladislav for his exceptional work in creating a Telegram bot for our cryptocurrency project. "
-                        "He demonstrated a high level of expertise, professionalism, and attention to detail throughout the project. "
-                        "His deep understanding of Python, the Telegram API, and cryptocurrency exchanges and APIs was critical in creating a reliable bot that provided our users with real-time alerts. "
-                        "His communication and updates were prompt and frequent, and he consistently exceeded our expectations. "
-                        "I highly recommend Vladislav for any project that requires expertise in developing Telegram bots or web parsers."
-                    ),
+                    "content": "Sample testimonial. The project was delivered on time with clear communication. Replace this with a real quote in /admin.",
                 },
                 {
                     "language_code": "ru",
                     "author_position": None,
-                    "content": (
-                        "Я настоятельно рекомендую Владислава за его работу по созданию Telegram-бота для нашего проекта в сфере криптовалют. "
-                        "Он демонстрировал высокий уровень экспертизы, профессионализма и внимания к деталям. "
-                        "Его глубокое понимание Python, Telegram API, криптобирж и их API было критически важным для создания надежного бота с оповещениями в реальном времени. "
-                        "Коммуникация и обновления были оперативными, результаты стабильно превосходили ожидания. "
-                        "Рекомендую Владислава для проектов, где требуется экспертиза в разработке Telegram-ботов или веб-парсеров."
-                    ),
+                    "content": "Пример отзыва. Проект сдан в срок, коммуникация была чёткой. Замените на настоящий отзыв в /admin.",
                 },
             ],
         },
         {
-            "id": _seed_uuid("testimonial-dmitriy"),
-            "author_name": "Dmitriy",
-            "author_url": "https://profi.ru/profile/MeshkorudnyyVD/#reviews-tab",
-            "author_avatar_url": None,
-            "kind": "teacher",
-            "date": date(2023, 3, 1),
-            "translations": [
-                {
-                    "language_code": "en",
-                    "author_position": None,
-                    "content": (
-                        "A consummate professional who can handle any programming task. He explains things clearly and is a great listener. "
-                        "Willing to take on challenges of any complexity."
-                    ),
-                },
-                {
-                    "language_code": "ru",
-                    "author_position": None,
-                    "content": (
-                        "Профессионал своего дела, может разобраться с любой задачей по программированию. Объясняет четко и понятно, умеет слушать. "
-                        "Берется за любые сложности."
-                    ),
-                },
-            ],
-        },
-        {
-            "id": _seed_uuid("testimonial-michael"),
-            "author_name": "Michael",
-            "author_url": "https://profi.ru/profile/MeshkorudnyyVD/#reviews-tab",
+            "id": _seed_uuid("testimonial-2"),
+            "author_name": "John Smith",
+            "author_url": None,
             "author_avatar_url": None,
             "kind": "teacher",
             "date": date(2023, 6, 15),
@@ -494,18 +411,12 @@ def upgrade() -> None:
                 {
                     "language_code": "en",
                     "author_position": None,
-                    "content": (
-                        "Vlad helped me get to grips with FastAPI, Docker, Redis, and Postgres, and he answered my questions over chat. "
-                        "Trying to figure it all out alone felt overwhelming due to the amount of information; Vlad’s support made a huge difference."
-                    ),
+                    "content": "Sample testimonial. A patient mentor with clear explanations. Replace this with a real quote in /admin.",
                 },
                 {
                     "language_code": "ru",
                     "author_position": None,
-                    "content": (
-                        "Влад помог разобраться с FastAPI, Docker, Redis и Postgres, отвечал на вопросы в переписке. "
-                        "Самостоятельно из-за объема информации было сложно, поддержка Влада сильно помогла."
-                    ),
+                    "content": "Пример отзыва. Терпеливый ментор, объясняет понятно. Замените на настоящий отзыв в /admin.",
                 },
             ],
         },
@@ -564,51 +475,41 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Remove seeded profile content and testimonial kind column."""
+    """Remove seeded profile content and the testimonial kind column."""
     stack_names = [
         "Python",
         "FastAPI",
         "Django",
-        "Go",
         "Node.js",
-        "GraphQL",
         "REST",
-        "gRPC",
-        "LangChain",
-        "Langgraph",
-        "OpenAI API",
-        "PydanticAI",
-        "PostgreSQL",
-        "ClickHouse",
-        "Airflow",
-        "Redis",
-        "RabbitMQ",
         "SQLAlchemy",
+        "RabbitMQ",
+        "LangChain",
+        "OpenAI API",
+        "PostgreSQL",
+        "Redis",
+        "Airflow",
         "Docker",
         "Kubernetes",
         "Terraform",
         "GitHub Actions",
         "Grafana",
-        "Prometheus",
         "Team Leadership",
         "Roadmapping",
-        "Stakeholder Management",
         "Tech Writing",
     ]
     stack_ids = [_seed_uuid(f"stack-{name}") for name in stack_names]
     experience_ids = [
-        _seed_uuid("work-exp-dnk"),
-        _seed_uuid("work-exp-practicum"),
-        _seed_uuid("work-exp-piterauto"),
+        _seed_uuid("work-exp-1"),
+        _seed_uuid("work-exp-2"),
     ]
     project_ids = [
-        _seed_uuid("project-ai-assistant"),
-        _seed_uuid("project-dnd-helper"),
+        _seed_uuid("project-1"),
+        _seed_uuid("project-2"),
     ]
     testimonial_ids = [
-        _seed_uuid("testimonial-nikita"),
-        _seed_uuid("testimonial-dmitriy"),
-        _seed_uuid("testimonial-michael"),
+        _seed_uuid("testimonial-1"),
+        _seed_uuid("testimonial-2"),
     ]
     resume_ids = [
         _seed_uuid("resume-en"),
