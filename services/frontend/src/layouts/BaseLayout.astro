@@ -3,7 +3,7 @@ import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 import { uiCopy } from '@data/ui';
 import ContactModal from '@components/ContactModal.astro';
-import { links } from '@data/links';
+import { siteConfig } from '@config/site';
 import type { ContactsResult } from '@lib/profile/contacts';
 import '@styles/globals.css';
 const {
@@ -19,7 +19,8 @@ const {
   ogImage?: string;
   contacts?: ContactsResult;
 };
-const domain = links.domain;
+const domain = siteConfig.domain;
+const analytics = siteConfig.analytics;
 ---
 <!DOCTYPE html>
 <html lang={lang} class="scroll-smooth bg-slate-950 text-slate-100">
@@ -83,6 +84,8 @@ const domain = links.domain;
         }
       });
     </script>
-    <script defer data-domain={links.analytics?.domain} src={links.analytics?.plausible}></script>
+    {analytics.plausibleSrc && (
+      <script defer data-domain={analytics.domain} src={analytics.plausibleSrc}></script>
+    )}
   </body>
 </html>

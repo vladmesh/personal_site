@@ -49,7 +49,7 @@ export type HomeCopy = {
   };
 };
 
-import { links } from "@data/links";
+import { siteConfig } from "@config/site";
 
 export type ContactCopyInfo = {
   emailHref: string;
@@ -159,7 +159,7 @@ export function buildHomeCopy(
     ...base,
     hero: {
       ...base.hero,
-      cvHref: overrides.resumeHref ?? links.cv[lang],
+      cvHref: overrides.resumeHref ?? siteConfig.cv[lang],
       contactHref: contactInfo.primaryContactHref ?? contactInfo.telegramHref,
     },
     contact: {

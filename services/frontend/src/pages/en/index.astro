@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Hero from '@components/Hero.astro';
 import HomeSections from '@components/HomeSections.astro';
 import { buildHomeCopy } from '@data/home';
+import { uiCopy } from '@data/ui';
 import { fetchProfile } from '@lib/profile/full';
 import { getTelegramHandle, selectContact } from '@lib/profile/contacts';
 
@@ -31,8 +32,8 @@ const content = buildHomeCopy(
 );
 ---
 <BaseLayout
-  title="Vlad — Backend & AI Engineer"
-  description="Backend engineering, AI agents, and consulting portfolio. Resume, selected projects, and contact links."
+  title={uiCopy[lang].home.metaTitle}
+  description={uiCopy[lang].home.metaDescription}
   lang={lang}
   ogImage="/og/home_en.png"
   contacts={contacts}

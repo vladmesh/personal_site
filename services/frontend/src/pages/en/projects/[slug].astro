@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { fetchProfile } from '@lib/profile/full';
+import { siteConfig } from '@config/site';
 
 const { slug } = Astro.params;
 const profile = await fetchProfile('en');
@@ -14,7 +15,7 @@ const ogImage = `/og/projects/${project.slug}.png`;
 const contacts = profile.contacts;
 ---
 <BaseLayout
-  title={`${project.title} — Vlad Mesh case study`}
+  title={`${project.title} — ${siteConfig.brand}`}
   description={project.summary}
   lang="en"
   ogImage={ogImage}
