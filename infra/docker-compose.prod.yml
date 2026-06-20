@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: ghcr.io/${REGISTRY_OWNER:-vladmesh}/personal_site/backend:latest
+    image: ghcr.io/${REGISTRY_OWNER:-your-org}/personal_site/backend:latest
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@postgres:5432/personal_site
       PYTHONPATH: /app/src
@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: ghcr.io/${REGISTRY_OWNER:-vladmesh}/personal_site/frontend:latest
+    image: ghcr.io/${REGISTRY_OWNER:-your-org}/personal_site/frontend:latest
     environment:
       INTERNAL_API_URL: http://backend:8000
       SITE_URL: https://${SITE_DOMAIN:-localhost}
