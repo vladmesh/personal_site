@@ -71,6 +71,7 @@ P0 воронки: сайт живой, но контент — заглушки
    - [ ] Включить sitemap/robots + hreflang для вложенных страниц.
    - [ ] Добавить `.dockerignore`, убрать неиспользуемый `development` stage из Dockerfile (см. `INFRA_AUDIT.md`).
    - [ ] Аутентификация админки: сейчас пароль (sqladmin); при необходимости — OAuth2/JWT.
+   - [ ] Флакающий CI на push в `main`: `ci.yml` стартует дважды (отдельный `CI` + вызов внутри `Deploy`), оба джоба тянут `postgres:16-alpine` из Docker Hub одновременно и ловят таймаут/rate-limit на шаге `test-db Pulling` (наблюдалось в run 27956577944, 2026-06-22; перезапуск прошёл зелёным). Деплою не мешает (у `Deploy` свой CI-джоб через `workflow_call`), но красит коммит main красным. Починка: убрать `push: [main]` из `ci.yml`, оставив `pull_request` + `workflow_call`; либо тянуть postgres с авторизацией/ретраем/локальным кэшем.
 
 ### 4. Инфраструктура
    - [ ] Добавить мониторинг uptime (UptimeRobot/BetterStack).
