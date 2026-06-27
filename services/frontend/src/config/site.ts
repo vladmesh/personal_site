@@ -22,10 +22,15 @@ export const siteConfig = {
   defaultLocale: "en" as Lang,
   /** Link to the source repository, shown in the footer when set. */
   sourceRepo: "",
-  /** Fallback CV paths, used when the backend has no active resume for a locale. */
+  /**
+   * Download-CV button. Set a path here AND drop the matching file in public/cv/
+   * to show the button for that locale; leave "" to hide it. Empty by default so
+   * the site works as an offer page out of the box; fill it in to use the site as
+   * a resume card. A backend active resume for the locale overrides this.
+   */
   cv: {
-    en: "/cv/cv_en.pdf",
-    ru: "/cv/cv_ru.pdf",
+    en: "",
+    ru: "",
   } satisfies Record<Lang, string>,
   analytics: {
     /** Plausible script src. Leave empty to disable analytics. */
