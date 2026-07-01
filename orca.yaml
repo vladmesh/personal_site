@@ -3,6 +3,4 @@
 # Injected env: $ORCA_ROOT_PATH (main checkout), $ORCA_WORKTREE_PATH (new worktree),
 # $ORCA_WORKSPACE_NAME.
 scripts:
-  setup: |
-    # No app secrets in this repo. Install git hooks if pre-commit is available.
-    command -v pre-commit >/dev/null 2>&1 && make pre-commit-install || true
+  setup: python3 "$HOME/control-panel/pipeline/provision.py"

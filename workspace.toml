@@ -1,0 +1,29 @@
+# Workspace manifest for the task pipeline (docs/design-task-pipeline.md,
+# "Окружение воркспейса"). Consumed by control-panel/pipeline/provision.py, which
+# Orca calls once per worktree via `orca.yaml scripts.setup`.
+
+[workspace]
+project = "personal_site"
+base_branch = "main"
+
+[secrets]
+# No app secrets in this repo (see orca.yaml history). Mechanism kept for future projects.
+copy = []
+
+[github]
+# Placeholder: shared gh login of user dev. Per-agent least-privilege tokens deferred.
+token = "dev-shared"
+
+[skills]
+install = []
+
+[setup]
+commands = [
+  "command -v pre-commit >/dev/null 2>&1 && make pre-commit-install || true",
+]
+
+[smoke]
+# `make test-unit` only stops backend-test (--rm); test-db and the compose network are
+# left running, so the smoke command tears them down itself regardless of pytest's outcome.
+command = "make test-unit; status=$?; cd infra && docker compose -f docker-compose.test.yml down -v --remove-orphans; exit $status"
+timeout_seconds = 300
