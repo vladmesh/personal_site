@@ -1,0 +1,39 @@
+# VCS
+.git
+.gitignore
+
+# Python caches / build artifacts (dockerignore patterns are not recursive
+# by default, so nested occurrences need an explicit **/ prefix)
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.egg-info/
+dist/
+build/
+**/.pytest_cache/
+**/.coverage
+htmlcov/
+**/.ruff_cache/
+**/.mypy_cache/
+
+# Host virtualenvs
+.venv/
+venv/
+
+# Tests (not needed in the built image; dev/test compose bind-mounts source anyway)
+tests/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.idea/
+.vscode/
+**/*.swp
+**/.DS_Store
+
+# Misc
+**/*.log
+**/*.tmp
