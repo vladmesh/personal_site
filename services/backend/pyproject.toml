@@ -30,6 +30,9 @@ pre-commit = "^4.0.0"
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+# /app is bind-mounted from the host in dev/CI containers and may be owned by a
+# different uid than the container's appuser, so cache dirs live outside it in /tmp.
+cache-dir = "/tmp/personal-site-backend/ruff_cache"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "B", "C4", "UP"]
@@ -42,14 +45,19 @@ strict = true
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
+cache_dir = "/tmp/personal-site-backend/mypy_cache"
 
 [[tool.mypy.overrides]]
 module = "sqladmin.*"
 ignore_missing_imports = true
 
+[tool.coverage.run]
+data_file = "/tmp/personal-site-backend/.coverage"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+cache_dir = "/tmp/personal-site-backend/pytest_cache"
 markers = [
     "unit: Unit tests using in-memory SQLite",
     "integration: Integration tests using real PostgreSQL and HTTP requests"

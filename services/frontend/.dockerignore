@@ -1,0 +1,29 @@
+# VCS
+.git
+.gitignore
+
+# Node (dockerignore patterns are not recursive by default, so nested
+# occurrences need an explicit **/ prefix)
+**/node_modules/
+**/.npm/
+**/.pnpm-store/
+
+# Build output (rebuilt inside the image)
+dist/
+.astro/
+.vercel/
+.netlify/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.idea/
+.vscode/
+**/.DS_Store
+**/.tmp
+
+# Misc
+**/*.log
