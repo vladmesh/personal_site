@@ -27,3 +27,24 @@ commands = [
 # left running, so the smoke command tears them down itself regardless of pytest's outcome.
 command = "make test-unit; status=$?; cd infra && docker compose -f docker-compose.test.yml down -v --remove-orphans; exit $status"
 timeout_seconds = 300
+
+[stand]
+# Validate layer 2 (docs/design-task-pipeline.md, «Стенд + e2e до мержа»). The dispatcher
+# (triggered-agents, pipeline/stand.py) checks out the PR branch, brings this compose namespace
+# up on this VPS with its own host ports (5442/8010/4331, clear of dev and prod), waits for
+# health, then runs the scripted e2e. Green only after a green stand run; a red run auto-retries
+# once, then the card goes to Blocked. This section is read from the base branch, so a PR cannot
+# rewrite its own gate; the compose/e2e files themselves run from the PR checkout.
+namespace = "personal_site_stand"
+compose = ["infra/docker-compose.stand.yml"]
+env_file = "infra/.env.stand"
+health_url = "http://127.0.0.1:8010/api/health"
+health_timeout_seconds = 180
+up_timeout_seconds = 420
+e2e_command = "bash infra/e2e/run.sh"
+e2e_timeout_seconds = 600
+
+[stand.e2e_env]
+# Passed into the e2e process (and compose) so the suite targets the stand's host ports.
+STAND_BACKEND_URL = "http://127.0.0.1:8010"
+STAND_FRONTEND_URL = "http://127.0.0.1:4331"
