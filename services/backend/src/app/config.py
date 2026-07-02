@@ -1,9 +1,10 @@
 """Application configuration using pydantic-settings."""
 
-from typing import Any
+import json
+from typing import Annotated, Any
 
 from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -27,7 +28,12 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost", "http://localhost:4321"]
+    # NoDecode: pydantic-settings otherwise json.loads() the raw env string before our
+    # validator runs, which rejects plain comma-separated values outright.
+    BACKEND_CORS_ORIGINS: Annotated[list[str], NoDecode] = [
+        "http://localhost",
+        "http://localhost:4321",
+    ]
 
     # Admin
     ADMIN_USERNAME: str = "admin"
@@ -39,12 +45,28 @@ class Settings(BaseSettings):
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod
     def parse_cors_origins(cls, v: Any) -> list[str]:
-        """Parse CORS origins from string or list."""
-        if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",")]
+        """Parse CORS origins from a JSON array string, a comma-separated string, or a list."""
         if isinstance(v, list):
             return v
-        raise ValueError(v)
+        if isinstance(v, str):
+            stripped = v.strip()
+            if stripped.startswith("["):
+                try:
+                    parsed = json.loads(stripped)
+                except json.JSONDecodeError as exc:
+                    raise ValueError(f"BACKEND_CORS_ORIGINS is not valid JSON: {v!r}") from exc
+                if not isinstance(parsed, list) or not all(
+                    isinstance(origin, str) for origin in parsed
+                ):
+                    raise ValueError(
+                        f"BACKEND_CORS_ORIGINS JSON array must contain only strings: {v!r}"
+                    )
+                return [origin.strip() for origin in parsed]
+            origins = [origin.strip() for origin in stripped.split(",") if origin.strip()]
+            if not origins:
+                raise ValueError(f"BACKEND_CORS_ORIGINS has no valid origins: {v!r}")
+            return origins
+        raise ValueError(f"BACKEND_CORS_ORIGINS must be a string or list, got {type(v)!r}")
 
 
 settings = Settings()  # type: ignore[call-arg]

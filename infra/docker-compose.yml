@@ -20,7 +20,7 @@ services:
       dockerfile: Dockerfile
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-personal_site}
-      BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS:-["http://localhost"]}
+      BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS:-http://localhost}
       PYTHONPATH: /app/src
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:?ADMIN_PASSWORD_HASH is required}
