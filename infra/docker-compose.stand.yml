@@ -3,6 +3,13 @@
 # collides with the dev (docker-compose.dev.yml) or prod stack on this VPS. The dispatcher
 # (triggered-agents, pipeline/stand.py) checks out a PR branch, brings this up with
 # `--build --wait`, runs infra/e2e/run.sh against it, then tears the namespace down.
+#
+# Pinned project name: every compose file in this repo lives in infra/, so they share the default
+# project name `infra` and identical service names. Without an explicit `name:`, bringing this
+# file up (e.g. by hand, no `-p`) would recreate the dev/prod containers instead of isolated stand
+# ones. The isolation must be guaranteed by the file itself, not by the caller passing `-p`
+# (the dispatcher does pass `-p personal_site_stand`, which matches this and overrides on the CLI).
+name: personal_site_stand
 services:
   postgres:
     image: postgres:16-alpine
