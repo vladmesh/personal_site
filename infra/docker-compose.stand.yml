@@ -1,0 +1,77 @@
+# Validate layer-2 stand for the task pipeline (docs/design-task-pipeline.md, «Стенд + e2e до
+# мержа»). A standalone stack with its own compose project name and host ports, so it never
+# collides with the dev (docker-compose.dev.yml) or prod stack on this VPS. The dispatcher
+# (triggered-agents, pipeline/stand.py) checks out a PR branch, brings this up with
+# `--build --wait`, runs infra/e2e/run.sh against it, then tears the namespace down.
+#
+# Pinned project name: every compose file in this repo lives in infra/, so they share the default
+# project name `infra` and identical service names. Without an explicit `name:`, bringing this
+# file up (e.g. by hand, no `-p`) would recreate the dev/prod containers instead of isolated stand
+# ones. The isolation must be guaranteed by the file itself, not by the caller passing `-p`
+# (the dispatcher does pass `-p personal_site_stand`, which matches this and overrides on the CLI).
+name: personal_site_stand
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-personal_site}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    ports:
+      - "${STAND_POSTGRES_PORT:-5442}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ../services/backend
+      dockerfile: Dockerfile
+      target: production
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-personal_site}
+      PYTHONPATH: /app/src
+      BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS:-["http://localhost:4331"]}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:?ADMIN_PASSWORD_HASH is required}
+      ADMIN_SECRET_KEY: ${ADMIN_SECRET_KEY:?ADMIN_SECRET_KEY is required}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "${STAND_BACKEND_PORT:-8010}:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ../services/frontend
+      dockerfile: Dockerfile
+      target: production
+    environment:
+      INTERNAL_API_URL: http://backend:8000
+      SITE_URL: http://localhost:${STAND_FRONTEND_PORT:-4331}
+      SITE_BRAND: Stand
+      HOST: 0.0.0.0
+      PORT: 4321
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${STAND_FRONTEND_PORT:-4331}:4321"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:4321/en/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+networks:
+  default:
+    name: personal_site_stand_network
