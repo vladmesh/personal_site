@@ -53,7 +53,7 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
       }
     },
     footer: {
-      rights: 'All rights reserved.',
+      rights: 'All rights reserved',
       sourceLabel: 'Source code',
       social: {
         github: 'GitHub',
@@ -88,7 +88,7 @@ export const uiCopy: Record<'en' | 'ru', UICopy> = {
       }
     },
     footer: {
-      rights: 'Все права защищены.',
+      rights: 'Все права защищены',
       sourceLabel: 'Исходники сайта',
       social: {
         github: 'GitHub',
