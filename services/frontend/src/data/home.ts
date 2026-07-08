@@ -81,7 +81,7 @@ const baseHomeCopy = {
     hero: {
       eyebrow: "",
       greeting: "Your headline",
-      subtitle: "A short subtitle about what you do.",
+      subtitle: "A short subtitle about what you do",
       ctaPrimary: "Contact me",
       ctaSecondary: "Download CV",
     },
@@ -101,7 +101,7 @@ const baseHomeCopy = {
     },
     skills: {
       title: "Skills",
-      subtitle: "Core stack and tooling.",
+      subtitle: "Core stack and tooling",
     },
     testimonials: {
       title: "Testimonials",
@@ -118,7 +118,7 @@ const baseHomeCopy = {
     hero: {
       eyebrow: "",
       greeting: "Ваш заголовок",
-      subtitle: "Короткий подзаголовок о том, чем вы занимаетесь.",
+      subtitle: "Короткий подзаголовок о том, чем вы занимаетесь",
       ctaPrimary: "Написать мне",
       ctaSecondary: "Скачать CV",
     },
@@ -138,7 +138,7 @@ const baseHomeCopy = {
     },
     skills: {
       title: "Навыки",
-      subtitle: "Основные стек и инструменты.",
+      subtitle: "Основные стек и инструменты",
     },
     testimonials: {
       title: "Отзывы",
