@@ -200,7 +200,6 @@ function buildContactDescription(
       { type: "link" as const, text: info.telegramHandle, href: info.telegramHref },
       { type: "text" as const, text: " или на почту " },
       { type: "link" as const, text: info.emailText, href: info.emailHref },
-      { type: "text" as const, text: "." },
     ],
   };
 
