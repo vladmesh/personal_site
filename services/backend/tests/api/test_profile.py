@@ -328,6 +328,7 @@ async def test_full_profile_offer_visible(client: AsyncClient, db: AsyncSession)
             title="Health Check",
             body="Para one\nPara two",
             bullets="One\nTwo",
+            cta_note="Questions? Write me.",
         )
     )
     await db.commit()
@@ -338,6 +339,7 @@ async def test_full_profile_offer_visible(client: AsyncClient, db: AsyncSession)
     assert offer is not None
     assert offer["title"] == "Health Check"
     assert offer["body"] == "Para one\nPara two"
+    assert offer["cta_note"] == "Questions? Write me."
 
 
 @pytest.mark.unit

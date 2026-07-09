@@ -15,7 +15,8 @@ class Offer(Base, TimestampMixin):
     ``language_code``. Hidden by default (``is_visible=False``) so the block can
     be drafted in /admin and switched on or off without a deploy. ``body`` holds
     paragraphs and ``bullets`` holds list items, both newline-separated; the
-    frontend splits them.
+    frontend splits them. ``cta_note`` is a short line rendered right above the
+    CTA button.
     """
 
     __tablename__ = "offer"
@@ -30,6 +31,7 @@ class Offer(Base, TimestampMixin):
     bullets: Mapped[str] = mapped_column(Text, nullable=False, default="")
     price: Mapped[str] = mapped_column(String, nullable=False, default="")
     timeline: Mapped[str] = mapped_column(String, nullable=False, default="")
+    cta_note: Mapped[str] = mapped_column(String, nullable=False, default="")
     cta_label: Mapped[str] = mapped_column(String, nullable=False, default="")
     cta_href: Mapped[str] = mapped_column(String, nullable=False, default="")
 
