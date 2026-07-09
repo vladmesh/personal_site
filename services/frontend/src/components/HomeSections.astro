@@ -71,8 +71,7 @@ const { lang = 'en', content, projects = [], skills = [], quotes = [], offer = n
 </div>
 
 <section id="contact" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
-  <h2 class="text-3xl font-semibold text-white">{content.contact.title}</h2>
-  <p class="mt-3 max-w-2xl text-slate-300">
+  <p class="max-w-2xl text-xl text-slate-300">
     {content.contact.description.map((segment) => (
       segment.type === 'text' ? (
         segment.text

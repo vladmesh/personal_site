@@ -45,7 +45,6 @@ export type HomeCopy = {
     };
   };
   contact: {
-    title: string;
     description: (
       | { type: "text"; text: string }
       | { type: "link"; text: string; href: string }
@@ -110,9 +109,7 @@ const baseHomeCopy = {
         teacher: "Mentor",
       },
     },
-    contact: {
-      title: "Let's talk",
-    },
+    contact: {},
   },
   ru: {
     hero: {
@@ -147,9 +144,7 @@ const baseHomeCopy = {
         teacher: "Преподаватель",
       },
     },
-    contact: {
-      title: "Свяжемся?",
-    },
+    contact: {},
   },
 } as const satisfies Record<"en" | "ru", Omit<HomeCopy, "hero" | "contact"> & {
   hero: Omit<HomeCopy["hero"], "primaryHref" | "secondaryHref">;
