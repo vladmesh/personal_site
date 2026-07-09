@@ -48,6 +48,9 @@ const ctaClass =
     </div>
   )}
   <div class="mt-6">
+    {offer.ctaNote && (
+      <p class="mb-3 max-w-2xl text-sm text-slate-400">{offer.ctaNote}</p>
+    )}
     {offer.ctaHref ? (
       <a
         href={offer.ctaHref}

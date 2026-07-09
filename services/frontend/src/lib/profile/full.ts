@@ -95,6 +95,7 @@ type ApiOffer = {
   bullets: string;
   price: string;
   timeline: string;
+  cta_note: string;
   cta_label: string;
   cta_href: string;
 };
@@ -132,6 +133,7 @@ export type FrontOffer = {
   bullets: string[];
   price: string;
   timeline: string;
+  ctaNote: string;
   ctaLabel: string;
   ctaHref: string;
 };
@@ -212,6 +214,7 @@ function buildOffer(offer: ApiOffer | null): FrontOffer | null {
     bullets: splitLines(offer.bullets),
     price: offer.price,
     timeline: offer.timeline,
+    ctaNote: offer.cta_note,
     ctaLabel: offer.cta_label,
     ctaHref: offer.cta_href,
   };

@@ -288,6 +288,7 @@ class OfferAdmin(ModelView, model=Offer):
         Offer.bullets,
         Offer.price,
         Offer.timeline,
+        Offer.cta_note,
         Offer.cta_label,
         Offer.cta_href,
     ]

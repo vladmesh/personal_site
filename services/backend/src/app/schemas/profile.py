@@ -128,6 +128,7 @@ class OfferRead(BaseModel):
     bullets: str
     price: str
     timeline: str
+    cta_note: str
     cta_label: str
     cta_href: str
 
@@ -219,6 +220,7 @@ class LocalizedOfferRead(BaseModel):
     bullets: str
     price: str
     timeline: str
+    cta_note: str
     cta_label: str
     cta_href: str
 
