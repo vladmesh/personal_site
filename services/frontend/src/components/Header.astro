@@ -1,7 +1,8 @@
 ---
-const { lang = 'en', copy, showOffer = false } = Astro.props as {
+const { lang = 'en', copy, showOffer = false, showTestimonials = true } = Astro.props as {
   lang: 'en' | 'ru';
   showOffer?: boolean;
+  showTestimonials?: boolean;
   copy: {
     brand: string;
     nav: { offer: string; projects: string; skills: string; testimonials: string; contact: string };
@@ -15,7 +16,7 @@ const links = [
   ...(showOffer ? [{ href: `/${lang}/#offer`, label: copy.nav.offer }] : []),
   { href: `/${lang}/#projects`, label: copy.nav.projects },
   { href: `/${lang}/#skills`, label: copy.nav.skills },
-  { href: `/${lang}/#testimonials`, label: copy.nav.testimonials },
+  ...(showTestimonials ? [{ href: `/${lang}/#testimonials`, label: copy.nav.testimonials }] : []),
   { href: `/${lang}/#contact`, label: copy.nav.contact }
 ];
 

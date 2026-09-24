@@ -12,7 +12,8 @@ const {
   lang = 'en',
   ogImage = '/og/default.png',
   contacts,
-  showOffer = false
+  showOffer = false,
+  showTestimonials = true
 } = Astro.props as {
   title?: string;
   description?: string;
@@ -20,6 +21,7 @@ const {
   ogImage?: string;
   contacts?: ContactsResult;
   showOffer?: boolean;
+  showTestimonials?: boolean;
 };
 const domain = siteConfig.domain;
 const analytics = siteConfig.analytics;
@@ -46,7 +48,7 @@ const analytics = siteConfig.analytics;
     />
   </head>
   <body class="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-    <Header lang={lang} copy={uiCopy[lang].header} showOffer={showOffer} />
+    <Header lang={lang} copy={uiCopy[lang].header} showOffer={showOffer} showTestimonials={showTestimonials} />
     <main class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <slot />
     </main>
