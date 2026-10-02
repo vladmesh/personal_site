@@ -21,11 +21,11 @@ env:
   REGISTRY_OWNER: ${{ github.repository_owner }}
   BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/personal_site/backend
   FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/personal_site/frontend
-  # Public domain Caddy serves and requests a TLS cert for. Set the SITE_DOMAIN
-  # repo variable (Settings > Secrets and variables > Actions > Variables).
-  SITE_DOMAIN: ${{ vars.SITE_DOMAIN || 'example.com' }}
-  # Display name shown in the site header, footer, and meta titles (SITE_BRAND repo variable).
-  SITE_BRAND: ${{ vars.SITE_BRAND || 'Your Name' }}
+  # Public domain, used only for the post-deploy smoke check (SITE_DOMAIN repo variable).
+  # The running stack reads its domain and brand from the host's .env.
+  SITE_DOMAIN: ${{ vars.SITE_DOMAIN }}
+  # Stack directory on the host, relative to the deploy user's home (DEPLOY_DIR repo variable).
+  DEPLOY_DIR: ${{ vars.DEPLOY_DIR || 'personal_site' }}
 
 jobs:
   ci:
@@ -110,6 +110,11 @@ jobs:
           cache-from: type=gha,scope=frontend
           cache-to: type=gha,mode=max,scope=frontend
 
+  # Production runs on a shared host as an unprivileged user with rootless Docker,
+  # behind a Cloudflare Tunnel (infra/docker-compose.tunnel.yml). Ground rules for that host:
+  # no sudo, nothing outside DEPLOY_DIR, no image/volume prune (the same rootless daemon runs
+  # other projects), and the host's .env is never written: it holds the live DB password,
+  # admin hash and tunnel token, and is the only copy of them.
   deploy:
     name: Deploy to VPS
     runs-on: ubuntu-latest
@@ -117,6 +122,9 @@ jobs:
     # Run as long as CI passed and no build failed. Skipped builds (unchanged
     # service) are not failures, so an infra-only push still redeploys.
     if: ${{ !cancelled() && !failure() }}
+    # The VPS_* secrets live in this environment (deployments from main only); the repo-level
+    # VPS_* secrets are stale and point at a host that no longer exists.
+    environment: production
     steps:
       - uses: actions/checkout@v7
 
@@ -126,51 +134,70 @@ jobs:
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p ${{ secrets.VPS_SSH_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+          cat >> ~/.ssh/config <<EOF
+          Host vps
+            HostName ${{ secrets.VPS_HOST }}
+            Port ${{ secrets.VPS_SSH_PORT }}
+            User ${{ secrets.VPS_USER }}
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+          EOF
 
-      - name: Bootstrap deploy directory on VPS
+      - name: Check the deploy directory on VPS
         run: |
-          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
-            sudo mkdir -p /opt/services/personal_site/configs
-            sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /opt/services/personal_site
-          '
+          ssh vps "DEPLOY_DIR='${DEPLOY_DIR}' bash -s" <<'REMOTE'
+          set -e
+          mkdir -p "$DEPLOY_DIR/cv"
+          if [ ! -f "$DEPLOY_DIR/.env" ]; then
+            echo "::error::$DEPLOY_DIR/.env is missing on the host; create it by hand (see infra/docker-compose.tunnel.yml)"
+            exit 1
+          fi
+          REMOTE
 
       - name: Copy configs to VPS
         run: |
-          scp -i ~/.ssh/id_ed25519 -P ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no infra/docker-compose.prod.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/services/personal_site/docker-compose.yml
-          scp -i ~/.ssh/id_ed25519 -P ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no infra/configs/Caddyfile ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/opt/services/personal_site/configs/Caddyfile
+          scp infra/docker-compose.tunnel.yml "vps:${DEPLOY_DIR}/docker-compose.yml"
+          scp infra/configs/Caddyfile.tunnel "vps:${DEPLOY_DIR}/Caddyfile"
 
       - name: Deploy and verify
         run: |
-          ssh -i ~/.ssh/id_ed25519 -p ${{ secrets.VPS_SSH_PORT }} -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} '
-            set -e
-            cd /opt/services/personal_site
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" > .env
-            echo "ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}" >> .env
-            echo "ADMIN_PASSWORD_HASH=${{ secrets.ADMIN_PASSWORD_HASH }}" >> .env
-            echo "ADMIN_SECRET_KEY=${{ secrets.ADMIN_SECRET_KEY }}" >> .env
-            echo "SITE_DOMAIN=${{ env.SITE_DOMAIN }}" >> .env
-            echo "SITE_BRAND=${{ env.SITE_BRAND }}" >> .env
-            echo "REGISTRY_OWNER=${{ github.repository_owner }}" >> .env
-            echo "${{ secrets.GITHUB_TOKEN }}" | sudo docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            sudo docker compose pull
-            sudo docker compose up -d
-            sudo docker image prune -f
+          ssh vps "DEPLOY_DIR='${DEPLOY_DIR}' REGISTRY_OWNER='${REGISTRY_OWNER}' bash -s" <<'REMOTE'
+          set -e
+          export DOCKER_HOST="unix:///run/user/$(id -u)/docker.sock"
+          cd "$DEPLOY_DIR"
+          # The images are public, so no registry login: a stored ghcr credential would
+          # replace the one other projects on this host rely on. Only our two images are
+          # pulled, so postgres, caddy and cloudflared are not swapped under the tunnel.
+          docker compose pull backend frontend
+          docker compose up -d
 
-            echo "Waiting for backend and frontend healthchecks..."
-            for i in $(seq 1 24); do
-              states=$(sudo docker compose ps --format "{{.Service}}={{.Health}}")
-              echo "$states"
-              if echo "$states" | grep -q "backend=healthy" && echo "$states" | grep -q "frontend=healthy"; then
-                echo "Services healthy."
-                break
-              fi
-              if [ "$i" = "24" ]; then
-                echo "::error::services did not become healthy within ~2 min"
-                sudo docker compose ps
-                sudo docker compose logs --tail=80
-                exit 1
-              fi
-              sleep 5
-            done
-            sudo docker compose ps
-          '
+          echo "Waiting for backend and frontend healthchecks..."
+          for i in $(seq 1 24); do
+            states=$(docker compose ps --format '{{.Service}}={{.Health}}')
+            echo "$states"
+            if echo "$states" | grep -q "backend=healthy" && echo "$states" | grep -q "frontend=healthy"; then
+              echo "Services healthy."
+              break
+            fi
+            if [ "$i" = "24" ]; then
+              echo "::error::services did not become healthy within ~2 min"
+              docker compose ps
+              docker compose logs --tail=80 backend frontend
+              exit 1
+            fi
+            sleep 5
+          done
+          docker compose ps
+          REMOTE
+
+      - name: Smoke check through the tunnel
+        if: ${{ env.SITE_DOMAIN != '' }}
+        run: |
+          for path in /en/ /ru/ /api/health; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --retry 5 --retry-delay 5 --retry-all-errors "https://${SITE_DOMAIN}${path}")
+            echo "${path} -> ${code}"
+            if [ "$code" != 200 ]; then
+              echo "::error::https://${SITE_DOMAIN}${path} returned ${code}"
+              exit 1
+            fi
+          done

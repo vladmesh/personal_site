@@ -9,7 +9,8 @@ personal_site/
 ├── infra/              # Инфраструктура
 │   ├── docker-compose.yml        # Base compose (dev/local build)
 │   ├── docker-compose.dev.yml    # Development override
-│   ├── docker-compose.prod.yml   # Production stack (ghcr images + Caddy)
+│   ├── docker-compose.prod.yml   # Standalone production stack (ghcr images + Caddy on 80/443)
+│   ├── docker-compose.tunnel.yml # Production stack behind a Cloudflare Tunnel (what deploy.yml ships)
 │   ├── configs/                  # Конфигурации (Caddy)
 │   └── scripts/                  # Скрипты (init-db.sh)
 ├── services/
@@ -224,17 +225,18 @@ GitHub Actions автоматически запускает при каждом
 
 Push в `main` (или ручной `workflow_dispatch`) запускает workflow `Deploy`: CI → сборка образов в ghcr → деплой на VPS по SSH. См. [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
 
-На сервере поднимается self-contained стек [infra/docker-compose.prod.yml](infra/docker-compose.prod.yml): `postgres + backend + frontend + caddy`. Caddy держит 80/443 и сам получает Let's Encrypt сертификат для `SITE_DOMAIN`. Миграции применяются автоматически при старте backend (`alembic upgrade head` в entrypoint).
+Workflow кладёт на сервер стек [infra/docker-compose.tunnel.yml](infra/docker-compose.tunnel.yml) (`postgres + backend + frontend + caddy + cloudflared`) в `~/personal_site` пользователя деплоя и делает `docker compose pull backend frontend && docker compose up -d`. Портов наружу нет: вход только через Cloudflare Tunnel до внутреннего Caddy на `caddy:8080` ([infra/configs/Caddyfile.tunnel](infra/configs/Caddyfile.tunnel)). Миграции применяются автоматически при старте backend (`alembic upgrade head` в entrypoint).
+
+Workflow рассчитан на чужой/общий хост: без `sudo`, Docker может быть rootless, никаких `prune`, ничего вне `~/personal_site`, и он **никогда не пишет `.env`** — это единственная копия пароля БД, хеша админа и токена туннеля. Если `.env` нет, деплой падает.
+
+Альтернатива для отдельного VPS — [infra/docker-compose.prod.yml](infra/docker-compose.prod.yml), где Caddy сам держит 80/443 и получает Let's Encrypt сертификат; workflow его не использует.
 
 Чтобы развернуть свой инстанс (форк):
 
-1. **DNS**: A-запись `your-domain` (и `www`) → IP сервера. Если домен на Cloudflare, держи запись DNS-only (серое облако), иначе ACME-челлендж Caddy не пройдёт.
-2. **Параметры** в `deploy.yml`: `SITE_DOMAIN` (твой домен). `REGISTRY_OWNER` выводится из владельца репозитория автоматически (`github.repository_owner`).
-3. **GitHub Secrets**:
-   - доступ к серверу: `VPS_HOST`, `VPS_USER`, `VPS_SSH_PORT`, `VPS_SSH_KEY` (приватный ключ, публичная половина — в `~/.ssh/authorized_keys` на сервере);
-   - приложение: `POSTGRES_PASSWORD`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `ADMIN_SECRET_KEY`.
-4. На сервере нужен Docker с Compose v2 и passwordless `sudo` для docker у `VPS_USER`. Каталог `/opt/services/personal_site` workflow создаёт сам.
-5. Push в `main` → через несколько минут сайт живой на `https://your-domain`. Контент правится в админке `https://your-domain/admin` (логин из `ADMIN_*`).
+1. **Cloudflare Tunnel**: создать туннель, public hostname `your-domain` (и `www`) → `http://caddy:8080`, взять его токен.
+2. **На сервере**: Docker с Compose v2 (rootless подходит), `~/personal_site/.env` (0600) с `POSTGRES_PASSWORD`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH` (PBKDF2, `python -m app.security '<пароль>'`), `ADMIN_SECRET_KEY`, `SITE_DOMAIN`, `SITE_BRAND`, `TUNNEL_TOKEN`, `REGISTRY_OWNER`. Compose интерполирует `.env`, поэтому `$` в хеше пишется как `$$`.
+3. **GitHub**: environment `production` (deployment branches: `main`) с секретами `VPS_HOST`, `VPS_USER`, `VPS_SSH_PORT`, `VPS_SSH_KEY` (приватный ключ, публичная половина — в `~/.ssh/authorized_keys` пользователя, можно с `restrict`). Repo variable `SITE_DOMAIN` включает smoke-check `https://SITE_DOMAIN` после деплоя; `DEPLOY_DIR` переопределяет `personal_site`. `REGISTRY_OWNER` выводится из владельца репозитория (`github.repository_owner`); пакеты ghcr должны быть публичными — workflow не логинится в registry на сервере.
+4. Push в `main` → через несколько минут сайт живой на `https://your-domain`. Контент правится в админке `https://your-domain/admin`.
 
 Дорожная карта: [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md)
 

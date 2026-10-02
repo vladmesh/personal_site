@@ -1,0 +1,89 @@
+# Production stack behind a Cloudflare Tunnel, run by an unprivileged user (rootless Docker is
+# fine). The Deploy workflow copies this file to ~/personal_site/docker-compose.yml and
+# configs/Caddyfile.tunnel next to it as ./Caddyfile. No host ports are published: the only way in
+# is cloudflared's outbound tunnel to caddy:8080, so the stack can share a host with other services.
+#
+# Settings come from ~/personal_site/.env, which lives only on the host and which the workflow
+# never writes: POSTGRES_PASSWORD, ADMIN_USERNAME, ADMIN_PASSWORD_HASH, ADMIN_SECRET_KEY,
+# SITE_DOMAIN, SITE_BRAND, TUNNEL_TOKEN, REGISTRY_OWNER. Compose interpolates it, so a literal
+# `$` is written `$$`.
+#
+# Pinned project name: the postgres volume is personal-site_postgres_data.
+name: personal-site
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: personal_site
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    image: ghcr.io/${REGISTRY_OWNER:-your-org}/personal_site/backend:latest
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@postgres:5432/personal_site
+      PYTHONPATH: /app/src
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH:?ADMIN_PASSWORD_HASH is required}
+      ADMIN_SECRET_KEY: ${ADMIN_SECRET_KEY:?ADMIN_SECRET_KEY is required}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  frontend:
+    image: ghcr.io/${REGISTRY_OWNER:-your-org}/personal_site/frontend:latest
+    environment:
+      INTERNAL_API_URL: http://backend:8000
+      SITE_URL: https://${SITE_DOMAIN}
+      SITE_BRAND: ${SITE_BRAND}
+      HOST: 0.0.0.0
+      PORT: 4321
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:4321/en/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  # Internal router: /cv -> static files, /admin and /api -> backend, the rest -> frontend.
+  # Listens on :8080 inside the compose network only.
+  caddy:
+    image: caddy:2-alpine
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./cv:/srv/cv:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+  # The only way out: an outbound connection to Cloudflare.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN:?TUNNEL_TOKEN is required}
+    depends_on:
+      - caddy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
