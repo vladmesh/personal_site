@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import LlmSystems from '@components/LlmSystems.astro';
-import { llmSystemsCopy, personAlternateNames, personSameAs } from '@data/llm-systems';
+import { llmSystemsCopy, personSameAs } from '@data/llm-systems';
 import { siteConfig } from '@config/site';
 import { fetchProfile } from '@lib/profile/full';
 import { selectContact } from '@lib/profile/contacts';
@@ -26,7 +26,7 @@ const jsonLd = llmSystemsJsonLd({
   pageUrl: `${siteConfig.domain}/${lang}/llm-systems/`,
   siteUrl: siteConfig.domain,
   name: siteConfig.brand,
-  alternateNames: personAlternateNames,
+  alternateNames: siteConfig.alternateNames,
   email: email.value,
   sameAs
 });
