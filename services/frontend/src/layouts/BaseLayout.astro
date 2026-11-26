@@ -12,7 +12,8 @@ const {
   lang = 'en',
   ogImage = '/og/default.png',
   contacts,
-  showOffer = false
+  showOffer = false,
+  alternatePath = '/'
 } = Astro.props as {
   title?: string;
   description?: string;
@@ -20,6 +21,8 @@ const {
   ogImage?: string;
   contacts?: ContactsResult;
   showOffer?: boolean;
+  /** Path after the locale prefix, used for hreflang links, e.g. "/llm-systems/". */
+  alternatePath?: string;
 };
 const domain = siteConfig.domain;
 const analytics = siteConfig.analytics;
@@ -36,14 +39,15 @@ const analytics = siteConfig.analytics;
     <meta property="og:type" content="website" />
     <meta property="og:image" content={`${domain}${ogImage}`} />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="alternate" hreflang="ru" href={`${domain}/ru/`} />
-    <link rel="alternate" hreflang="en" href={`${domain}/en/`} />
+    <link rel="alternate" hreflang="ru" href={`${domain}/ru${alternatePath}`} />
+    <link rel="alternate" hreflang="en" href={`${domain}/en${alternatePath}`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
       rel="stylesheet"
     />
+    <slot name="head" />
   </head>
   <body class="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
     <Header lang={lang} copy={uiCopy[lang].header} showOffer={showOffer} />

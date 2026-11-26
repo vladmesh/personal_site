@@ -4,7 +4,7 @@ const { lang = 'en', copy, showOffer = false } = Astro.props as {
   showOffer?: boolean;
   copy: {
     brand: string;
-    nav: { offer: string; projects: string; skills: string; testimonials: string; contact: string };
+    nav: { services: string; offer: string; projects: string; skills: string; testimonials: string; contact: string };
   };
 };
 const rest = Astro.url.pathname.replace(/^\/(ru|en)/, '') || '/';
@@ -12,6 +12,7 @@ const toggledPath = `/${lang === 'ru' ? 'en' : 'ru'}${rest}`;
 const otherLang = lang === 'ru' ? 'en' : 'ru';
 
 const links = [
+  { href: `/${lang}/llm-systems/`, label: copy.nav.services },
   ...(showOffer ? [{ href: `/${lang}/#offer`, label: copy.nav.offer }] : []),
   { href: `/${lang}/#projects`, label: copy.nav.projects },
   { href: `/${lang}/#skills`, label: copy.nav.skills },

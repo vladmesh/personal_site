@@ -1,0 +1,41 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import LlmSystems from '@components/LlmSystems.astro';
+import { llmSystemsCopy } from '@data/llm-systems';
+import { siteConfig } from '@config/site';
+import { fetchProfile } from '@lib/profile/full';
+import { selectContact } from '@lib/profile/contacts';
+import { llmSystemsJsonLd } from '@lib/profile/jsonld';
+
+const lang = 'en';
+const copy = llmSystemsCopy[lang];
+const profile = await fetchProfile(lang);
+const contacts = profile.contacts;
+const email = selectContact(contacts, ['email']);
+const telegram = selectContact(contacts, ['telegram']);
+if (!email || !telegram) {
+  throw new Error('Required contacts (telegram/email) are missing in API response');
+}
+const sameAs = ['github', 'linkedin', 'telegram']
+  .map((type) => contacts.lookup[type]?.href)
+  .filter((href): href is string => Boolean(href));
+const jsonLd = llmSystemsJsonLd({
+  copy,
+  lang,
+  pageUrl: `${siteConfig.domain}/${lang}/llm-systems/`,
+  siteUrl: siteConfig.domain,
+  name: siteConfig.brand,
+  email: email.value,
+  sameAs
+});
+---
+<BaseLayout
+  title={copy.metaTitle}
+  description={copy.metaDescription}
+  lang={lang}
+  alternatePath="/llm-systems/"
+  contacts={contacts}
+>
+  <script type="application/ld+json" slot="head" set:html={jsonLd} />
+  <LlmSystems copy={copy} email={email} telegram={telegram} />
+</BaseLayout>

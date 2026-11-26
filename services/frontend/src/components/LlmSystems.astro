@@ -1,0 +1,79 @@
+---
+import type { LlmSystemsCopy } from '@data/llm-systems';
+import type { ContactLink } from '@lib/profile/contacts';
+const { copy, email, telegram } = Astro.props as {
+  copy: LlmSystemsCopy;
+  email: ContactLink;
+  telegram: ContactLink;
+};
+const buttonClass =
+  'inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-semibold text-white no-underline shadow-lg shadow-brand/30 transition hover:bg-brand-dark';
+const ghostClass =
+  'inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white no-underline transition hover:border-white/60';
+---
+<article class="space-y-16">
+  <header class="space-y-4">
+    <p class="text-sm uppercase tracking-[0.3em] text-brand-light/80">{copy.eyebrow}</p>
+    <h1 class="text-4xl font-semibold text-white">{copy.title}</h1>
+    {copy.intro.map((paragraph) => (
+      <p class="max-w-3xl text-lg text-slate-300">{paragraph}</p>
+    ))}
+    <div class="flex flex-wrap gap-3 pt-2">
+      <a href={email.href} class={buttonClass}>{copy.emailLabel}: {email.display}</a>
+      <a href={telegram.href} target="_blank" rel="noopener noreferrer" class={ghostClass}>
+        {copy.telegramLabel}: {telegram.display}
+      </a>
+    </div>
+  </header>
+
+  <section id="packages" class="scroll-mt-24 space-y-6">
+    <h2 class="text-3xl font-semibold text-white">{copy.packagesTitle}</h2>
+    <div class="grid gap-6 md:grid-cols-2">
+      {copy.packages.map((pkg) => (
+        <section id={pkg.id} class="scroll-mt-24 rounded-3xl border border-brand/40 bg-brand/5 p-6">
+          <h3 class="text-xl font-semibold text-white">{pkg.name}</h3>
+          <p class="mt-2 text-slate-300">{pkg.summary}</p>
+          <ul class="mt-4 space-y-1 text-sm text-slate-200">
+            {pkg.includes.map((item) => (
+              <li class="flex gap-2"><span class="text-brand-light">·</span><span>{item}</span></li>
+            ))}
+          </ul>
+          <div class="mt-5 flex flex-wrap gap-6 text-sm text-slate-400">
+            <div><span class="text-slate-500">{copy.timelineLabel}: </span>{pkg.timeline}</div>
+            <div><span class="text-slate-500">{copy.priceLabel}: </span>{pkg.price}</div>
+          </div>
+        </section>
+      ))}
+    </div>
+    <p class="text-slate-300">{copy.hourly}</p>
+  </section>
+
+  <section id="cases" class="scroll-mt-24 space-y-6">
+    <h2 class="text-3xl font-semibold text-white">{copy.casesTitle}</h2>
+    <ul class="grid gap-4 md:grid-cols-2">
+      {copy.cases.map((item) => (
+        <li class="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h3 class="font-semibold text-white">
+            {item.href ? (
+              <a href={item.href} target="_blank" rel="noopener noreferrer">{item.title}</a>
+            ) : (
+              item.title
+            )}
+          </h3>
+          <p class="mt-2 text-sm text-slate-300">{item.text}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section id="contact" class="scroll-mt-24 space-y-4">
+    <h2 class="text-3xl font-semibold text-white">{copy.contactTitle}</h2>
+    <p class="max-w-2xl text-slate-300">{copy.contactText}</p>
+    <div class="flex flex-wrap gap-3">
+      <a href={email.href} class={buttonClass}>{copy.emailLabel}: {email.display}</a>
+      <a href={telegram.href} target="_blank" rel="noopener noreferrer" class={ghostClass}>
+        {copy.telegramLabel}: {telegram.display}
+      </a>
+    </div>
+  </section>
+</article>
