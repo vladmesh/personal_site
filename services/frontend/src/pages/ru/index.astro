@@ -6,6 +6,8 @@ import { buildHomeCopy } from '@data/home';
 import { uiCopy } from '@data/ui';
 import { fetchProfile } from '@lib/profile/full';
 import { getTelegramHandle, selectContact } from '@lib/profile/contacts';
+import { personJsonLd } from '@lib/profile/person-jsonld';
+import { siteConfig } from '@config/site';
 
 const lang = 'ru';
 const profile = await fetchProfile(lang);
@@ -32,6 +34,14 @@ const content = buildHomeCopy(
     offerVisible: Boolean(profile.offer)
   }
 );
+const jsonLd = personJsonLd({
+  siteUrl: siteConfig.domain,
+  name: siteConfig.brand,
+  alternateNames: siteConfig.alternateNames,
+  sameAs: ['github', 'linkedin', 'telegram']
+    .map((type) => contacts.lookup[type]?.href)
+    .filter((href): href is string => Boolean(href))
+});
 ---
 <BaseLayout
   title={uiCopy[lang].home.metaTitle}
@@ -50,4 +60,5 @@ const content = buildHomeCopy(
     quotes={profile.testimonials}
     offer={profile.offer}
   />
+  <script type="application/ld+json" set:html={jsonLd} />
 </BaseLayout>

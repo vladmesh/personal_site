@@ -31,6 +31,14 @@ export default defineConfig({
         optional: true,
         default: 'Your Name',
       }),
+      // Other spellings of the brand name, comma-separated, emitted as
+      // schema.org Person alternateName on the home pages. Runtime-overridable.
+      SITE_ALTERNATE_NAMES: envField.string({
+        context: 'server',
+        access: 'secret',
+        optional: true,
+        default: '',
+      }),
     },
   },
   integrations: [mdx(), tailwind()],

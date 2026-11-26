@@ -1,4 +1,4 @@
-import { SITE_BRAND, SITE_URL } from "astro:env/server";
+import { SITE_ALTERNATE_NAMES, SITE_BRAND, SITE_URL } from "astro:env/server";
 
 /**
  * Site configuration: deployment-level knobs (brand, domain, analytics, asset
@@ -17,6 +17,10 @@ const origin = SITE_URL.replace(/\/+$/, "");
 export const siteConfig = {
   /** Display name used in header, footer copyright, and meta titles. Set via SITE_BRAND. */
   brand: SITE_BRAND,
+  /** Other spellings of the brand name for JSON-LD alternateName. Set via SITE_ALTERNATE_NAMES (comma-separated). */
+  alternateNames: SITE_ALTERNATE_NAMES.split(",")
+    .map((name) => name.trim())
+    .filter(Boolean),
   /** Full public origin, e.g. https://example.com. Drives OG tags and hreflang. */
   domain: origin,
   defaultLocale: "en" as Lang,
