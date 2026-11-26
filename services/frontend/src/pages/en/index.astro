@@ -50,6 +50,7 @@ const jsonLd = personJsonLd({
   ogImage="/og/home_en.png"
   contacts={contacts}
   showOffer={Boolean(profile.offer)}
+  showTestimonials={profile.testimonials.length > 0}
 >
   <Hero lang={lang} content={content.hero} />
   <HomeSections

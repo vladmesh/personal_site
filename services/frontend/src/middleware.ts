@@ -3,12 +3,12 @@ import { projectSlugRedirects } from '@config/redirects';
 
 const supported = ['ru', 'en'] as const;
 
-const rootFiles = new Set(['/llms.txt']);
+const rootFiles = new Set(['/llms.txt', '/sitemap.xml']);
 
 const projectPath = /^\/(ru|en)\/projects\/([^/]+)\/?$/;
 
 export const onRequest: MiddlewareHandler = async ({ url, redirect }, next) => {
-  // Allow static CV files and root-level text files (llms.txt) to bypass locale redirects
+  // Allow static CV files and root-level files (llms.txt, sitemap.xml) to bypass locale redirects
   if (url.pathname.startsWith('/cv/') || rootFiles.has(url.pathname)) {
     return next();
   }

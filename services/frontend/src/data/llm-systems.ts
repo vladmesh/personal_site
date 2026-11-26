@@ -41,6 +41,20 @@ export type LlmSystemsCopy = {
   telegramLabel: string;
 };
 
+/** Spellings of the surname found in search results; JSON-LD alternateName so they resolve to one person. */
+export const personAlternateNames = [
+  'Vladislav Meshkorudny',
+  'Vladislav Meshkorudnyj',
+  'Vladislav Meshkorudnyi',
+  'Владислав Мешкорудный',
+  'vladmesh'
+];
+
+/** Profiles not in the contacts API, added to JSON-LD sameAs. */
+export const personSameAs = ['https://www.lesswrong.com/users/vladmesh'];
+
+const inspectTutorials = 'https://www.lesswrong.com/posts/EvGLAuEtHpicKGBJh/hands-on-tutorials-for-inspect-ai-1';
+
 const inspectPrs = 'https://github.com/UKGovernmentBEIS/inspect_ai/pulls?q=is%3Apr+author%3Avladmesh+is%3Amerged';
 
 export const llmSystemsCopy: Record<Lang, LlmSystemsCopy> = {
@@ -154,6 +168,11 @@ export const llmSystemsCopy: Record<Lang, LlmSystemsCopy> = {
         title: 'Inspect AI contributor',
         text: 'Two merged PRs in the UK AISI eval framework: a grade-parse failure is now unscored instead of incorrect (#4048), and vLLM models get the server context window (#4216).',
         href: inspectPrs
+      },
+      {
+        title: 'Hands-On Tutorials for Inspect AI',
+        text: 'Co-authored post on LessWrong: worked examples of building evals with Inspect AI.',
+        href: inspectTutorials
       },
       {
         title: 'Character model test for a companion app',
@@ -275,6 +294,11 @@ export const llmSystemsCopy: Record<Lang, LlmSystemsCopy> = {
         title: 'Контрибьютор Inspect AI',
         text: 'Два смерженных PR во фреймворк evals UK AISI: ошибка разбора оценки теперь даёт unscored вместо incorrect (#4048), модели vLLM получают окно контекста сервера (#4216).',
         href: inspectPrs
+      },
+      {
+        title: 'Hands-On Tutorials for Inspect AI',
+        text: 'Пост в соавторстве на LessWrong: разборы того, как строить evals на Inspect AI.',
+        href: inspectTutorials
       },
       {
         title: 'Тест character-модели для companion-приложения',

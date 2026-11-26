@@ -7,6 +7,7 @@ export function llmSystemsJsonLd(opts: {
   pageUrl: string;
   siteUrl: string;
   name: string;
+  alternateNames: string[];
   email: string;
   sameAs: string[];
 }): string {
@@ -18,6 +19,7 @@ export function llmSystemsJsonLd(opts: {
         '@type': 'Person',
         '@id': personId,
         name: opts.name,
+        alternateName: opts.alternateNames,
         url: opts.siteUrl,
         email: `mailto:${opts.email}`,
         jobTitle: 'LLM systems engineer',

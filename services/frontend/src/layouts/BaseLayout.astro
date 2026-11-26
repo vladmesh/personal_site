@@ -13,6 +13,7 @@ const {
   ogImage = '/og/default.png',
   contacts,
   showOffer = false,
+  showTestimonials = true,
   alternatePath = '/'
 } = Astro.props as {
   title?: string;
@@ -21,10 +22,13 @@ const {
   ogImage?: string;
   contacts?: ContactsResult;
   showOffer?: boolean;
+  /** Hide the Testimonials nav link when the backend has none. */
+  showTestimonials?: boolean;
   /** Path after the locale prefix, used for hreflang links, e.g. "/llm-systems/". */
   alternatePath?: string;
 };
 const domain = siteConfig.domain;
+const canonical = `${domain}${Astro.url.pathname}`;
 const analytics = siteConfig.analytics;
 ---
 <!DOCTYPE html>
@@ -39,6 +43,7 @@ const analytics = siteConfig.analytics;
     <meta property="og:type" content="website" />
     <meta property="og:image" content={`${domain}${ogImage}`} />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang="ru" href={`${domain}/ru${alternatePath}`} />
     <link rel="alternate" hreflang="en" href={`${domain}/en${alternatePath}`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,7 +55,7 @@ const analytics = siteConfig.analytics;
     <slot name="head" />
   </head>
   <body class="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
-    <Header lang={lang} copy={uiCopy[lang].header} showOffer={showOffer} />
+    <Header lang={lang} copy={uiCopy[lang].header} showOffer={showOffer} showTestimonials={showTestimonials} />
     <main class="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">
       <slot />
     </main>

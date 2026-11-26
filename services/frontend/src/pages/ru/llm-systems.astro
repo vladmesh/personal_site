@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
 import LlmSystems from '@components/LlmSystems.astro';
-import { llmSystemsCopy } from '@data/llm-systems';
+import { llmSystemsCopy, personAlternateNames, personSameAs } from '@data/llm-systems';
 import { siteConfig } from '@config/site';
 import { fetchProfile } from '@lib/profile/full';
 import { selectContact } from '@lib/profile/contacts';
@@ -18,13 +18,15 @@ if (!email || !telegram) {
 }
 const sameAs = ['github', 'linkedin', 'telegram']
   .map((type) => contacts.lookup[type]?.href)
-  .filter((href): href is string => Boolean(href));
+  .filter((href): href is string => Boolean(href))
+  .concat(personSameAs);
 const jsonLd = llmSystemsJsonLd({
   copy,
   lang,
   pageUrl: `${siteConfig.domain}/${lang}/llm-systems/`,
   siteUrl: siteConfig.domain,
   name: siteConfig.brand,
+  alternateNames: personAlternateNames,
   email: email.value,
   sameAs
 });

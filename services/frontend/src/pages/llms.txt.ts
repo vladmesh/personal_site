@@ -36,6 +36,7 @@ export const GET: APIRoute = async () => {
     ...(telegram ? [`- Telegram: ${telegram.href}`] : []),
     ...(github ? [`- GitHub: ${github.href}`] : []),
     `- Service page: ${domain}/en/llm-systems/ (Russian: ${domain}/ru/llm-systems/)`,
+    `- Sitemap: ${domain}/sitemap.xml`,
     ''
   ];
 
