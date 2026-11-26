@@ -66,9 +66,11 @@ const { lang = 'en', content, projects = [], skills = [], quotes = [], offer = n
   <Skills lang={lang} groups={skills} title={content.skills.title} subtitle={content.skills.subtitle} />
 </div>
 
-<div class="mt-16">
-  <Testimonials lang={lang} testimonials={quotes} title={content.testimonials.title} tabs={content.testimonials.tabs} />
-</div>
+{quotes.length > 0 && (
+  <div class="mt-16">
+    <Testimonials lang={lang} testimonials={quotes} title={content.testimonials.title} tabs={content.testimonials.tabs} />
+  </div>
+)}
 
 <section id="contact" class="mt-16 rounded-3xl border border-white/10 bg-white/5 p-8">
   <p class="max-w-2xl text-xl text-slate-300">
