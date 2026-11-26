@@ -41,15 +41,6 @@ export type LlmSystemsCopy = {
   telegramLabel: string;
 };
 
-/** Spellings of the surname found in search results; JSON-LD alternateName so they resolve to one person. */
-export const personAlternateNames = [
-  'Vladislav Meshkorudny',
-  'Vladislav Meshkorudnyj',
-  'Vladislav Meshkorudnyi',
-  'Владислав Мешкорудный',
-  'vladmesh'
-];
-
 /** Profiles not in the contacts API, added to JSON-LD sameAs. */
 export const personSameAs = ['https://www.lesswrong.com/users/vladmesh'];
 
@@ -62,7 +53,7 @@ export const llmSystemsCopy: Record<Lang, LlmSystemsCopy> = {
     metaTitle:
       'AI agent developer for hire: turnkey Telegram bot with LLM, LLM evaluation consultant, multi-agent orchestration',
     metaDescription:
-      'Vladislav Meshkorudnyj builds LLM chatbots and agents and sets up the evals that show whether they work. Fixed-price packages from €1,500. Remote, EU time zone.',
+      'Vladislav Meshkorudnyi builds LLM chatbots and agents and sets up the evals that show whether they work. Fixed-price packages from €1,500. Remote, EU time zone.',
     eyebrow: 'LLM systems',
     title: 'LLM systems end to end: chatbots, agents, evals',
     intro: [
