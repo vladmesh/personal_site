@@ -168,7 +168,13 @@ jobs:
           # The images are public, so no registry login: a stored ghcr credential would
           # replace the one other projects on this host rely on. Only our two images are
           # pulled, so postgres, caddy and cloudflared are not swapped under the tunnel.
-          docker compose pull backend frontend
+          # Pull with an empty, throwaway DOCKER_CONFIG: a stale ghcr.io credential in the
+          # host's ~/.docker/config.json makes even public pulls fail with "denied", and
+          # that file belongs to other projects, so it is neither used nor modified here.
+          pull_cfg="$(mktemp -d)"
+          if [ -d "$HOME/.docker/cli-plugins" ]; then ln -s "$HOME/.docker/cli-plugins" "$pull_cfg/cli-plugins"; fi
+          DOCKER_CONFIG="$pull_cfg" docker compose pull backend frontend
+          rm -rf "$pull_cfg"
           docker compose up -d
 
           echo "Waiting for backend and frontend healthchecks..."
